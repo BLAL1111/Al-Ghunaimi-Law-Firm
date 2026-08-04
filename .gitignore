@@ -1,0 +1,31 @@
+# Local test artifacts
+.playwright-mcp/
+*.exe
+
+# Local backups / originals
+_originals/
+
+# Local files (not part of the site)
+*.zip
+
+# Video pipeline (not part of the law firm site)
+main.py
+config.json
+find_pexels.py
+find_videos.py
+requirements.txt
+pipeline.log
+modules/
+templates/
+temp/
+output/
+fonts/
+__pycache__/
+*.pyc
+*.mp4
+*.wav
+*.mp3
+
+# OS
+Thumbs.db
+.DS_Store

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /login
+Disallow: /dashboard
+Disallow: /backend
+Disallow: /cpanel
+Disallow: /api/
+
+Sitemap: /sitemap.xml
