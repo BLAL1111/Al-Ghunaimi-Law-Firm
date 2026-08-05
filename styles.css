@@ -1445,44 +1445,6 @@ html[dir="rtl"] .modal-close { right: auto; left: 18px; }
   .modal-close { top: 10px; font-size: 1.4rem; }
 }
 
-/* ── Hero Entrance Animations ── */
-.hero-content .hero-logo-large,
-.hero-content .section-badge,
-.hero-content .hero-title,
-.hero-content .hero-subtitle,
-.hero-content .hero-tagline,
-.hero-content .hero-ctas,
-.hero-content .stats-bar {
-  opacity: 0;
-  transform: translateY(30px);
-  animation: heroFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.hero-content .hero-logo-large  { animation-delay: 0.1s; }
-.hero-content .section-badge    { animation-delay: 0.25s; }
-.hero-content .hero-title       { animation-delay: 0.4s; }
-.hero-content .hero-subtitle    { animation-delay: 0.55s; }
-.hero-content .hero-tagline     { animation-delay: 0.7s; }
-.hero-content .hero-ctas        { animation-delay: 0.85s; }
-.hero-content .stats-bar        { animation-delay: 1.0s; }
-
-@keyframes heroFadeIn {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-content .hero-logo-large,
-  .hero-content .section-badge,
-  .hero-content .hero-title,
-  .hero-content .hero-subtitle,
-  .hero-content .hero-tagline,
-  .hero-content .hero-ctas,
-  .hero-content .stats-bar {
-    opacity: 1; transform: none; animation: none;
-  }
-}
-
 /* ── Scroll Reveal Animations ── */
 .reveal {
   opacity: 0;
