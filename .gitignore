@@ -5,6 +5,10 @@
 # Local backups / originals
 _originals/
 
+# Dev files (not part of the site)
+AGENTS.md
+README_PIPELINE.md
+
 # Local files (not part of the site)
 *.zip
 
