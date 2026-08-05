@@ -1,6 +1,6 @@
 const translations = {
   ar: {
-    metaTitle: "مؤسسة الغنيمي للمحاماة والاستشارات القانونية | 6 أكتوبر - بالقرب من ميدان الحصري",
+    metaTitle: "Al Ghonemy Law | مؤسسة الغنيمي للمحاماة والاستشارات القانونية | 6 أكتوبر",
     brandTitle: "مؤسسة الغنيمي",
     brandSub: "للمحاماة والاستشارات القانونية",
     brandTagline: "نحو عدالة ... بثقة ... لنتائج تدوم",
@@ -159,7 +159,7 @@ const translations = {
     footerRights: "جميع الحقوق محفوظة © 2026 لمؤسسة الغنيمي للمحاماة والاستشارات القانونية."
   },
   en: {
-    metaTitle: "Al-Ghonemy Law Firm | 6th of October City, Egypt",
+    metaTitle: "Al Ghonemy Law Firm | Legal Consultations & Litigation | 6th of October, Egypt",
     brandTitle: "Al-Ghonemy",
     brandSub: "Law Firm & Legal Consultants",
     brandTagline: "Towards Justice... With Confidence... For Lasting Results",
@@ -318,7 +318,7 @@ const translations = {
     footerRights: "All Rights Reserved © 2026 Al-Ghonemy Law Firm & Legal Consultants."
   },
   fr: {
-    metaTitle: "Cabinet Al-Ghonemy | 6 Octobre, Égypte",
+    metaTitle: "Cabinet Al-Ghonemy | Conseils Juridiques & Litiges | 6 Octobre, Égypte",
     brandTitle: "Al-Ghonemy",
     brandSub: "Cabinet d'Avocats & Conseillers Juridiques",
     brandTagline: "Vers la Justice... Avec Confiance... Pour des Résultats Durables",
