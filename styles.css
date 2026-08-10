@@ -511,7 +511,7 @@ html[dir="rtl"] .nav-link::after { left: auto; right: 0; }
 
 /* ── Stats Bar ── */
 .stats-bar {
-  display: grid; grid-template-columns: repeat(4, 1fr);
+  display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 15px; background: var(--bg-card);
   border: 1px solid var(--border-color);
   padding: 26px 18px; border-radius: var(--radius-lg);
