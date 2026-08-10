@@ -706,7 +706,7 @@ html[dir="ltr"] .partner-card:nth-child(3) { order: 1; }
   overflow: hidden;
   background-image: url('img/law_books_desk.jpg');
   background-size: cover;
-  background-position: center center;
+  background-position: center top;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
@@ -717,12 +717,12 @@ html[dir="ltr"] .partner-card:nth-child(3) { order: 1; }
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(180deg, rgba(11, 12, 14, 0.88) 0%, rgba(11, 12, 14, 0.92) 50%, var(--bg-primary) 100%);
+  background: linear-gradient(180deg, rgba(11, 12, 14, 0.70) 0%, rgba(11, 12, 14, 0.75) 40%, var(--bg-primary) 100%);
   z-index: 1;
 }
 
 [data-theme="light"] .practices-overlay {
-  background: linear-gradient(180deg, rgba(249, 248, 245, 0.88) 0%, rgba(240, 238, 232, 0.94) 100%);
+  background: linear-gradient(180deg, rgba(249, 248, 245, 0.75) 0%, rgba(240, 238, 232, 0.85) 40%, var(--bg-primary) 100%);
 }
 
 .practices-bg .container {
