@@ -1353,7 +1353,7 @@ html[dir="rtl"] .modal-close { right: auto; left: 18px; }
   .insights-grid { grid-template-columns: 1fr; }
   .pillars-grid { grid-template-columns: 1fr 1fr; }
 
-  .stats-bar { grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 20px 14px; }
+  .stats-bar { grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 20px 14px; }
 
   .section-title { font-size: 1.9rem; }
   .section { padding: 70px 0; }
