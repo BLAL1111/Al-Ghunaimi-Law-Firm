@@ -231,13 +231,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Scroll Navbar Effect
   function initScrollEffects() {
+    let scrollTick = false;
     window.addEventListener('scroll', () => {
-      if (window.scrollY > 40) {
-        navbar.classList.add('scrolled');
-      } else {
-        navbar.classList.remove('scrolled');
+      if (!scrollTick) {
+        requestAnimationFrame(() => {
+          if (window.scrollY > 40) {
+            navbar.classList.add('scrolled');
+          } else {
+            navbar.classList.remove('scrolled');
+          }
+          scrollTick = false;
+        });
+        scrollTick = true;
       }
-    });
+    }, { passive: true });
   }
 
   // Scroll Spy – Active Nav Link on Scroll
@@ -409,19 +416,33 @@ document.addEventListener('DOMContentLoaded', () => {
       canvas.remove();
       return;
     }
+
+    // Skip canvas on weak devices (low RAM or small screens)
+    const isMobile = window.innerWidth <= 768;
+    const isLowEnd = navigator.deviceMemory && navigator.deviceMemory < 4;
+    if (isMobile || isLowEnd) {
+      canvas.remove();
+      return;
+    }
+
     const ctx = canvas.getContext('2d');
 
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
     let animId = null;
 
+    // Debounced resize handler
+    let resizeTimeout;
     window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }, 150);
     });
 
     const particles = [];
-    const numParticles = Math.min(Math.floor(width / 25), 45);
+    const numParticles = Math.min(Math.floor(width / 35), 30);
 
     for (let i = 0; i < numParticles; i++) {
       particles.push({
