@@ -810,6 +810,26 @@ html[dir="rtl"] .practice-card::before { right: 0; left: auto; }
   overflow-wrap: break-word; word-break: break-word;
 }
 
+/* ── FAQ ── */
+.faq-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 900px; margin: 0 auto; }
+
+.faq-item {
+  background: var(--bg-card); border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg); padding: 28px 30px;
+  transition: var(--transition-smooth);
+}
+
+.faq-item:hover { border-color: var(--accent-gold); box-shadow: var(--shadow-card); }
+
+.faq-question {
+  font-size: 1.05rem; font-weight: 800; color: var(--accent-gold);
+  margin-bottom: 12px; line-height: 1.5;
+}
+
+.faq-answer {
+  font-size: 0.92rem; color: var(--text-secondary); line-height: 1.7;
+}
+
 /* ── Contact & Map ── */
 .contact-wrapper {
   display: grid; grid-template-columns: 1fr 1fr;
@@ -1554,4 +1574,8 @@ html[dir="rtl"] .modal-close { right: auto; left: 18px; }
     max-height: 95vh;
     margin: 10px;
   }
+
+  .faq-item { padding: 20px 18px; }
+  .faq-question { font-size: 0.95rem; }
+  .faq-answer { font-size: 0.85rem; }
 }
