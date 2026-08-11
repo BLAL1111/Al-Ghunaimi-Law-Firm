@@ -154,7 +154,11 @@ const translations = {
     service4: "نزاعات العقارات",
     footerAddress: "مول الحجاز – ميدان الحصري – 6 أكتوبر والشيخ زايد",
     footerHours: "5:00 م – 10:00 م يومياً",
-    footerRights: "جميع الحقوق محفوظة © 2026 لمؤسسة الغنيمي للمحاماة والاستشارات القانونية."
+    footerRights: "جميع الحقوق محفوظة © 2026 لمؤسسة الغنيمي للمحاماة والاستشارات القانونية.",
+    
+    adminLoginTitle: "دخول الأدمن",
+    adminLoginSub: "الصلاحية للإدارة فقط",
+    adminLoginBtn: "دخول"
   },
   en: {
     metaTitle: "Best Lawyer in 6th of October & Sheikh Zayed | Al Ghonemy Law Firm | Top-Tier Legal Representation",
@@ -311,7 +315,11 @@ const translations = {
     service4: "Real Estate Litigation",
     footerAddress: "Al Hejaz Mall – Al-Hosary Sq – 6th of Oct & Sheikh Zayed",
     footerHours: "5:00 PM – 10:00 PM Daily",
-    footerRights: "All Rights Reserved © 2026 Al-Ghonemy Law Firm & Legal Consultants."
+    footerRights: "All Rights Reserved © 2026 Al-Ghonemy Law Firm & Legal Consultants.",
+    
+    adminLoginTitle: "Admin Login",
+    adminLoginSub: "Restricted to administrators only",
+    adminLoginBtn: "Login"
   },
   fr: {
     metaTitle: "Meilleur Avocat à 6 Octobre & Sheikh Zayed | Cabinet Al-Ghonemy | Représentation Juridique d'Élite",
@@ -468,6 +476,10 @@ const translations = {
     service4: "Litiges Immobiliers",
     footerAddress: "Centre Al Hejaz – Place Al-Hosary – 6 Octobre & Sheikh Zayed",
     footerHours: "17h00 – 22h00 Tous les jours",
-    footerRights: "Tous Droits Réservés © 2026 Cabinet Al-Ghonemy d'Avocats & Conseillers Juridiques."
+    footerRights: "Tous Droits Réservés © 2026 Cabinet Al-Ghonemy d'Avocats & Conseillers Juridiques.",
+    
+    adminLoginTitle: "Connexion Administrateur",
+    adminLoginSub: "Réservé aux administrateurs uniquement",
+    adminLoginBtn: "Connexion"
   }
 };

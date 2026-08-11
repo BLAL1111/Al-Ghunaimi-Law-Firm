@@ -1380,7 +1380,7 @@ html[dir="rtl"] .modal-close { right: auto; left: 18px; }
   .hero-subtitle { font-size: 1rem; }
 
   /* Fixed backgrounds cause jank on mobile — use scroll */
-  .hero, .about-courthouse-bg, .contact-courthouse-bg {
+  .hero, .about-courthouse-bg, .contact-courthouse-bg, .practices-bg {
     background-attachment: scroll;
   }
 

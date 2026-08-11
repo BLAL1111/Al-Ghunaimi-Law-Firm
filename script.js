@@ -517,12 +517,16 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    document.getElementById('admin-login-btn').addEventListener('click', checkAdminPass);
-    document.getElementById('admin-pass').addEventListener('keydown', (e) => {
+    const adminLoginBtn = document.getElementById('admin-login-btn');
+    const adminPassInput = document.getElementById('admin-pass');
+    const adminArticleForm = document.getElementById('admin-article-form');
+
+    if (adminLoginBtn) adminLoginBtn.addEventListener('click', checkAdminPass);
+    if (adminPassInput) adminPassInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') checkAdminPass();
     });
 
-    document.getElementById('admin-article-form').addEventListener('submit', (e) => {
+    if (adminArticleForm) adminArticleForm.addEventListener('submit', (e) => {
       e.preventDefault();
       addAdminArticle();
     });
@@ -532,15 +536,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function checkAdminPass() {
-    const pass = document.getElementById('admin-pass').value;
+    const passInput = document.getElementById('admin-pass');
+    const errorEl = document.getElementById('admin-pass-error');
+    if (!passInput) return;
+    const pass = passInput.value;
     if (pass === ADMIN_PASS) {
-      document.getElementById('admin-pass').value = '';
-      document.getElementById('admin-pass-error').style.display = 'none';
+      passInput.value = '';
+      if (errorEl) errorEl.style.display = 'none';
       closeAllModals();
       openModal(document.getElementById('admin-panel-modal'));
       renderAdminList();
     } else {
-      document.getElementById('admin-pass-error').style.display = 'block';
+      if (errorEl) errorEl.style.display = 'block';
     }
   }
 
@@ -555,11 +562,18 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function addAdminArticle() {
-    const title = document.getElementById('admin-title').value.trim();
-    const cat = document.getElementById('admin-cat').value.trim();
-    const date = document.getElementById('admin-date').value;
-    const desc = document.getElementById('admin-desc').value.trim();
-    const content = document.getElementById('admin-content').value.trim();
+    const titleEl = document.getElementById('admin-title');
+    const catEl = document.getElementById('admin-cat');
+    const dateEl = document.getElementById('admin-date');
+    const descEl = document.getElementById('admin-desc');
+    const contentEl = document.getElementById('admin-content');
+    if (!titleEl || !catEl || !dateEl || !descEl || !contentEl) return;
+    
+    const title = titleEl.value.trim();
+    const cat = catEl.value.trim();
+    const date = dateEl.value;
+    const desc = descEl.value.trim();
+    const content = contentEl.value.trim();
 
     if (!title || !cat || !date || !desc || !content) return;
 
@@ -586,6 +600,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const list = document.getElementById('admin-articles-list');
     const count = document.getElementById('admin-count');
     const empty = document.getElementById('admin-empty-msg');
+    if (!list || !count || !empty) return;
     count.textContent = articles.length;
     list.innerHTML = '';
 
