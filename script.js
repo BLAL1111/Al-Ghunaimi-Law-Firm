@@ -268,7 +268,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Scroll Reveal Animations for Sections & Cards
   function initRevealAnimations() {
-    const els = document.querySelectorAll('.section-badge, .section-title, .pillar-card, .partner-card, .practice-card, .article-card, .stat-item, .contact-item');
+    const els = document.querySelectorAll('.section-badge, .section-title, .pillar-card, .partner-card, .practice-card, .article-card, .stat-item, .contact-item, .why-card, .how-card, .faq-item, .heritage-text, .realestate-text, .online-cta-box, .cta-section .text-center');
     if (!els.length) return;
 
     const observer = new IntersectionObserver((entries) => {
