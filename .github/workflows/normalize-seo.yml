@@ -1,0 +1,79 @@
+name: Normalize SEO URLs
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "index.html"
+      - "robots.txt"
+      - "sitemap.xml"
+      - ".github/workflows/normalize-seo.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  normalize:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Normalize canonical domain and SEO URLs
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+
+          canonical = "https://al-ghoneimy-law-team.vercel.app/"
+          old_domains = [
+              "https://al-ghonemy-law.vercel.app",
+              "https://al-ghoneimy-law-team.vercel.app",
+              "https://blal1111.github.io/al-ghoneimy-law-general",
+          ]
+
+          index = Path("index.html")
+          text = index.read_text(encoding="utf-8")
+          for old in old_domains:
+              text = text.replace(old.rstrip("/"), canonical.rstrip("/"))
+          text = text.replace('href="https://al-ghoneimy-law-team.vercel.app"', 'href="https://al-ghoneimy-law-team.vercel.app/"')
+          text = text.replace('content="https://al-ghoneimy-law-team.vercel.app/img/', 'content="https://al-ghoneimy-law-team.vercel.app/img/')
+          index.write_text(text, encoding="utf-8")
+          PY
+
+      - name: Write canonical robots.txt
+        shell: bash
+        run: |
+          cat > robots.txt <<'EOF'
+          User-agent: *
+          Allow: /
+
+          Sitemap: https://al-ghoneimy-law-team.vercel.app/sitemap.xml
+          EOF
+
+      - name: Write canonical sitemap.xml
+        shell: bash
+        run: |
+          cat > sitemap.xml <<'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url>
+              <loc>https://al-ghoneimy-law-team.vercel.app/</loc>
+              <lastmod>2026-08-14</lastmod>
+            </url>
+          </urlset>
+          EOF
+
+      - name: Commit SEO normalization
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html robots.txt sitemap.xml
+          if git diff --cached --quiet; then
+            echo "No SEO changes needed."
+            exit 0
+          fi
+          git commit -m "Fix canonical domain and sitemap for Vercel"
+          git push
