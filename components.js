@@ -18,21 +18,44 @@
 
   const isLocal = window.location.protocol === 'file:' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || !window.location.hostname;
 
-  function getPageUrl(page) {
-    const prefix = getPathPrefix();
-    if (page === 'home') {
-      return isLocal ? prefix + 'index.html' : prefix + '/';
+  function getBase() {
+    const host = window.location.hostname.toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+    if (host.includes('github.io')) {
+      if (path.includes('/al-ghunaimi-law-firm')) return '/Al-Ghunaimi-Law-Firm';
+      if (path.includes('/al-ghoneimy-law-general')) return '/al-ghoneimy-law-general';
+      return '/Al-Ghunaimi-Law-Firm';
     }
-    // Handle subpages
+    return '';
+  }
+
+  function getPageUrl(page) {
+    const base = getBase();
+    const prefix = getPathPrefix();
+    // file:// -> relative paths with prefix + .html
+    if (isLocal) {
+      if (page === 'home') return prefix + 'index.html';
+      if (page.startsWith('services/')) {
+        const slug = page.split('/')[1];
+        return prefix + 'services/' + slug + '.html';
+      }
+      if (page.startsWith('articles/')) {
+        const slug = page.split('/')[1];
+        return prefix + 'articles/' + slug + '.html';
+      }
+      return prefix + page + '.html';
+    }
+    // http(s) -> base-aware absolute paths (Vercel root, GitHub Pages subfolder)
+    if (page === 'home') return (base || '') + '/';
     if (page.startsWith('services/')) {
       const slug = page.split('/')[1];
-      return prefix + 'services/' + slug + (isLocal ? '.html' : '');
+      return base + '/services/' + slug;
     }
     if (page.startsWith('articles/')) {
       const slug = page.split('/')[1];
-      return prefix + 'articles/' + slug + (isLocal ? '.html' : '');
+      return base + '/articles/' + slug;
     }
-    return prefix + page + (isLocal ? '.html' : '');
+    return base + '/' + page;
   }
 
   function getCurrentPage() {
