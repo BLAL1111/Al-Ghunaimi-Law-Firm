@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>مقال | مؤسسة الغنيمي</title>
+  <link rel="canonical" href="https://al-ghunaimi-law-firm.vercel.app/articles/view">
+  <meta name="description" content="">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&family=Cinzel:wght@500;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
+  <link rel="stylesheet" href="../styles.css">
+  <script type="application/ld+json" id="article-ldjson"></script>
+</head>
+<body>
+  <main id="main-content" role="main">
+    <section class="page-header">
+      <div class="container">
+        <div class="breadcrumbs">
+          <a href="../index.html">الرئيسية</a> <i class="fas fa-chevron-left"></i>
+          <a href="../articles.html">المقالات</a> <i class="fas fa-chevron-left"></i>
+          <span id="bc-title">مقال</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <article id="article-detail" class="article-detail glass-panel" style="display:none;">
+          <div class="article-detail-meta">
+            <span id="article-cat" class="article-cat"></span>
+            <span id="article-date" class="article-date"></span>
+          </div>
+          <h1 id="article-title" class="article-detail-title"></h1>
+          <p id="article-author" style="font-size:0.85rem; color:var(--text-muted); margin-bottom:12px;"></p>
+          <img id="article-cover" src="" alt="" style="display:none; width:100%; max-height:380px; object-fit:cover; border-radius:12px; margin-bottom:18px;">
+          <div id="article-body" class="article-detail-body"></div>
+          <div id="article-cta" class="article-detail-cta">
+            <p>هل تحتاج استشارة قانونية بخصوص هذا الموضوع؟</p>
+            <a href="https://wa.me/201126118276?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%2C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9%20%D9%82%D8%A7%D9%86%D9%88%D9%86%D9%8A%D8%A9" target="_blank" rel="noopener" class="btn-gold">تواصل عبر واتساب</a>
+            <a href="../booking.html" class="btn-outline">احجز استشارتك القانونية</a>
+          </div>
+        </article>
+
+        <div id="loading" style="text-align:center; padding:40px; color:var(--text-muted);">جاري تحميل المقال...</div>
+        <div id="error" style="display:none; text-align:center; padding:40px; color:#f87171;"></div>
+
+        <div id="related-wrap" class="related-links-grid mt-4" style="display:none;">
+          <div class="related-box glass-panel">
+            <h3><i class="fas fa-link gold-icon"></i> خدمات مرتبطة</h3>
+            <ul id="related-service"></ul>
+          </div>
+          <div class="related-box glass-panel">
+            <h3><i class="fas fa-newspaper gold-icon"></i> مقالات مرتبطة</h3>
+            <ul id="related-articles"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script>
+    const supabase = window.GhonemySupabase.createClient();
+    const loadingEl = document.getElementById('loading');
+    const errorEl = document.getElementById('error');
+    const articleEl = document.getElementById('article-detail');
+
+    function getSlug() {
+      // supports /articles/view.html?slug=xxx , /articles/xxx , /articles/xxx.html
+      const params = new URLSearchParams(location.search);
+      if (params.get('slug')) return params.get('slug');
+      const path = location.pathname.toLowerCase();
+      // try to extract slug from /articles/<slug>
+      const m = path.match(/\/articles\/([^\/\.]+)/);
+      if (m) return m[1];
+      // fallback: check ?id
+      return null;
+    }
+
+    async function load() {
+      const slug = getSlug();
+      if (!slug) {
+        loadingEl.style.display='none';
+        errorEl.textContent = 'المقال غير موجود';
+        errorEl.style.display='block';
+        return;
+      }
+      // Try to fetch via Supabase if configured, else fallback to static? For now try Supabase
+      let article = null;
+      if (supabase) {
+        // First try direct slug
+        let { data, error } = await supabase.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
+        if (!data && !error) {
+          // Try redirect table
+          const { data: redir } = await supabase.from('article_redirects').select('article_id').eq('old_slug', slug).maybeSingle();
+          if (redir) {
+            const { data: a2 } = await supabase.from('articles').select('*').eq('id', redir.article_id).eq('status','published').maybeSingle();
+            if (a2) {
+              // redirect to new slug for SEO
+              const newUrl = `https://al-ghunaimi-law-firm.vercel.app/articles/${a2.slug}`;
+              // soft redirect
+              history.replaceState(null, '', `/articles/${a2.slug}`);
+              article = a2;
+            }
+          }
+        } else {
+          article = data;
+        }
+        if (error) console.warn(error);
+      }
+      if (!article) {
+        loadingEl.style.display='none';
+        errorEl.textContent = 'المقال غير موجود أو غير منشور';
+        errorEl.style.display='block';
+        return;
+      }
+      render(article);
+      // Load related
+      loadRelated(article);
+    }
+
+    function render(a){
+      loadingEl.style.display='none';
+      articleEl.style.display='block';
+      document.getElementById('article-cat').textContent = a.category || '';
+      document.getElementById('article-date').textContent = a.published_at ? new Date(a.published_at).toLocaleDateString('ar-EG') : '';
+      document.getElementById('article-title').textContent = a.title;
+      document.getElementById('bc-title').textContent = a.title;
+      document.getElementById('article-author').textContent = a.author_name ? `بقلم: ${a.author_name}` : '';
+      document.title = (a.seo_title || a.title) + ' | مؤسسة الغنيمي';
+      document.querySelector('meta[name="description"]').content = a.seo_description || a.excerpt || '';
+      document.querySelector('link[rel="canonical"]').href = `https://al-ghunaimi-law-firm.vercel.app/articles/${a.slug}`;
+      // OG
+      let ogImg = document.querySelector('meta[property="og:image"]');
+      if(!ogImg){ ogImg = document.createElement('meta'); ogImg.setAttribute('property','og:image'); document.head.appendChild(ogImg); }
+      ogImg.content = a.og_image_url || a.cover_image_url || 'https://al-ghunaimi-law-firm.vercel.app/img/logo.png';
+      // cover
+      const cover = document.getElementById('article-cover');
+      if(a.cover_image_url){ cover.src = a.cover_image_url; cover.alt = a.cover_image_alt || a.title; cover.style.display='block'; }
+      // body
+      const body = document.getElementById('article-body');
+      body.innerHTML = DOMPurify.sanitize(a.content_html, { ALLOWED_TAGS: ['p','h2','h3','h4','strong','em','a','ul','ol','li','blockquote','img'], ALLOWED_ATTR: ['href','src','alt','title','target','rel'] });
+      // schema
+      const ld = {
+        "@context":"https://schema.org",
+        "@type":"Article",
+        "headline": a.title,
+        "description": a.seo_description || a.excerpt || '',
+        "image": a.cover_image_url || 'https://al-ghunaimi-law-firm.vercel.app/img/logo.png',
+        "author": {"@type":"Organization","name": a.author_name || "مؤسسة الغنيمي للمحاماة"},
+        "publisher": {"@type":"Organization","name":"مؤسسة الغنيمي للمحاماة","logo":{"@type":"ImageObject","url":"https://al-ghunaimi-law-firm.vercel.app/img/logo.png"}},
+        "datePublished": a.published_at,
+        "dateModified": a.updated_at,
+        "mainEntityOfPage": {"@type":"WebPage","@id": `https://al-ghunaimi-law-firm.vercel.app/articles/${a.slug}`}
+      };
+      document.getElementById('article-ldjson').textContent = JSON.stringify(ld);
+      // related service
+      const rs = document.getElementById('related-service');
+      if(a.related_service_slug){
+        rs.innerHTML = `<li><a href="../services/${a.related_service_slug}.html"><i class="fas fa-chevron-left"></i> ${a.related_service_slug}</a></li>`;
+        document.getElementById('related-wrap').style.display='grid';
+      }
+    }
+
+    async function loadRelated(current){
+      if(!supabase) return;
+      // simple: same category, limit 2
+      const { data } = await supabase.from('articles').select('slug,title').eq('status','published').eq('category', current.category).neq('id', current.id).limit(2);
+      if(data && data.length){
+        const ul = document.getElementById('related-articles');
+        ul.innerHTML = data.map(x=> `<li><a href="./${x.slug}"><i class="fas fa-chevron-left"></i> ${x.title}</a></li>`).join('');
+        document.getElementById('related-wrap').style.display='grid';
+      }
+    }
+
+    load();
+  </script>
+  <script src="../translations.js"></script>
+  <script src="../search.js"></script>
+  <script src="../components.js"></script>
+  <script src="../script.js"></script>
+</body>
+</html>

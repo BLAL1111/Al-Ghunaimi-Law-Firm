@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>إدارة المقالات | مؤسسة الغنيمي</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .admin-wrap { max-width:1100px; margin:0 auto; padding:100px 16px 40px; }
+    .admin-header { display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+    .admin-header h1 { font-size:1.6rem; font-weight:900; }
+    .admin-toolbar { display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+    .admin-toolbar input, .admin-toolbar select { background: var(--bg-card); border:1px solid var(--border-color); color:var(--text-primary); padding:8px 12px; border-radius:8px; }
+    .admin-list { display:flex; flex-direction:column; gap:10px; }
+    .admin-item { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:14px 16px; }
+    .admin-item h3 { font-size:1rem; font-weight:800; margin:0 0 4px; }
+    .admin-item p { font-size:0.85rem; color:var(--text-secondary); margin:0; }
+    .admin-item .meta { font-size:0.78rem; color:var(--text-muted); }
+    .admin-item .actions { display:flex; gap:6px; flex-wrap:wrap; }
+    .admin-item .actions .btn-outline, .admin-item .actions .btn-gold { padding:6px 12px; font-size:0.8rem; min-height:32px; }
+    .status { font-size:0.7rem; padding:3px 8px; border-radius:20px; font-weight:800; }
+    .status.draft { background: rgba(148,163,184,0.15); color:#94a3b8; }
+    .status.published { background: rgba(34,197,94,0.15); color:#4ade80; }
+    .status.archived { background: rgba(239,68,68,0.15); color:#f87171; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div class="admin-header">
+      <h1>إدارة المقالات</h1>
+      <div style="display:flex; gap:8px;">
+        <a href="editor.html" class="btn-gold">+ مقال جديد</a>
+        <button id="logout" class="btn-outline">خروج</button>
+      </div>
+    </div>
+    <div class="admin-toolbar">
+      <input id="search" type="text" placeholder="بحث بالعنوان..." style="flex:1; min-width:180px;">
+      <select id="status-filter">
+        <option value="all">الكل</option>
+        <option value="draft">مسودة</option>
+        <option value="published">منشور</option>
+        <option value="archived">مؤرشف</option>
+      </select>
+      <span id="count" style="font-size:0.85rem; color:var(--text-muted);"></span>
+    </div>
+    <div id="error" style="display:none; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); color:#f87171; padding:10px; border-radius:8px; margin-bottom:12px;"></div>
+    <div id="list" class="admin-list"></div>
+    <p id="empty" style="display:none; text-align:center; color:var(--text-muted); margin-top:20px;">لا توجد مقالات</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script>
+    const supabase = window.GhonemySupabase.createClient();
+    const listEl = document.getElementById('list');
+    const errorEl = document.getElementById('error');
+    const emptyEl = document.getElementById('empty');
+    const countEl = document.getElementById('count');
+    const searchEl = document.getElementById('search');
+    const statusEl = document.getElementById('status-filter');
+
+    if (!supabase) {
+      errorEl.textContent = 'Supabase غير مهيأ. راجع SUPABASE_SETUP.md';
+      errorEl.style.display = 'block';
+    }
+
+    async function requireAdmin() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { location.href = 'login.html'; return null; }
+      const { data: admin } = await supabase.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+      if (!admin) { await supabase.auth.signOut(); location.href = 'login.html'; return null; }
+      return session;
+    }
+
+    let allArticles = [];
+
+    async function load() {
+      await requireAdmin();
+      const { data, error } = await supabase.from('articles').select('*').order('updated_at', { ascending: false });
+      if (error) { errorEl.textContent = error.message; errorEl.style.display='block'; return; }
+      allArticles = data || [];
+      render();
+    }
+
+    function render() {
+      const q = searchEl.value.trim().toLowerCase();
+      const status = statusEl.value;
+      let filtered = allArticles;
+      if (status !== 'all') filtered = filtered.filter(a => a.status === status);
+      if (q) filtered = filtered.filter(a => (a.title||'').toLowerCase().includes(q) || (a.slug||'').toLowerCase().includes(q));
+      countEl.textContent = `${filtered.length} مقال`;
+      listEl.innerHTML = '';
+      if (filtered.length === 0) { emptyEl.style.display='block'; return; }
+      emptyEl.style.display='none';
+      filtered.forEach(a => {
+        const div = document.createElement('div');
+        div.className = 'admin-item';
+        div.innerHTML = `
+          <div style="flex:1; min-width:0;">
+            <div style="display:flex; gap:8px; align-items:center; margin-bottom:4px;">
+              <span class="status ${a.status}">${a.status}</span>
+              <span class="meta">${a.category||''} • ${a.published_at ? new Date(a.published_at).toLocaleDateString('ar-EG') : '—'}</span>
+            </div>
+            <h3 style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(a.title)}</h3>
+            <p style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">/${a.slug}</p>
+          </div>
+          <div class="actions">
+            <a href="editor.html?id=${a.id}" class="btn-outline">تعديل</a>
+            ${a.status !== 'published' ? `<button data-act="publish" data-id="${a.id}" class="btn-gold">نشر</button>` : `<button data-act="unpublish" data-id="${a.id}" class="btn-outline">إلغاء نشر</button>`}
+            <button data-act="archive" data-id="${a.id}" class="btn-outline">أرشفة</button>
+            <a href="${getPreviewUrl(a)}" target="_blank" class="btn-outline">معاينة</a>
+          </div>
+        `;
+        listEl.appendChild(div);
+      });
+      listEl.querySelectorAll('button[data-act]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const act = btn.dataset.act;
+          const id = btn.dataset.id;
+          btn.disabled = true;
+          try {
+            if (act === 'publish') {
+              const { error } = await supabase.from('articles').update({ status:'published', published_at: new Date().toISOString() }).eq('id', id);
+              if (error) throw error;
+            } else if (act === 'unpublish') {
+              const { error } = await supabase.from('articles').update({ status:'draft' }).eq('id', id);
+              if (error) throw error;
+            } else if (act === 'archive') {
+              if (!confirm('أرشفة المقال؟ لن يظهر للعامة.')) return;
+              const { error } = await supabase.from('articles').update({ status:'archived' }).eq('id', id);
+              if (error) throw error;
+            }
+            await load();
+          } catch(e) { errorEl.textContent = e.message; errorEl.style.display='block'; }
+          finally { btn.disabled = false; }
+        });
+      });
+    }
+
+    function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    function getPreviewUrl(a){
+      // preview is admin-only, use editor preview param
+      return `editor.html?id=${a.id}&preview=1`;
+    }
+
+    searchEl.addEventListener('input', render);
+    statusEl.addEventListener('change', render);
+    document.getElementById('logout').addEventListener('click', async ()=>{ await supabase.auth.signOut(); location.href='login.html'; });
+
+    supabase && supabase.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
+
+    load();
+  </script>
+</body>
+</html>

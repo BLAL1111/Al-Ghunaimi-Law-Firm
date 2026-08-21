@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>المقالات والتحليلات القانونية | مؤسسة الغنيمي للمحاماة</title>
-  <link rel="canonical" href="https://al-ghoneimy-law-team.vercel.app/articles">
-  <link rel="alternate" hreflang="ar" href="https://al-ghoneimy-law-team.vercel.app/articles" />
-  <link rel="alternate" hreflang="x-default" href="https://al-ghoneimy-law-team.vercel.app/articles" />
-  <link rel="alternate" hreflang="en" href="https://al-ghoneimy-law-team.vercel.app/articles" />
-  <link rel="alternate" hreflang="fr" href="https://al-ghoneimy-law-team.vercel.app/articles" />
+  <link rel="canonical" href="https://al-ghunaimi-law-firm.vercel.app/articles">
+  <link rel="alternate" hreflang="ar" href="https://al-ghunaimi-law-firm.vercel.app/articles" />
+  <link rel="alternate" hreflang="x-default" href="https://al-ghunaimi-law-firm.vercel.app/articles" />
+  <link rel="alternate" hreflang="en" href="https://al-ghunaimi-law-firm.vercel.app/articles" />
+  <link rel="alternate" hreflang="fr" href="https://al-ghunaimi-law-firm.vercel.app/articles" />
 
   <meta name="description" content="اقرأ أحدث المقالات والتحليلات القانونية من مستشاري مؤسسة الغنيمي للمحاماة. أدلة توثيق العقود، تأسيس الشركات، الطعن بالنقض، وقانون العمل المصري.">
   <meta name="keywords" content="مقالات قانونية, ثقافة قانونية, تأسيس شركات مصر, طعن بالنقض جنائي, توثيق عقود أكتوبر, قانون العمل المصري">
@@ -16,11 +16,11 @@
   <!-- Open Graph -->
   <meta property="og:title" content="المقالات والتحليلات القانونية | مؤسسة الغنيمي للمحاماة">
   <meta property="og:description" content="أدلة وشروحات مبسطة لكافة الإجراءات القانونية المتعلقة بالعقارات، الشركات، والجنايات.">
-  <meta property="og:image" content="https://al-ghoneimy-law-team.vercel.app/img/logo.png">
+  <meta property="og:image" content="https://al-ghunaimi-law-firm.vercel.app/img/logo.png">
   <meta property="og:image:width" content="491" />
   <meta property="og:image:height" content="508" />
   <meta property="og:image:type" content="image/png" />
-  <meta property="og:url" content="https://al-ghoneimy-law-team.vercel.app/articles">
+  <meta property="og:url" content="https://al-ghunaimi-law-firm.vercel.app/articles">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_AR" />
   <meta property="og:locale:alternate" content="en_US" />
@@ -29,7 +29,7 @@
   <!-- Favicon -->
   <meta name="twitter:title" content="المقالات والتحليلات القانونية | مؤسسة الغنيمي للمحاماة" />
   <meta name="twitter:description" content="أدلة وشروحات مبسطة لكافة الإجراءات القانونية المتعلقة بالعقارات، الشركات، والجنايات." />
-  <meta name="twitter:image" content="https://al-ghoneimy-law-team.vercel.app/img/logo.png" />
+  <meta name="twitter:image" content="https://al-ghunaimi-law-firm.vercel.app/img/logo.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" type="image/png" href="img/logo.png">
 
@@ -52,7 +52,7 @@
       "name": "مؤسسة الغنيمي للمحاماة والاستشارات القانونية",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://al-ghoneimy-law-team.vercel.app/img/logo.png"
+        "url": "https://al-ghunaimi-law-firm.vercel.app/img/logo.png"
       }
     }
   }
@@ -281,90 +281,118 @@
   <!-- Scripts -->
     </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="translations.js"></script>
   <script src="search.js"></script>
   <script src="components.js"></script>
   <script src="script.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      // Articles deterministic search logic
+    document.addEventListener('DOMContentLoaded', async () => {
+      const supabase = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
+      const grid = document.getElementById('articles-grid');
       const searchInput = document.getElementById('articles-search');
       const filterBtns = document.querySelectorAll('.filter-tag');
-      const articles = document.querySelectorAll('.articles-grid .article-card');
       const emptyState = document.getElementById('articles-empty-state');
       const resultsInfo = document.getElementById('search-results-info');
       const countText = document.getElementById('search-count-text');
 
-      const articlesData = [
-        { id: 1, slug: 'real-estate-contracts-6th-october', title: 'دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات', category: 'real-estate', date: '2026/06/15', excerpt: 'دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.', tags: ['عقار', 'توثيق', 'عقود', '6 أكتوبر', 'استثمار'], keywords: ['توثيق عقود عقارية', 'الشهر العقاري', 'عقود التطوير العقاري', 'قانون عقاري 6 أكتوبر', 'استثمار عقاري'] },
-        { id: 2, slug: 'company-formation-egypt-2026', title: 'تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة', category: 'corporate', date: '2026/07/02', excerpt: 'خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.', tags: ['شركات', 'تأسيس', 'استثمار', 'قانون تجاري'], keywords: ['خطوات تأسيس الشركات في مصر', 'قانون الاستثمار 2026', 'الأوراق المطلوبة', 'الهيكلة القانونية'] },
-        { id: 3, slug: 'criminal-appeal-cassation', title: 'الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات', category: 'criminal', date: '2026/07/18', excerpt: 'شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.', tags: ['جنائي', 'نقض', 'طعن', 'محكمة النقض'], keywords: ['شروط الطعن بالنقض في القضايا الجنائية', 'محكمة النقض المصرية', 'الميعاد القانوني', 'أسباب الطعن'] },
-        { id: 4, slug: 'labor-law-employee-rights', title: 'منازعات قانون العمل المصري 2026: دليل شامل لحقوق العامل وصاحب العمل', category: 'labor', date: '2026/07/28', excerpt: 'دليل شامل لحقوق العامل وصاحب العمل في قانون العمل المصري. يشمل حالات الفصل التعسفي، المستحقات العمالية، وحل النزاعات الودية والقضائية.', tags: ['عمل', 'عمال', 'حقوق', 'الفصل التعسفي'], keywords: ['حقوق العامل', 'صاحب العمل', 'قانون العمل المصري', 'الفصل التعسفي', 'المستحقات العمالية', 'عقد العمل'] },
-        { id: 5, slug: 'family-law-custody-alimony', title: 'النفقة والحضانة والرؤية في قانون الأسرة المصري: أهم الأسئلة الشائعة', category: 'family', date: '2026/08/05', excerpt: 'شرح متكامل لأحكام النفقة والحضانة وحق الرؤية في محاكم الأسرة المصرية. شروط الاستحقاق، حساب النفقة، وتعديل المبالغ بقرارات المحكمة.', tags: ['أسرة', 'طلاق', 'نفقة', 'حضانة', 'رؤية'], keywords: ['النفقة', 'الحضانة', 'الرؤية', 'قانون الأسرة المصري', 'دعاوى محكمة الأسرة', 'إقامة الزوجة'] },
-        { id: 6, slug: 'commercial-contracts-drafting', title: 'صياغة العقود التجارية: 7 أخطاء قانونية قاتلة تجنب الوقوع فيها', category: 'contracts', date: '2026/08/11', excerpt: 'أهم الأخطاء الشائعة في صياغة العقود التجارية والمدنية. كيفية حماية حقوقك من الغموض التعاقدي، صياغة الشروط الجزائية، وبنود فض النزاعات.', tags: ['عقود', 'صياغة', 'تجاري', 'شروط جزائية'], keywords: ['صياغة العقود التجارية', 'أخطاء قانونية', 'شروط جزائية', 'الغموض التعاقدي', 'التحكيم'] }
-      ];
-
+      let articlesData = [];
       let currentCategory = 'all';
+
+      // Try Supabase first, fallback to static
+      async function fetchArticles() {
+        if (supabase) {
+          try {
+            const { data, error } = await supabase.from('articles').select('id,slug,title,excerpt,category,published_at,tags,cover_image_url').eq('status','published').order('published_at', { ascending: false });
+            if (!error && data && data.length) {
+              // map to expected shape
+              return data.map(a => ({
+                id: a.id,
+                slug: a.slug,
+                title: a.title,
+                category: a.category || 'general',
+                date: a.published_at ? new Date(a.published_at).toISOString().slice(0,10).replace(/-/g,'/') : '',
+                excerpt: a.excerpt || '',
+                tags: a.tags || [],
+                keywords: (a.tags||[]).concat(a.category||''),
+                cover: a.cover_image_url
+              }));
+            }
+          } catch(e) { console.warn('Supabase fetch failed, fallback to static', e); }
+        }
+        // Fallback static 6
+        return [
+          { id: 1, slug: 'real-estate-contracts-6th-october', title: 'دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات', category: 'real-estate', date: '2026/06/15', excerpt: 'دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.', tags: ['عقار', 'توثيق', 'عقود', '6 أكتوبر', 'استثمار'], keywords: ['توثيق عقود عقارية', 'الشهر العقاري', 'عقود التطوير العقاري', 'قانون عقاري 6 أكتوبر', 'استثمار عقاري'] },
+          { id: 2, slug: 'company-formation-egypt-2026', title: 'تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة', category: 'corporate', date: '2026/07/02', excerpt: 'خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.', tags: ['شركات', 'تأسيس', 'استثمار', 'قانون تجاري'], keywords: ['خطوات تأسيس الشركات في مصر', 'قانون الاستثمار 2026', 'الأوراق المطلوبة', 'الهيكلة القانونية'] },
+          { id: 3, slug: 'criminal-appeal-cassation', title: 'الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات', category: 'criminal', date: '2026/07/18', excerpt: 'شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.', tags: ['جنائي', 'نقض', 'طعن', 'محكمة النقض'], keywords: ['شروط الطعن بالنقض في القضايا الجنائية', 'محكمة النقض المصرية', 'الميعاد القانوني', 'أسباب الطعن'] },
+          { id: 4, slug: 'labor-law-employee-rights', title: 'منازعات قانون العمل المصري 2026: دليل شامل لحقوق العامل وصاحب العمل', category: 'labor', date: '2026/07/28', excerpt: 'دليل شامل لحقوق العامل وصاحب العمل في قانون العمل المصري. يشمل حالات الفصل التعسفي، المستحقات العمالية، وحل النزاعات الودية والقضائية.', tags: ['عمل', 'عمال', 'حقوق', 'الفصل التعسفي'], keywords: ['حقوق العامل', 'صاحب العمل', 'قانون العمل المصري', 'الفصل التعسفي', 'المستحقات العمالية', 'عقد العمل'] },
+          { id: 5, slug: 'family-law-custody-alimony', title: 'النفقة والحضانة والرؤية في قانون الأسرة المصري: أهم الأسئلة الشائعة', category: 'family', date: '2026/08/05', excerpt: 'شرح متكامل لأحكام النفقة والحضانة وحق الرؤية في محاكم الأسرة المصرية. شروط الاستحقاق، حساب النفقة، وتعديل المبالغ بقرارات المحكمة.', tags: ['أسرة', 'طلاق', 'نفقة', 'حضانة', 'رؤية'], keywords: ['النفقة', 'الحضانة', 'الرؤية', 'قانون الأسرة المصري', 'دعاوى محكمة الأسرة', 'إقامة الزوجة'] },
+          { id: 6, slug: 'commercial-contracts-drafting', title: 'صياغة العقود التجارية: 7 أخطاء قانونية قاتلة تجنب الوقوع فيها', category: 'contracts', date: '2026/08/11', excerpt: 'أهم الأخطاء الشائعة في صياغة العقود التجارية والمدنية. كيفية حماية حقوقك من الغموض التعاقدي، صياغة الشروط الجزائية، وبنود فض النزاعات.', tags: ['عقود', 'صياغة', 'تجاري', 'شروط جزائية'], keywords: ['صياغة العقود التجارية', 'أخطاء قانونية', 'شروط جزائية', 'الغموض التعاقدي', 'التحكيم'] }
+        ];
+      }
+
+      function renderGrid(data) {
+        grid.innerHTML = '';
+        data.forEach(a => {
+          const catLabel = { 'real-estate':'القانون العقاري', 'corporate':'قانون الشركات', 'criminal':'الدفوع الجنائية', 'labor':'قانون العمل', 'family':'الأحوال الشخصية', 'contracts':'العقود التجارية' }[a.category] || a.category;
+          const accent = a.category;
+          const card = document.createElement('div');
+          card.className = 'article-card';
+          card.setAttribute('data-category', a.category);
+          card.setAttribute('data-keywords', (a.keywords||a.tags||[]).join(' '));
+          card.innerHTML = `
+            <div class="article-card-accent" data-accent="${accent}"></div>
+            <div class="article-body">
+              <div class="article-meta">
+                <span class="article-cat" data-cat="${a.category}"><i class="fas fa-tag"></i> ${catLabel}</span>
+                <div class="article-meta-right">
+                  <span class="article-read-time"><i class="fas fa-clock"></i> 8 دقائق</span>
+                  <span class="article-date">${a.date}</span>
+                </div>
+              </div>
+              <h3 class="article-title">${a.title}</h3>
+              <p class="article-desc">${a.excerpt}</p>
+              <div class="article-footer">
+                <div class="article-tags">${(a.tags||[]).slice(0,3).map(t=>`<span class="article-tag-item">${t}</span>`).join('')}</div>
+                <a href="articles/${a.slug}" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              </div>
+            </div>`;
+          // fix href for clean URL vs html
+          const isLocal = location.protocol === 'file:';
+          const link = card.querySelector('a');
+          link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
+          grid.appendChild(card);
+        });
+      }
+
+      articlesData = await fetchArticles();
+      renderGrid(articlesData);
 
       function performSearch() {
         const query = searchInput.value.trim();
-        let filteredArticles = articlesData;
-
-        // Apply category filter first
-        if (currentCategory !== 'all') {
-          filteredArticles = articlesData.filter(a => a.category === currentCategory);
-        }
-
-        // Apply search query using searchArticles
-        let results = filteredArticles;
-        if (query && window.GhonemySearch) {
-          results = window.GhonemySearch.searchArticles(filteredArticles, query);
-        }
-
-        const resultSlugs = new Set(results.map(r => r.slug));
-        let visibleCount = 0;
-
-        articles.forEach(card => {
-          const cardCategory = card.getAttribute('data-category');
-          const link = card.querySelector('a').getAttribute('href');
-          const slug = link.split('/').pop().replace('.html', '');
-
-          const isFilterMatch = (currentCategory === 'all' || cardCategory === currentCategory);
-          const isSearchMatch = !query || resultSlugs.has(slug);
-
-          if (isFilterMatch && isSearchMatch) {
-            card.style.display = 'flex';
-            visibleCount++;
-          } else {
-            card.style.display = 'none';
-          }
+        let filtered = articlesData;
+        if (currentCategory !== 'all') filtered = articlesData.filter(a => a.category === currentCategory);
+        let results = filtered;
+        if (query && window.GhonemySearch) results = window.GhonemySearch.searchArticles(filtered, query);
+        const slugs = new Set(results.map(r=>r.slug));
+        let visible = 0;
+        grid.querySelectorAll('.article-card').forEach(card => {
+          const cat = card.getAttribute('data-category');
+          const slug = card.querySelector('a').getAttribute('href').split('/').pop().replace('.html','');
+          const okCat = currentCategory==='all' || cat===currentCategory;
+          const okSearch = !query || slugs.has(slug);
+          if (okCat && okSearch) { card.style.display='flex'; visible++; } else card.style.display='none';
         });
-
-        // Toggle empty state
-        if (visibleCount === 0) {
-          emptyState.style.display = 'block';
-        } else {
-          emptyState.style.display = 'none';
-        }
-
-        // Search count info block
-        if (query) {
-          resultsInfo.style.display = 'block';
-          countText.textContent = `تم العثور على ${visibleCount} مقال يطابق بحثك عن "${query}"`;
-        } else {
-          resultsInfo.style.display = 'none';
-        }
+        emptyState.style.display = visible===0 ? 'block' : 'none';
+        if (query) { resultsInfo.style.display='block'; countText.textContent = `تم العثور على ${visible} مقال يطابق بحثك عن "${query}"`; } else resultsInfo.style.display='none';
       }
 
-      // Event listener for search input
-      if (searchInput) {
-        searchInput.addEventListener('input', performSearch);
-      }
-
-      // Event listeners for category tags
-      filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          filterBtns.forEach(b => b.classList.remove('active'));
+      searchInput && searchInput.addEventListener('input', performSearch);
+      filterBtns.forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          filterBtns.forEach(b=>b.classList.remove('active'));
           btn.classList.add('active');
           currentCategory = btn.getAttribute('data-category');
           performSearch();

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>محرر المقال | مؤسسة الغنيمي</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    .admin-wrap { max-width:900px; margin:0 auto; padding:100px 16px 40px; }
+    .admin-wrap h1 { font-size:1.4rem; font-weight:900; margin-bottom:16px; }
+    .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    @media(max-width:700px){ .form-grid{grid-template-columns:1fr;} }
+    .form-group { display:flex; flex-direction:column; gap:6px; }
+    .form-group label { font-size:0.85rem; font-weight:700; }
+    .form-control, .form-select { background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-primary); padding:10px 12px; border-radius:8px; font-family:inherit; }
+    .form-control:focus { outline:none; border-color:var(--accent-gold); }
+    .actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:16px; }
+    .preview-box { margin-top:20px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:12px; padding:20px; }
+    .error { display:none; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); color:#f87171; padding:10px; border-radius:8px; margin-bottom:12px; }
+    .success { display:none; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); color:#4ade80; padding:10px; border-radius:8px; margin-bottom:12px; }
+  </style>
+</head>
+<body>
+  <div class="admin-wrap">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <h1 id="form-title">مقال جديد</h1>
+      <div style="display:flex; gap:8px;">
+        <a href="articles.html" class="btn-outline">رجوع</a>
+        <button id="logout" class="btn-outline">خروج</button>
+      </div>
+    </div>
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+
+    <form id="editor-form" novalidate>
+      <div class="form-grid">
+        <div class="form-group" style="grid-column:1/-1;">
+          <label for="title">العنوان *</label>
+          <input id="title" class="form-control" required placeholder="عنوان المقال">
+        </div>
+        <div class="form-group">
+          <label for="slug">Slug * <small style="color:var(--text-muted)">(a-z0-9-)</small></label>
+          <input id="slug" class="form-control" required placeholder="my-article-slug" dir="ltr">
+          <small id="slug-help" style="font-size:0.75rem; color:var(--text-muted);"></small>
+        </div>
+        <div class="form-group">
+          <label for="category">التصنيف</label>
+          <select id="category" class="form-select">
+            <option value="">— اختر —</option>
+            <option value="real-estate">القانون العقاري</option>
+            <option value="corporate">قانون الشركات</option>
+            <option value="criminal">الدفوع الجنائية</option>
+            <option value="labor">قانون العمل</option>
+            <option value="family">الأحوال الشخصية</option>
+            <option value="contracts">العقود التجارية</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="tags">وسوم (مفصولة بفاصلة)</label>
+          <input id="tags" class="form-control" placeholder="عقار, توثيق, استثمار">
+        </div>
+        <div class="form-group">
+          <label for="author">المؤلف</label>
+          <input id="author" class="form-control" value="مؤسسة الغنيمي للمحاماة">
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label for="excerpt">الملخص (excerpt)</label>
+          <textarea id="excerpt" class="form-control" rows="2" placeholder="ملخص قصير للبطاقة"></textarea>
+        </div>
+        <div class="form-group" style="grid-column:1/-1;">
+          <label for="content">المحتوى (HTML آمن) *</label>
+          <textarea id="content" class="form-control" rows="12" placeholder="<p>...</p>"></textarea>
+          <small style="font-size:0.75rem; color:var(--text-muted);">يدعم headings, paragraphs, lists, links, blockquotes, bold/italic. سيتم تنظيف script/iframe.</small>
+        </div>
+        <div class="form-group">
+          <label for="cover">صورة الغلاف (اختياري)</label>
+          <input id="cover" type="file" accept="image/*" class="form-control">
+          <input id="cover_url" type="hidden">
+          <small id="cover-help" style="font-size:0.75rem; color:var(--text-muted);"></small>
+          <div id="cover-preview" style="margin-top:8px; display:none;"><img id="cover-img" src="" alt="" style="max-width:100%; max-height:180px; border-radius:8px; border:1px solid var(--border-color);"></div>
+        </div>
+        <div class="form-group">
+          <label for="cover_alt">alt للصورة</label>
+          <input id="cover_alt" class="form-control" placeholder="وصف الصورة">
+        </div>
+        <div class="form-group">
+          <label for="seo_title">SEO title</label>
+          <input id="seo_title" class="form-control" placeholder="إن ترك فارغًا سيُستخدم العنوان">
+        </div>
+        <div class="form-group">
+          <label for="seo_desc">SEO description</label>
+          <input id="seo_desc" class="form-control" placeholder="إن ترك فارغًا سيُستخدم الملخص">
+        </div>
+        <div class="form-group">
+          <label for="related">خدمة مرتبطة (slug)</label>
+          <select id="related" class="form-select">
+            <option value="">— لا يوجد —</option>
+            <option value="real-estate">القضايا العقارية</option>
+            <option value="corporate">الشركات</option>
+            <option value="criminal">الجنائية</option>
+            <option value="family">الأسرة</option>
+            <option value="contracts">العقود</option>
+            <option value="inheritance">الميراث</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="published_at">تاريخ النشر</label>
+          <input id="published_at" type="datetime-local" class="form-control">
+        </div>
+      </div>
+
+      <div class="actions">
+        <button type="button" id="save-draft" class="btn-outline">حفظ مسودة</button>
+        <button type="button" id="preview" class="btn-outline">معاينة</button>
+        <button type="button" id="publish" class="btn-gold">نشر</button>
+        <button type="button" id="archive" class="btn-outline" style="display:none; border-color:#f87171; color:#f87171;">أرشفة</button>
+      </div>
+    </form>
+
+    <div id="preview-box" class="preview-box" style="display:none;">
+      <h3 style="margin:0 0 10px;">معاينة</h3>
+      <div id="preview-content"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script>
+    const supabase = window.GhonemySupabase.createClient();
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const isPreview = params.get('preview') === '1';
+    const errorEl = document.getElementById('error');
+    const successEl = document.getElementById('success');
+
+    function showError(m){ errorEl.textContent=m; errorEl.style.display='block'; successEl.style.display='none'; }
+    function showSuccess(m){ successEl.textContent=m; successEl.style.display='block'; errorEl.style.display='none'; }
+    function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9\u0600-\u06FF]+/g,'-').replace(/^-+|-+$/g,'').replace(/-+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/^[^a-z0-9]+/,'') || 'article-' + Date.now(); }
+
+    async function requireAdmin(){
+      if(!supabase){ showError('Supabase غير مهيأ'); return null; }
+      const { data:{session}} = await supabase.auth.getSession();
+      if(!session){ location.href='login.html'; return null; }
+      const { data:admin } = await supabase.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+      if(!admin){ await supabase.auth.signOut(); location.href='login.html'; return null; }
+      return session;
+    }
+
+    let originalSlug = null;
+    let currentStatus = 'draft';
+
+    async function load(){
+      await requireAdmin();
+      if(!id) {
+        document.getElementById('form-title').textContent = 'مقال جديد';
+        return;
+      }
+      document.getElementById('form-title').textContent = 'تعديل مقال';
+      document.getElementById('archive').style.display = 'inline-flex';
+      const { data, error } = await supabase.from('articles').select('*').eq('id', id).single();
+      if(error) return showError(error.message);
+      originalSlug = data.slug;
+      currentStatus = data.status;
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('slug').value = data.slug || '';
+      document.getElementById('category').value = data.category || '';
+      document.getElementById('tags').value = (data.tags||[]).join(', ');
+      document.getElementById('author').value = data.author_name || '';
+      document.getElementById('excerpt').value = data.excerpt || '';
+      document.getElementById('content').value = data.content_html || '';
+      document.getElementById('cover_alt').value = data.cover_image_alt || '';
+      document.getElementById('cover_url').value = data.cover_image_url || '';
+      if(data.cover_image_url){ document.getElementById('cover-img').src=data.cover_image_url; document.getElementById('cover-preview').style.display='block'; }
+      document.getElementById('seo_title').value = data.seo_title || '';
+      document.getElementById('seo_desc').value = data.seo_description || '';
+      document.getElementById('related').value = data.related_service_slug || '';
+      if(data.published_at) document.getElementById('published_at').value = new Date(data.published_at).toISOString().slice(0,16);
+      if(isPreview) doPreview();
+    }
+
+    document.getElementById('title').addEventListener('input', (e)=>{
+      const slugEl = document.getElementById('slug');
+      if(!slugEl.value || slugEl.dataset.auto!=='0'){
+        slugEl.value = slugify(e.target.value);
+        slugEl.dataset.auto='1';
+      }
+    });
+    document.getElementById('slug').addEventListener('input', e=> e.target.dataset.auto='0');
+
+    // Image upload
+    document.getElementById('cover').addEventListener('change', async (e)=>{
+      const file = e.target.files[0];
+      if(!file) return;
+      if(file.size > 3*1024*1024) return showError('الصورة كبيرة (max 3MB)');
+      if(!file.type.startsWith('image/')) return showError('ملف الصورة فقط');
+      const help = document.getElementById('cover-help');
+      help.textContent = 'جاري الرفع...';
+      try{
+        const ext = file.name.split('.').pop().toLowerCase();
+        const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+        const { error } = await supabase.storage.from('article-images').upload(path, file, { cacheControl: '3600', upsert:false });
+        if(error) throw error;
+        const { data } = supabase.storage.from('article-images').getPublicUrl(path);
+        document.getElementById('cover_url').value = data.publicUrl;
+        document.getElementById('cover-img').src = data.publicUrl;
+        document.getElementById('cover-preview').style.display='block';
+        help.textContent = 'تم الرفع';
+      }catch(err){ showError(err.message); help.textContent=''; }
+    });
+
+    function collectPayload(status){
+      const title = document.getElementById('title').value.trim();
+      const slug = document.getElementById('slug').value.trim().toLowerCase();
+      const content = document.getElementById('content').value.trim();
+      if(!title || !slug || !content) throw new Error('العنوان و slug والمحتوى مطلوبة');
+      if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error('Slug يجب أن يكون a-z0-9- فقط');
+      const tags = document.getElementById('tags').value.split(',').map(s=>s.trim()).filter(Boolean);
+      const payload = {
+        slug,
+        title,
+        excerpt: document.getElementById('excerpt').value.trim() || null,
+        content_html: DOMPurify.sanitize(content, { ALLOWED_TAGS: ['p','h2','h3','h4','strong','em','a','ul','ol','li','blockquote','img'], ALLOWED_ATTR: ['href','src','alt','title','target','rel'] }),
+        category: document.getElementById('category').value || null,
+        tags,
+        cover_image_url: document.getElementById('cover_url').value || null,
+        cover_image_alt: document.getElementById('cover_alt').value.trim() || null,
+        author_name: document.getElementById('author').value.trim() || 'مؤسسة الغنيمي للمحاماة',
+        seo_title: document.getElementById('seo_title').value.trim() || null,
+        seo_description: document.getElementById('seo_desc').value.trim() || null,
+        related_service_slug: document.getElementById('related').value || null,
+        status,
+      };
+      const pub = document.getElementById('published_at').value;
+      if(status==='published'){
+        payload.published_at = pub ? new Date(pub).toISOString() : new Date().toISOString();
+      } else if(pub){
+        payload.published_at = new Date(pub).toISOString();
+      }
+      return payload;
+    }
+
+    async function save(status){
+      showError(''); showSuccess('');
+      let payload;
+      try{ payload = collectPayload(status); }catch(e){ return showError(e.message); }
+      const btnId = status==='published' ? 'publish' : 'save-draft';
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      const origText = btn.textContent;
+      btn.textContent = 'جاري الحفظ...';
+      try{
+        let result;
+        if(id){
+          // handle slug change -> create redirect
+          if(originalSlug && originalSlug !== payload.slug){
+            // check if new slug exists
+            const { data: exists } = await supabase.from('articles').select('id').eq('slug', payload.slug).neq('id', id).maybeSingle();
+            if(exists) throw new Error('Slug موجود لمقال آخر');
+            // create redirect for old
+            await supabase.from('article_redirects').insert({ old_slug: originalSlug, article_id: id });
+          }
+          const { error } = await supabase.from('articles').update(payload).eq('id', id);
+          if(error) throw error;
+          result = id;
+        } else {
+          const { data, error } = await supabase.from('articles').insert(payload).select('id').single();
+          if(error) throw error;
+          result = data.id;
+        }
+        showSuccess(status==='published' ? 'تم النشر' : 'تم حفظ المسودة');
+        if(!id && result){
+          setTimeout(()=> location.href = `editor.html?id=${result}`, 800);
+        } else {
+          originalSlug = payload.slug;
+        }
+      }catch(e){ showError(e.message); }
+      finally{ btn.disabled=false; btn.textContent=origText; }
+    }
+
+    function doPreview(){
+      const content = document.getElementById('content').value;
+      const title = document.getElementById('title').value;
+      const box = document.getElementById('preview-box');
+      const inner = document.getElementById('preview-content');
+      inner.innerHTML = `<h2>${title}</h2><div>${DOMPurify.sanitize(content)}</div>`;
+      box.style.display='block';
+      box.scrollIntoView({ behavior:'smooth' });
+    }
+
+    document.getElementById('save-draft').addEventListener('click', ()=>save('draft'));
+    document.getElementById('publish').addEventListener('click', ()=>save('published'));
+    document.getElementById('archive').addEventListener('click', async ()=>{
+      if(!id) return showError('احفظ المقال أولاً');
+      if(!confirm('أرشفة المقال؟')) return;
+      const { error } = await supabase.from('articles').update({ status:'archived' }).eq('id', id);
+      if(error) return showError(error.message);
+      showSuccess('تمت الأرشفة'); setTimeout(()=> location.href='articles.html', 800);
+    });
+    document.getElementById('preview').addEventListener('click', doPreview);
+
+    // unsaved warning
+    let dirty = false;
+    document.getElementById('editor-form').addEventListener('input', ()=> dirty=true);
+    window.addEventListener('beforeunload', (e)=>{
+      if(dirty){ e.preventDefault(); e.returnValue=''; }
+    });
+
+    document.getElementById('logout').addEventListener('click', async ()=>{ await supabase.auth.signOut(); location.href='login.html'; });
+
+    load();
+  </script>
+</body>
+</html>

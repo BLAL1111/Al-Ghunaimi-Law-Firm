@@ -2,7 +2,17 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
-    { "source": "/team", "destination": "/about", "permanent": true }
+    { "source": "/team", "destination": "/about", "permanent": true },
+    { "source": "/articles/real-estate-contracts-6th-october.html", "destination": "/articles/real-estate-contracts-6th-october", "permanent": true },
+    { "source": "/articles/company-formation-egypt-2026.html", "destination": "/articles/company-formation-egypt-2026", "permanent": true },
+    { "source": "/articles/criminal-appeal-cassation.html", "destination": "/articles/criminal-appeal-cassation", "permanent": true },
+    { "source": "/articles/family-law-custody-alimony.html", "destination": "/articles/family-law-custody-alimony", "permanent": true },
+    { "source": "/articles/labor-law-employee-rights.html", "destination": "/articles/labor-law-employee-rights", "permanent": true },
+    { "source": "/articles/commercial-contracts-drafting.html", "destination": "/articles/commercial-contracts-drafting", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/articles/:slug", "destination": "/articles/view.html" },
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "headers": [
     {
@@ -30,6 +40,12 @@
       "source": "/(.*\\.js)",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    },
+    {
+      "source": "/admin/(.*)",
+      "headers": [
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
       ]
     }
   ]

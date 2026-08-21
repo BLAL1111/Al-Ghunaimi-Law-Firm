@@ -4,11 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
   <title>مؤسسة الغنيمي للمحاماة والاستشارات القانونية | محامي 6 أكتوبر والجيزة</title>
-  <link rel="canonical" href="https://al-ghoneimy-law-team.vercel.app/">
-  <link rel="alternate" hreflang="ar" href="https://al-ghoneimy-law-team.vercel.app/" />
-  <link rel="alternate" hreflang="x-default" href="https://al-ghoneimy-law-team.vercel.app/" />
-  <link rel="alternate" hreflang="en" href="https://al-ghoneimy-law-team.vercel.app/" />
-  <link rel="alternate" hreflang="fr" href="https://al-ghoneimy-law-team.vercel.app/" />
+  <link rel="canonical" href="https://al-ghunaimi-law-firm.vercel.app/">
+  <link rel="alternate" hreflang="ar" href="https://al-ghunaimi-law-firm.vercel.app/" />
+  <link rel="alternate" hreflang="x-default" href="https://al-ghunaimi-law-firm.vercel.app/" />
+  <link rel="alternate" hreflang="en" href="https://al-ghunaimi-law-firm.vercel.app/" />
+  <link rel="alternate" hreflang="fr" href="https://al-ghunaimi-law-firm.vercel.app/" />
 
   <meta name="description" content="مؤسسة الغنيمي للمحاماة والاستشارات القانونية – تمثيل قانوني متخصص واستشارات قانونية متكاملة في 6 أكتوبر والشيخ زايد والجيزة والقاهرة وعن بُعد. اتصل الآن: 01003651199">
   <meta name="keywords" content="مكتب محاماة 6 أكتوبر, محامي 6 أكتوبر, محامي الشيخ زايد, استشارات قانونية, قضايا جنائية, قضايا الأسرة, الميراث والتركات, القضايا العقارية, صياغة العقود, تأسيس الشركات">
@@ -17,18 +17,18 @@
   <!-- Open Graph / Social -->
   <meta property="og:title" content="مؤسسة الغنيمي للمحاماة والاستشارات القانونية | 6 أكتوبر والجيزة">
   <meta property="og:description" content="تمثيل قانوني أمام جميع المحاكم والمحاكم العليا والاستئناف والنقض. استشارات قانونية متخصصة ومتابعة دقيقة للملفات.">
-  <meta property="og:image" content="https://al-ghoneimy-law-team.vercel.app/img/logo.png">
+  <meta property="og:image" content="https://al-ghunaimi-law-firm.vercel.app/img/logo.png">
   <meta property="og:image:width" content="491" />
   <meta property="og:image:height" content="508" />
   <meta property="og:image:type" content="image/png" />
-  <meta property="og:url" content="https://al-ghoneimy-law-team.vercel.app/">
+  <meta property="og:url" content="https://al-ghunaimi-law-firm.vercel.app/">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_AR">
   <meta property="og:site_name" content="Al Ghonemy Law | مؤسسة الغنيمي للمحاماة">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="مؤسسة الغنيمي للمحاماة والاستشارات القانونية">
   <meta name="twitter:description" content="تمثيل قانوني متخصص واستشارات قانونية حاسمة في 6 أكتوبر والجيزة">
-  <meta name="twitter:image" content="https://al-ghoneimy-law-team.vercel.app/img/logo.png">
+  <meta name="twitter:image" content="https://al-ghunaimi-law-firm.vercel.app/img/logo.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="img/logo.png">
@@ -49,7 +49,7 @@
     "name": "مؤسسة الغنيمي للمحاماة والاستشارات القانونية",
     "alternateName": ["Al Ghonemy Law Firm", "مؤسسة الغنيمي", "مكتب الغنيمي للمحاماة"],
     "description": "تمثيل قانوني رفيع المستوى أمام المحاكم العليا والاستئناف والنقض واستشارات قانونية متخصصة في 6 أكتوبر والشيخ زايد والجيزة والقاهرة وعن بُعد.",
-    "url": "https://al-ghoneimy-law-team.vercel.app/",
+    "url": "https://al-ghunaimi-law-firm.vercel.app/",
     "telephone": "+20 100 365 1199",
     "email": "alghoneimy.Law@gmail.com",
     "address": {
@@ -416,9 +416,38 @@
   <!-- Shared JavaScript Components & Logic -->
     </main>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/supabase.js"></script>
   <script src="translations.js"></script>
   <script src="search.js"></script>
   <script src="components.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Home: load latest 3 published articles from Supabase (keeps static fallback if not configured)
+    document.addEventListener('DOMContentLoaded', async () => {
+      const supabase = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase.from('articles').select('slug,title,excerpt,category,published_at').eq('status','published').order('published_at', {ascending:false}).limit(3);
+        if (error || !data || !data.length) return;
+        const grid = document.querySelector('.articles-preview .articles-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        const catLabel = { 'real-estate':'القانون العقاري', 'corporate':'قانون الشركات', 'criminal':'الدفوع الجنائية', 'labor':'قانون العمل', 'family':'الأحوال الشخصية', 'contracts':'العقود التجارية' };
+        data.forEach(a => {
+          const date = a.published_at ? new Date(a.published_at).toISOString().slice(0,10).replace(/-/g,'/') : '';
+          const accent = a.category || 'real-estate';
+          const card = document.createElement('div');
+          card.className = 'article-card';
+          card.innerHTML = `<div class="article-card-accent" data-accent="${accent}"></div><div class="article-body"><div class="article-meta"><span class="article-cat" data-cat="${a.category}">${catLabel[a.category]||a.category}</span><span class="article-date">${date}</span></div><h3 class="article-title">${a.title}</h3><p class="article-excerpt">${a.excerpt||''}</p><div class="article-footer"><a href="articles/${a.slug}" class="btn-outline btn-sm">اقرأ المقال <i class="fas fa-chevron-left"></i></a></div></div>`;
+          const isLocal = location.protocol==='file:';
+          const link = card.querySelector('a');
+          link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
+          grid.appendChild(card);
+        });
+      } catch(e){ console.warn('Home articles dynamic failed', e); }
+    });
+  </script>
 </body>
 </html>
