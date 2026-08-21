@@ -733,3 +733,19 @@ document.addEventListener('DOMContentLoaded', () => {
     return div.innerHTML;
   }
 });
+
+// Page loader — perceived performance (hide after load)
+window.addEventListener('load', () => {
+  const loader = document.getElementById('page-loader');
+  if (loader) {
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 550);
+  }
+});
+setTimeout(() => {
+  const loader = document.getElementById('page-loader');
+  if (loader && !loader.classList.contains('hidden')) {
+    loader.classList.add('hidden');
+    setTimeout(() => loader.remove(), 550);
+  }
+}, 2500);

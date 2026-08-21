@@ -18,6 +18,14 @@
 
   const isLocal = window.location.protocol === 'file:' || window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' || !window.location.hostname;
 
+  function renderLoader() {
+    if (document.getElementById('page-loader')) return;
+    const html = `<div id="page-loader" class="page-loader" aria-hidden="true"><div class="loader-inner"><div class="loader-logo"></div><div class="loader-bar"><span></span></div></div></div>`;
+    if (document.body) document.body.insertAdjacentHTML('afterbegin', html);
+    else document.addEventListener('DOMContentLoaded', () => document.body.insertAdjacentHTML('afterbegin', html), { once: true });
+  }
+  renderLoader();
+
   function getBase() {
     const host = window.location.hostname.toLowerCase();
     const path = window.location.pathname.toLowerCase();

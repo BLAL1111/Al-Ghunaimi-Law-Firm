@@ -94,6 +94,36 @@ html[dir="ltr"] .text-start { text-align: left; }
   box-shadow: var(--shadow-gold);
 }
 
+/* ── Page Loader (perceived performance) ── */
+.page-loader {
+  position: fixed; inset: 0; z-index: 9999;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-primary);
+  transition: opacity 0.45s ease, visibility 0.45s ease;
+}
+.page-loader.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.page-loader .loader-inner { text-align: center; }
+.page-loader .loader-logo {
+  width: 52px; height: 52px; margin: 0 auto 16px;
+  border-radius: 50%; border: 2px solid var(--border-color);
+  border-top-color: var(--accent-gold);
+  animation: spin 0.9s linear infinite;
+}
+.page-loader .loader-bar {
+  width: 120px; height: 2px; margin: 0 auto; overflow: hidden;
+  background: var(--border-color); border-radius: 2px;
+}
+.page-loader .loader-bar span {
+  display: block; width: 40%; height: 100%;
+  background: var(--accent-gold-gradient);
+  animation: loaderSlide 1.1s ease-in-out infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes loaderSlide { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }
+@media (prefers-reduced-motion: reduce) {
+  .page-loader .loader-logo, .page-loader .loader-bar span { animation: none; }
+}
+
 /* ── Focus Visible Styles (Accessibility) ── */
 :focus-visible {
   outline: 2px solid var(--accent-gold);
@@ -785,6 +815,70 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
   background: rgba(255, 255, 255, 0.82);
 }
 
+/* ── Contact Main Section (contact.html) — same Hejaz Mall bg ── */
+.contact-main-section {
+  position: relative;
+  background-image: url('img/hejaz_mall.jpg');
+  background-image: image-set(url('img/hejaz_mall.webp') type("image/webp"), url('img/hejaz_mall.jpg') type("image/jpeg"));
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.contact-main-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 12, 14, 0.72) 0%, rgba(11, 12, 14, 0.82) 55%, var(--bg-primary) 100%);
+  z-index: 1;
+}
+[data-theme="light"] .contact-main-section::before {
+  background: linear-gradient(180deg, rgba(249, 248, 245, 0.62) 0%, rgba(249, 248, 245, 0.78) 60%, var(--bg-primary) 100%);
+}
+.contact-main-section .container {
+  position: relative;
+  z-index: 2;
+}
+.contact-main-section .contact-wrapper {
+  background: rgba(23, 26, 31, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+[data-theme="light"] .contact-main-section .contact-wrapper {
+  background: rgba(255, 255, 255, 0.82);
+}
+.contact-main-section {
+  position: relative;
+  background-image: url('img/hejaz_mall.jpg');
+  background-image: image-set(url('img/hejaz_mall.webp') type("image/webp"), url('img/hejaz_mall.jpg') type("image/jpeg"));
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.contact-main-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 12, 14, 0.72) 0%, rgba(11, 12, 14, 0.82) 55%, var(--bg-primary) 100%);
+  z-index: 1;
+}
+[data-theme="light"] .contact-main-section::before {
+  background: linear-gradient(180deg, rgba(249, 248, 245, 0.62) 0%, rgba(249, 248, 245, 0.78) 60%, var(--bg-primary) 100%);
+}
+.contact-main-section .container {
+  position: relative;
+  z-index: 2;
+}
+.contact-main-section .contact-wrapper {
+  background: rgba(23, 26, 31, 0.78);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+[data-theme="light"] .contact-main-section .contact-wrapper {
+  background: rgba(255, 255, 255, 0.82);
+}
+
 /* ── Articles Preview (Home) — scoped root fix ── */
 .articles-preview .articles-grid {
   display: grid;
@@ -892,9 +986,11 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
   .about-preview,
   .about-hero,
   .page-header-hero {
-    background-size: 100% auto;
+    background-size: contain;
     background-position: center top;
+    background-repeat: no-repeat;
     background-color: var(--bg-primary);
+    background-attachment: scroll !important;
     min-height: 460px;
   }
 }
@@ -3738,5 +3834,17 @@ html[dir="ltr"] .contact-desc-text {
     width: 100%;
     justify-content: center;
     text-align: center;
+  }
+}
+
+@media (max-width: 768px) {
+  .nav-container,
+  .stats-bar,
+  .contact-wrapper,
+  .glass-panel,
+  .about-preview-card,
+  .about-highlight-box {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
   }
 }
