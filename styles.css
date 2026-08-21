@@ -874,7 +874,9 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
 }
 
 @media (max-width: 768px) {
-  .about-preview {
+  .about-preview,
+  .about-hero,
+  .page-header-hero {
     background-size: 100% auto;
     background-position: center top;
     background-color: var(--bg-primary);
@@ -882,7 +884,9 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
   }
 }
 @media (max-width: 480px) {
-  .about-preview { min-height: 400px; }
+  .about-preview,
+  .about-hero,
+  .page-header-hero { min-height: 400px; }
 }
 
 .about-preview .section-badge {
@@ -1907,7 +1911,7 @@ html[dir="rtl"] .footer-contact { order: 1; }
   .footer-brand { max-width: 100%; }
   .related-links-grid { grid-template-columns: 1fr; }
   .booking-page-layout { grid-template-columns: 1fr; }
-  .process-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr !important; }
   .page-title { font-size: 2rem; }
 
   .articles-search-bar { padding: 18px 20px; }
@@ -1954,6 +1958,7 @@ html[dir="rtl"] .footer-contact { order: 1; }
   .why-grid { grid-template-columns: 1fr; }
   .how-grid { grid-template-columns: 1fr; }
   .insights-grid { grid-template-columns: 1fr; }
+  .process-grid { grid-template-columns: 1fr !important; }
 
   .stats-section { margin-top: -20px; padding: 0 0 20px; }
   .stats-bar { grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 20px 14px; }
