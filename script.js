@@ -1,19 +1,37 @@
 document.addEventListener('DOMContentLoaded', () => {
+  // Ensure shared components are injected before querying DOM (robust against handler order)
+  if (window.GhonemyComponents) {
+    try {
+      if (!document.querySelector('.navbar')) window.GhonemyComponents.renderHeader();
+      if (!document.querySelector('.footer')) window.GhonemyComponents.renderFooter();
+      if (!document.getElementById('back-to-top')) window.GhonemyComponents.renderBackToTop();
+      if (!document.querySelector('.whatsapp-float')) window.GhonemyComponents.renderWhatsAppFloat();
+      if (!document.getElementById('booking-modal')) window.GhonemyComponents.renderModals();
+      if (window.GhonemyComponents.initNavDataI18n) window.GhonemyComponents.initNavDataI18n();
+    } catch (e) { console.warn('GhonemyComponents ensure failed', e); }
+  }
+
   // State Management
   let currentLang = localStorage.getItem('ghonemy_lang') || 'ar';
   let currentTheme = localStorage.getItem('ghonemy_theme') || 'dark';
 
-  // DOM Elements
-  const langBtns = document.querySelectorAll('.lang-btn');
-  const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
-  const navbar = document.querySelector('.navbar');
-  const mobileToggle = document.getElementById('mobile-toggle');
-  const navMenu = document.querySelector('.nav-menu');
+  // DOM helpers (fresh query to survive dynamic injection)
+  const getLangBtns = () => document.querySelectorAll('.lang-btn');
+  const getThemeBtns = () => document.querySelectorAll('.theme-toggle-btn');
+  const getNavbar = () => document.querySelector('.navbar');
+  const getMobileToggle = () => document.getElementById('mobile-toggle');
+  const getNavMenu = () => document.querySelector('.nav-menu');
+  const getBookingModal = () => document.getElementById('booking-modal');
+  const getCloseModalBtns = () => document.querySelectorAll('.modal-close');
+  const getBookingForm = () => document.getElementById('booking-form');
 
-  // Modals
-  const bookingModal = document.getElementById('booking-modal');
-  const closeModalBtns = document.querySelectorAll('.modal-close');
-  const bookingForm = document.getElementById('booking-form');
+  // Cached refs for scroll effects (re-queried inside handlers for safety)
+  const navbar = getNavbar();
+  const mobileToggle = getMobileToggle();
+  const navMenu = getNavMenu();
+  const bookingModal = getBookingModal();
+  const closeModalBtns = getCloseModalBtns();
+  const bookingForm = getBookingForm();
 
   // Initialize App
   initTheme(currentTheme);
@@ -28,49 +46,65 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   initAdmin();
 
-  // Multi-Language Pill Switcher Event Listeners
-  langBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const selectedLang = btn.getAttribute('data-lang');
-      if (selectedLang && selectedLang !== currentLang) {
-        currentLang = selectedLang;
-        localStorage.setItem('ghonemy_lang', currentLang);
-        initLanguage(currentLang);
-      }
-    });
+  // Delegated: Multi-Language Pill Switcher (survives re-render)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.lang-btn');
+    if (!btn) return;
+    const selectedLang = btn.getAttribute('data-lang');
+    if (selectedLang && selectedLang !== currentLang) {
+      currentLang = selectedLang;
+      localStorage.setItem('ghonemy_lang', currentLang);
+      initLanguage(currentLang);
+    }
   });
 
-  // Theme Toggle Listener (Supports Desktop + Mobile Theme Buttons)
-  themeToggleBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('ghonemy_theme', currentTheme);
-      initTheme(currentTheme);
-    });
+  // Delegated: Theme Toggle (supports multiple buttons + future injections)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.theme-toggle-btn');
+    if (!btn) return;
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem('ghonemy_theme', currentTheme);
+    initTheme(currentTheme);
   });
 
-  // Mobile Menu Toggle
-  if (mobileToggle && navMenu) {
-    mobileToggle.addEventListener('click', (e) => {
+  // Mobile Menu Toggle (fresh query + aria-expanded)
+  const bindMobileToggle = () => {
+    const mt = getMobileToggle();
+    const nm = getNavMenu();
+    if (!mt || !nm) return;
+    if (mt.dataset.bound === '1') return;
+    mt.dataset.bound = '1';
+    mt.addEventListener('click', (e) => {
       e.stopPropagation();
-      navMenu.classList.toggle('active');
-      document.body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+      const isActive = nm.classList.toggle('active');
+      mt.classList.toggle('active', isActive);
+      mt.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      document.body.style.overflow = isActive ? 'hidden' : '';
     });
-  }
+  };
+  bindMobileToggle();
+  // Re-bind after components injection (mutation observer fallback)
+  setTimeout(bindMobileToggle, 300);
 
-  // Close Mobile Menu on Nav Link or Action Click
-  document.querySelectorAll('.nav-link, .nav-menu .btn-gold').forEach(link => {
-    link.addEventListener('click', () => {
-      if (navMenu) navMenu.classList.remove('active');
-      document.body.style.overflow = '';
-    });
+  // Close Mobile Menu on Nav Link or Action Click (delegated)
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('.nav-link, .nav-menu .btn-gold, .nav-menu .lang-btn');
+    if (!link) return;
+    const nm = getNavMenu();
+    const mt = getMobileToggle();
+    if (nm) nm.classList.remove('active');
+    if (mt) { mt.classList.remove('active'); mt.setAttribute('aria-expanded', 'false'); }
+    document.body.style.overflow = '';
   });
 
   // Close Mobile Drawer when clicking outside
   document.addEventListener('click', (e) => {
-    if (navMenu && navMenu.classList.contains('active')) {
-      if (!navMenu.contains(e.target) && !mobileToggle.contains(e.target)) {
-        navMenu.classList.remove('active');
+    const nm = getNavMenu();
+    const mt = getMobileToggle();
+    if (nm && nm.classList.contains('active')) {
+      if (!nm.contains(e.target) && !(mt && mt.contains(e.target))) {
+        nm.classList.remove('active');
+        if (mt) { mt.classList.remove('active'); mt.setAttribute('aria-expanded', 'false'); }
         document.body.style.overflow = '';
       }
     }
@@ -78,8 +112,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Auto-remove active drawer class on window resize to desktop
   window.addEventListener('resize', () => {
-    if (window.innerWidth > 992 && navMenu) {
-      navMenu.classList.remove('active');
+    const nm = getNavMenu();
+    const mt = getMobileToggle();
+    if (window.innerWidth > 992 && nm) {
+      nm.classList.remove('active');
+      if (mt) { mt.classList.remove('active'); mt.setAttribute('aria-expanded', 'false'); }
       document.body.style.overflow = '';
     }
   });
@@ -129,9 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.style.paddingRight = '';
   }
 
-  // Modal Close Buttons
-  closeModalBtns.forEach(btn => {
-    btn.addEventListener('click', closeAllModals);
+  // Modal Close Buttons (delegated for future modals)
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.modal-close');
+    if (btn && btn.closest('.modal')) closeAllModals();
   });
 
   // Close Modal on Overlay Click
@@ -159,10 +197,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Booking Form Submission -> WhatsApp Link Generation
-  if (bookingForm) {
-    bookingForm.addEventListener('submit', (e) => {
-      e.preventDefault();
+  // Booking Form Submission -> WhatsApp Link Generation (delegated)
+  document.addEventListener('submit', (e) => {
+    const form = e.target.closest('#booking-form');
+    if (!form) return;
+    e.preventDefault();
       const name = document.getElementById('form-name').value;
       const phone = document.getElementById('form-phone').value;
       const practice = document.getElementById('form-practice').value;
@@ -183,17 +222,16 @@ document.addEventListener('DOMContentLoaded', () => {
       window.open(`https://wa.me/201126118276?text=${encodedMsg}`, '_blank');
       
       closeAllModals();
-      bookingForm.reset();
-    });
-  }
+      form.reset();
+  });
 
   // Language Engine
   function initLanguage(lang) {
     document.documentElement.lang = lang;
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
 
-    // Update Lang Pill Buttons Active State
-    langBtns.forEach(btn => {
+    // Update Lang Pill Buttons Active State (fresh query)
+    getLangBtns().forEach(btn => {
       if (btn.getAttribute('data-lang') === lang) {
         btn.classList.add('active');
       } else {
@@ -221,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Theme Engine
   function initTheme(theme) {
     document.documentElement.setAttribute('data-theme', theme);
-    themeToggleBtns.forEach(btn => {
+    getThemeBtns().forEach(btn => {
       const icon = btn.querySelector('i');
       if (icon) {
         icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
@@ -235,10 +273,12 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', () => {
       if (!scrollTick) {
         requestAnimationFrame(() => {
+          const nb = getNavbar();
+          if (!nb) { scrollTick = false; return; }
           if (window.scrollY > 40) {
-            navbar.classList.add('scrolled');
+            nb.classList.add('scrolled');
           } else {
-            navbar.classList.remove('scrolled');
+            nb.classList.remove('scrolled');
           }
           scrollTick = false;
         });
@@ -268,7 +308,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Scroll Reveal Animations for Sections & Cards
   function initRevealAnimations() {
-    const els = document.querySelectorAll('.section-badge, .section-title, .pillar-card, .partner-card, .practice-card, .article-card, .stat-item, .contact-item, .why-card, .how-card, .faq-item, .heritage-text, .realestate-text, .online-cta-box, .cta-section .text-center');
+    const els = document.querySelectorAll('.section-badge, .section-title, .partner-card, .practice-card, .article-card, .stat-item, .contact-item, .why-card, .how-card, .faq-item, .heritage-text, .realestate-text, .online-cta-box, .cta-section .text-center');
     if (!els.length) return;
 
     const observer = new IntersectionObserver((entries) => {
@@ -299,6 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (e.key === 'Escape') {
         document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
         document.body.style.overflow = '';
+        document.body.style.paddingRight = '';
       }
     });
   }

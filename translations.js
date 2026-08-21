@@ -1,6 +1,7 @@
 const translations = {
   ar: {
     metaTitle: "محامي 6 أكتوبر | مؤسسة الغنيمي للمحاماة والاستشارات القانونية",
+    metaDesc: "مؤسسة الغنيمي للمحاماة والاستشارات القانونية – تمثيل قانوني متخصص واستشارات قانونية متكاملة في 6 أكتوبر والشيخ زايد والجيزة والقاهرة وعن بُعد. اتصل الآن: 01003651199",
     brandTitle: "مؤسسة الغنيمي",
     brandSub: "للمحاماة والاستشارات القانونية",
     brandTagline: "خبرة قانونية | رؤية واضحة | متابعة دقيقة",
@@ -93,6 +94,10 @@ const translations = {
     practice10Desc: "استشارة قانونية تساعدك على فهم موقفك وتحديد الخيارات القانونية المتاحة قبل اتخاذ أي إجراء.",
     practiceCta: "اعرف المزيد",
     practiceCtaConsult: "اطلب استشارة",
+    servicesViewAll: "عرض جميع الخدمات القانونية <i class=\"fas fa-arrow-left\"></i>",
+    contactCtaDetail: "التواصل والمقر التفصيلي <i class=\"fas fa-arrow-left\"></i>",
+    formNamePlaceholder: "أدخل اسمك",
+    formNotesPlaceholder: "أي تفاصيل إضافية...",
 
     heritageTitle: "محامي ميراث في 6 أكتوبر",
     heritageDesc: "تواجه نزاعًا حول الميراث أو تقسيم التركة؟ تساعدك مؤسسة الغنيمي للمحاماة والاستشارات القانونية في فهم موقفك القانوني ودراسة المستندات والوقائع المرتبطة بالتركة، وتحديد الإجراءات والمسار القانوني المناسب للحالة.",
@@ -105,6 +110,7 @@ const translations = {
     heritage7: "الاستشارات المتعلقة بالتركات",
     heritageCta: "تحتاج إلى استشارة في قضية ميراث؟",
     heritageCtaBtn: "تحدث مع فريقنا الآن",
+    heritageServicesTitle: "خدمات مرتبطة بالميراث",
 
     realestateTitle: "محامي قضايا عقارات في 6 أكتوبر",
     realestateDesc: "القضايا العقارية قد ترتبط بعقود أو ملكية أو تسجيل أو نزاعات بين الأطراف، ولذلك تحتاج إلى مراجعة دقيقة للمستندات والوقائع قبل اتخاذ أي إجراء. تقدم مؤسسة الغنيمي خدمات قانونية متعلقة بالمنازعات العقارية، وصياغة ومراجعة العقود، والمسائل المرتبطة بالملكية والتسجيل وصحة ونفاذ العقود وغيرها من المسائل العقارية.",
@@ -153,31 +159,55 @@ const translations = {
     article1Cat: "القانون العقاري",
     article1Date: "2026/06/15",
     article1Desc: "دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.",
+    article1Slug: "real-estate-contracts-6th-october",
+    article1Tags: ["عقارات", "عقود", "تطوير عقاري", "شهر عقاري", "6 أكتوبر", "توثيق عقود"],
+    article1Keywords: ["توثيق عقود عقارية", "الشهر العقاري", "عقود التطوير العقاري", "قانون عقاري 6 أكتوبر", "استثمار عقاري"],
+    article1RelatedServices: ["realestate", "contracts"],
 
     article2Title: "تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة",
     article2Cat: "قانون الشركات",
     article2Date: "2026/07/02",
     article2Desc: "خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.",
+    article2Slug: "company-formation-egypt-2026",
+    article2Tags: ["شركات", "تأسيس", "استثمار", "قانون تجاري", "سجل تجاري"],
+    article2Keywords: ["تأسيس شركة في مصر", "قانون الشركات", "سجل تجاري", "غرفة تجارية", "استثمار"],
+    article2RelatedServices: ["corporate"],
 
     article3Title: "الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات",
     article3Cat: "الدفوع الجنائية",
     article3Date: "2026/07/18",
     article3Desc: "شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.",
+    article3Slug: "criminal-appeal-cassation",
+    article3Tags: ["جنائي", "نقض", "طعن", "محاكم جناحية", "جرائم"],
+    article3Keywords: ["طعن بالنقض", "قضايا جنائية", "محكمة النقض", "الأحكام الجنائية", "إجراءات الطعن"],
+    article3RelatedServices: ["criminal"],
 
     article4Title: "حقوق العامل وصاحب العمل في قانون العمل المصري 2026 — دليل شامل",
     article4Cat: "قانون العمل",
     article4Date: "2026/08/01",
     article4Desc: "دليل قانون العمل المصري يشمل عقد العمل، الإجازات، إنهاء الخدمة، التعويضات، والمنازعات العمالية. استشارات قانونية عمالية في الجيزة.",
+    article4Slug: "labor-law-employee-rights",
+    article4Tags: ["عمالية", "عقد عمل", "إجازات", "تعويضات", "إنهاء خدمة"],
+    article4Keywords: ["قانون العمل", "حقوق العامل", " المنازعات العمالية", "عقد العمل", "تعويض إنهاء الخدمة"],
+    article4RelatedServices: ["labor"],
 
     article5Title: "النفقة والحضانة والرؤية في قانون الأسرة المصري — دليل الزوجين",
     article5Cat: "الأحوال الشخصية",
     article5Date: "2026/08/10",
     article5Desc: "حقوق الزوجين في النفقة والحضانة والرؤية طبقاً لقانون الأسرة المصري. إجراءات رفع الدعوى أمام محكمة الأسرة ونصائح قانونية عملية.",
+    article5Slug: "family-law-custody-alimony",
+    article5Tags: ["أسرة", "نفقة", "حضانة", "رؤية", "طلاق", "محكمة أسرة"],
+    article5Keywords: ["نفقة زوجية", "حضانة أطفال", "رؤية أطفال", "قانون الأسرة", "محكمة الأسرة"],
+    article5RelatedServices: ["family"],
 
     article6Title: "صياغة العقود التجارية: 7 أخطاء قانونية تدمر صفقتك وكيف تتجنبها",
     article6Cat: "العقود التجارية",
-    article6Date: "2026/08/20",
+    article6Date: "2026/07/28",
     article6Desc: "الثغرات القانونية الأكثر شيوعاً في صياغة العقود التجارية في مصر وكيفية تجنبها. نصائح خبراء الصياغة القانونية لحماية حقوقك التعاقدية.",
+    article6Slug: "commercial-contracts-drafting",
+    article6Tags: ["عقود", " thương mại", "صياغة عقود", "شراكة", "مقاولة"],
+    article6Keywords: ["صياغة عقود تجارية", "عقود الشراكة", "عقود المقاولة", "الثغرات العقدية", "حماية حقوق تعاقدية"],
+    article6RelatedServices: ["contracts", "corporate"],
 
     articleCTA: "احجز استشارتك القانونية الآن",
     btnReadMore: "اقرأ المقال كاملاً",
@@ -229,13 +259,121 @@ const translations = {
     service4: "القضايا العقارية",
     service5: "الشركات والتجاري",
     service6: "الاستشارات القانونية",
+    service7: "صياغة العقود",
+    service8: "القضايا العمالية",
+    service9: "التعويضات والحوادث",
+    service10: "الاستشارات القانونية",
 
     adminLoginTitle: "دخول الأدمن",
     adminLoginSub: "الصلاحية للإدارة فقط",
-    adminLoginBtn: "دخول"
+    adminLoginBtn: "دخول",
+
+    aboutStoryTitle: "عن المؤسسة ورسالتها",
+    aboutStoryText: "مؤسسة الغنيمي ترحب بموكليها بمقرها الرسمي في مول الحجاز بالقرب من ميدان الحصري في مدينة 6 أكتوبر، إلى جانب تقديم خدمات الاستشارات القانونية والدراسة الأولية للملفات عن بُعد للعملاء من مختلف محافظات الجمهورية وخارجها.",
+
+    serviceDetailFull: "التفاصيل الكاملة",
+    serviceDetailQuick: "استشارة سريعة",
+    serviceDetailBack: "العودة لقائمة الخدمات",
+
+    articlesExploreBtn: "استكشف جميع المقالات القانونية <i class=\"fas fa-arrow-left\"></i>",
+    articlesSubtitle: "أدلة وشروحات عملية مبسطة لمساعدتك في فهم حقوقك القانونية وإجراءاتك التعاقدية والاستثمارية.",
+    articlesSearchPlaceholder: "ابحث في المقالات القانونية...",
+    searchDisclaimer: "تنبيه قانوني: نتائج البحث تعرض مقالات تثقيفية عامة ولا تعتبر استشارة قانونية مخصصة لحالتك.",
+    articlesEmptyTitle: "لا توجد نتائج مطابقة لبحثك",
+    articlesEmptyText: "جرب كلمات مفتاحية أخرى مثل: \"عقود\"، \"نقض\"، \"نفقة\"، أو \"شركات\".",
+
+    filterAll: "الكل",
+    filterRealEstate: "القانون العقاري",
+    filterCorporate: "قانون الشركات",
+    filterCriminal: "الدفوع الجنائية",
+    filterLabor: "قانون العمل",
+    filterFamily: "الأحوال الشخصية",
+    filterContracts: "العقود التجارية",
+
+    serviceAreaTitle: "نطاق الخدمة",
+    serviceAreaDesc: "مقر المؤسسة في مول الحجاز بمدينة 6 أكتوبر، ونقدم خدماتنا القانونية للعملاء من مختلف المناطق بما يشمل:",
+    serviceAreaNote: "المؤسسة ترحب بالعملاء من مختلف المحافظات، سواء بالحضور الشخصي أو عبر الاستشارات القانونية عن بُعد.",
+
+    servicesTitle: "الخدمات القانونية",
+    servicesSubtitle: "نقدم خدمات قانونية شاملة في مختلف مجالات القانون لخدمة عملائنا في 6 أكتوبر والجيزة والقاهرة",
+    serviceDetailBack: "العودة لقائمة الخدمات",
+
+    servicecriminalTitle: "القضايا الجنائية",
+    servicecriminalDesc: "التمثيل أمام المحاكم الجنائية والجنايات الكبرى والطعن بالنقض في الأحكام الجنائية. دراسة الموقف القانوني وصياغة المذكرات والدفاع.",
+    servicecriminalContent: "<p>القضايا الجنائية من أخطر المجالات القانونية التي تتطلب خبرة ودقة في التعامل مع كل تفصيل. مؤسسة الغنيمي تقدم خدمات التمثيل القانوني أمام المحاكم الجنائية والجنايات الكبرى.</p><p>يشمل نطاق عملنا: الطعن بالنقض في الأحكام الجنائية، صياغة مذكرات الدفاع، دراسة الوقائع والمستندات، وتمثيل الموكلين أمام المحاكم المختصة.</p>",
+    servicecriminalFaq: [
+      { q: "ما هو الميعاد القانوني للطعن بالنقض؟", a: "يُقدم الطعن بالنقض خلال 60 يوماً من تاريخ صدور الحكم في المواد الجنائية." },
+      { q: "هل يمكن توكيل محامٍ بعد صدور الحكم؟", a: "نعم، يمكن توكيل محامٍ للطعن على الحكم خلال الميعاد القانوني." }
+    ],
+
+    servicefamilyTitle: "قضايا الأسرة والأحوال الشخصية",
+    servicefamilyDesc: "نفقة الزوجة والأولاد، الحضانة، الرؤية، الطلاق، وجميع قضايامحكمة الأسرة. دراسة الملف وتحديد الإجراءات المناسبة.",
+    servicefamilyContent: "<p>قضايا الأسرة من أكثر القضايا حساسية لأنها تمس حياة الأسرة المباشرة. نقدم استشارات وتمثيل قانوني في جميع قضايامحكمة الأسرة.</p>",
+    servicefamilyFaq: [
+      { q: "ما هي المحكمة المختصة بنظر دعاوى النفقة؟", a: "محكمة الأسرة المختصة هي محكمة إقامة الزوجة." },
+      { q: "هل يمكن تعديل مبلغ النفقة بعد صدور الحكم؟", a: "نعم، يمكن رفع دعوى تعديل النفقة عند تغير الظروف." }
+    ],
+
+    serviceinheritanceTitle: "الميراث والتركات",
+    serviceinheritanceDesc: "تقسيم التركة، حقوق الورثة، إجراءات التصريح بالميراث، وحل نزاعات الورثة. دراسة المستندات والثبوتية.",
+    serviceinheritanceContent: "<p>قضايا الميراث تتطلب دقة في فهم العلاقات الأسرية والتوثيق القانوني. نقدم خدمات تقسيم التركة وحل نزاعات الورثة أمام المحاكم المختصة.</p>",
+    serviceinheritanceFaq: [
+      { q: "ما هي المستندات المطلوبة لإجراءات الميراث؟", a: "شهادة الوفاة، عائلة الورثة، الوصية إن وجدت، ومستندات التركة." },
+      { q: "كم تستغرق إجراءات تقسيم التركة؟", a: "تختلف المدة حسب تعقيد الملف ووجود نزاعات بين الورثة." }
+    ],
+
+    servicerealestateTitle: "القضايا العقارية",
+    servicerealestateDesc: "توثيق العقود، التسجيل في الشهر العقاري، نزاعات الملكية، وحماية الحقوق العقارية لجميع الأطراف.",
+    servicerealestateContent: "<p>القضايا العقارية في 6 أكتوبر والجيزة تتطلب خبرة خاصة في تعاملات التطوير العقاري والتوثيق القانوني للعقود.</p>",
+    servicerealestateFaq: [
+      { q: "لماذا يُنصح بتوثيق العقود العقارية رسمياً؟", a: "التوثيق يضمن حماية حقوق جميع الأطراف ويمنع النزاعات المستقبلية." }
+    ],
+
+    servicecorporateTitle: "الشركات والقانون التجاري",
+    servicecorporateDesc: "تأسيس الشركات، إعداد العقد والنظام الأساسي، التسجيل في السجل التجاري، والصفقات التجارية الكبرى.",
+    servicecorporateContent: "<p>تأسيس الشركات في مصر يتطلب فهماً دقيقاً للإجراءات القانونية والمستندات المطلوبة. نتولى جميع إجراءات التأسيس والتسجيل.</p>",
+    servicecorporateFaq: [
+      { q: "ما هي الأوراق المطلوبة لتأسيس شركة؟", a: "عقد التأسيس، النظام الأساسي، سند المقر، إثبات شخصية المؤسسين، والشهادة البنكية." }
+    ],
+
+    servicecybercrimeTitle: "الجرائم الإلكترونية",
+    servicecybercrimeDesc: "التعامل مع الجرائم الإلكترونية وانتهاكات الخصوصية وحماية البيانات الرقمية والتقاضي أمام المحاكم المختصة.",
+    servicecybercrimeContent: "<p>الجرائم الإلكترونية في تزايد مستمر، ونقدم خدمات الدفاع والتمثيل القانوني في قضايا الاحتيال الإلكتروني وانتهاك الخصوصية.</p>",
+    servicecybercrimeFaq: [
+      { q: "ما هي أنواع الجرائم الإلكترونية الشائعة؟", a: "الاحتيال الإلكتروني، سرقة الهوية، انتهاك الخصوصية، والابتزاز الإلكتروني." }
+    ],
+
+    servicecontractsTitle: "صياغة ومراجعة العقود",
+    servicecontractsDesc: "صياغة العقود التجارية والمدنية بمختلف أنواعها. مراجعة الشروط وحماية المصالح التعاقدية لجميع الأطراف.",
+    servicecontractsContent: "<p>العقود هي الأساس القانوني لأي علاقة تجارية أو مدنية. نقدم خدمات صياغة ومراجعة العقود بمهارة قانونية عالية.</p>",
+    servicecontractsFaq: [
+      { q: "ما هي الأنواع الرئيسية للعقود التي تتعاملون معها؟", a: "عقود التوريد، المقاولة، الشراكة، التوكيل، الإيجار، والبيوع التجارية." }
+    ],
+
+    servicelaborTitle: "القضايا العمالية",
+    servicelaborDesc: "الفصل التعسفي، التعويضات، عقود العمل، المنازعات العمالية، وحماية حقوق العامل وصاحب العمل.",
+    servicelaborContent: "<p>المنازعات العمالية تتطلب فهماً دقيقاً لقانون العمل وحقوق الطرفين. نقدم استشارات وتمثيل قانوني أمام محاكم العمل.</p>",
+    servicelaborFaq: [
+      { q: "ما هي حقوق العامل عند الفصل التعسفي؟", a: "يحق للعامل الحصول على تعويض عن سنوات العمل وراتب الإخطار." }
+    ],
+
+    servicecompensationTitle: "التعويضات والحوادث",
+    servicecompensationDesc: "مطالبات التعويض عن الأضرار والحوادث والإصابات. حساب التعويض المناسب وتمثيل الموكلين أمام المحاكم.",
+    servicecompensationContent: "<p>الحوادث والأضرار قد تؤدي إلى خسائر كبيرة. نقدم خدمات المطالبة بالتعويض المناسب وحماية حقوق المتضررين.</p>",
+    servicecompensationFaq: [
+      { q: "ما هي أنواع التعويضات المتاحة؟", a: "تعويض عن الأضرار المادية، الأضرار الجسدانية، وفقدان الدخل." }
+    ],
+
+    serviceconsultationTitle: "الاستشارات القانونية",
+    serviceconsultationDesc: "استشارات قانونية شاملة في جميع المجالات. دراسة الموقف القانوني وتحديد المسار المناسب قبل اتخاذ أي إجراء.",
+    serviceconsultationContent: "<p>الاستشارة القانونية هي الخطوة الأولى والأهم في أي مسألة قانونية. نقدم استشارات شاملة في جميع المجالات القانونية.</p>",
+    serviceconsultationFaq: [
+      { q: "كيف يمكن حجز استشارة قانونية؟", a: "يمكن التواصل عبر الواتساب أو النموذج الإلكتروني لحجز موعد مناسب." }
+    ]
   },
   en: {
     metaTitle: "Lawyer in 6th of October | Al Ghonemy Law Firm & Legal Consultants",
+    metaDesc: "Al-Ghonemy Law Firm & Legal Consultants — Professional legal representation and comprehensive legal consultations in 6th of October, Sheikh Zayed, Giza, Cairo, and remotely. Call now: 01003651199",
     brandTitle: "Al-Ghonemy",
     brandSub: "Law Firm & Legal Consultants",
     brandTagline: "Legal Experience | Clear Vision | Careful Follow-Up",
@@ -328,6 +466,10 @@ const translations = {
     practice10Desc: "Legal consultation that helps you understand your position and identify available legal options before taking any action.",
     practiceCta: "Learn More",
     practiceCtaConsult: "Request Consultation",
+    servicesViewAll: "View All Legal Services <i class=\"fas fa-arrow-left\"></i>",
+    contactCtaDetail: "Contact & Detailed Location <i class=\"fas fa-arrow-left\"></i>",
+    formNamePlaceholder: "Enter your name",
+    formNotesPlaceholder: "Any additional details...",
 
     heritageTitle: "Inheritance Lawyer in 6th of October",
     heritageDesc: "Facing an inheritance dispute or estate division? Al-Ghonemy Law Firm helps you understand your legal position, study documents and facts related to the estate, and identify the appropriate legal procedures and path for your case.",
@@ -340,6 +482,7 @@ const translations = {
     heritage7: "Estate Consultations",
     heritageCta: "Need Consultation on an Inheritance Case?",
     heritageCtaBtn: "Talk to Our Team Now",
+    heritageServicesTitle: "Services Related to Inheritance",
 
     realestateTitle: "Real Estate Lawyer in 6th of October",
     realestateDesc: "Real estate cases may involve contracts, ownership, registration, or disputes between parties, requiring careful review of documents and facts before taking any action. Al-Ghonemy provides legal services related to real estate disputes, contract drafting and review, and matters related to ownership, registration, contract validity, and other real estate issues.",
@@ -388,31 +531,55 @@ const translations = {
     article1Cat: "Real Estate Law",
     article1Date: "2026/06/15",
     article1Desc: "Complete guide to real estate development contracts. Covers land registry, property registration, and dispute prevention.",
+    article1Slug: "real-estate-contracts-6th-october",
+    article1Tags: ["real estate", "contracts", "property development", "land registry", "6th October"],
+    article1Keywords: ["real estate contracts", "land registry", "property development", "real estate law", "investment"],
+    article1RelatedServices: ["realestate", "contracts"],
 
     article2Title: "Company Formation 2026: Complete Documents & Procedures",
     article2Cat: "Corporate Law",
     article2Date: "2026/07/02",
     article2Desc: "Step-by-step guide to forming companies under the 2026 Investment Law. Required documents, legal structuring, and common founder mistakes.",
+    article2Slug: "company-formation-egypt-2026",
+    article2Tags: ["companies", "formation", "investment", "corporate law", "commercial registry"],
+    article2Keywords: ["company formation Egypt", "companies law", "commercial registry", "investment"],
+    article2RelatedServices: ["corporate"],
 
     article3Title: "Criminal Appeal: Conditions, Deadlines & Procedures",
     article3Cat: "Criminal Defense",
     article3Date: "2026/07/18",
     article3Desc: "Complete guide to filing criminal appeals. Legal deadlines, grounds for appeal, and full litigation procedures.",
+    article3Slug: "criminal-appeal-cassation",
+    article3Tags: ["criminal", "appeal", "cassation", "criminal courts"],
+    article3Keywords: ["criminal appeal", "Court of Cassation", "criminal cases", "appeal procedures"],
+    article3RelatedServices: ["criminal"],
 
     article4Title: "Employer & Employee Rights — Complete Guide",
     article4Cat: "Labor Law",
     article4Date: "2026/08/01",
     article4Desc: "Comprehensive Egyptian labor law guide covering employment contracts, leave, termination, compensation, and labor disputes.",
+    article4Slug: "labor-law-employee-rights",
+    article4Tags: ["labor", "employment", "compensation", "termination"],
+    article4Keywords: ["labor law", "employee rights", "labor disputes", "employment contract"],
+    article4RelatedServices: ["labor"],
 
     article5Title: "Alimony, Custody & Visitation Rights",
     article5Cat: "Family Law",
     article5Date: "2026/08/10",
     article5Desc: "Complete guide to spousal and child rights under Egyptian family law. Court procedures for family court cases and practical legal advice.",
+    article5Slug: "family-law-custody-alimony",
+    article5Tags: ["family", "alimony", "custody", "visitation", "divorce"],
+    article5Keywords: ["spousal alimony", "child custody", "visitation rights", "family law"],
+    article5RelatedServices: ["family"],
 
     article6Title: "Commercial Contract Drafting: 7 Legal Mistakes That Ruin Your Deal",
     article6Cat: "Contract Law",
-    article6Date: "2026/08/20",
+    article6Date: "2026/07/28",
     article6Desc: "Most common legal pitfalls in commercial contract drafting and how to avoid them. Expert drafting tips to protect your contractual rights.",
+    article6Slug: "commercial-contracts-drafting",
+    article6Tags: ["contracts", "commercial", "drafting", "partnership"],
+    article6Keywords: ["commercial contract drafting", "partnership contracts", "contract loopholes"],
+    article6RelatedServices: ["contracts", "corporate"],
 
     articleCTA: "Book Your Legal Consultation Now",
     btnReadMore: "Read Full Article",
@@ -464,13 +631,44 @@ const translations = {
     service4: "Real Estate Cases",
     service5: "Corporate & Commercial",
     service6: "Legal Consultations",
+    service7: "Contract Drafting",
+    service8: "Labor Cases",
+    service9: "Compensation & Accidents",
+    service10: "Legal Consultations",
 
     adminLoginTitle: "Admin Login",
     adminLoginSub: "Restricted to administrators only",
-    adminLoginBtn: "Login"
+    adminLoginBtn: "Login",
+
+    aboutStoryTitle: "About the Firm & Our Mission",
+    aboutStoryText: "Al-Ghonemy Law Firm welcomes its clients at its headquarters in Al Hejaz Mall near Al-Hosary Square in 6th of October City, while also providing remote legal consultation services and preliminary case review for clients from various governorates and abroad.",
+
+    serviceDetailFull: "Full Details",
+    serviceDetailQuick: "Quick Consultation",
+    serviceDetailBack: "Back to Services",
+
+    articlesExploreBtn: "Explore All Legal Articles <i class=\"fas fa-arrow-left\"></i>",
+    articlesSubtitle: "Practical, simplified guides to help you understand your legal rights, contractual and investment procedures.",
+    articlesSearchPlaceholder: "Search legal articles...",
+    searchDisclaimer: "Legal notice: Search results display general educational articles and do not constitute legal advice for your specific case.",
+    articlesEmptyTitle: "No matching results found",
+    articlesEmptyText: "Try other keywords such as: \"contracts\", \"appeal\", \"alimony\", or \"companies\".",
+
+    filterAll: "All",
+    filterRealEstate: "Real Estate Law",
+    filterCorporate: "Corporate Law",
+    filterCriminal: "Criminal Defense",
+    filterLabor: "Labor Law",
+    filterFamily: "Family Law",
+    filterContracts: "Contract Law",
+
+    serviceAreaTitle: "Service Area",
+    serviceAreaDesc: "Our headquarters is in Al Hejaz Mall in 6th of October City, and we provide legal services to clients from various areas including:",
+    serviceAreaNote: "The firm welcomes clients from all governorates, whether in person or through remote legal consultations."
   },
   fr: {
     metaTitle: "Avocat au 6 Octobre | Cabinet Al-Ghonemy | Conseils Juridiques",
+    metaDesc: "Cabinet Al-Ghonemy d'Avocats & Conseils Juridiques — Représentation juridique professionnelle et consultations juridiques complètes au 6 Octobre, Sheikh Zayed, Giza, Le Caire et à distance. Appelez maintenant : 01003651199",
     brandTitle: "Al-Ghonemy",
     brandSub: "Cabinet d'Avocats & Conseillers Juridiques",
     brandTagline: "Expérience Juridique | Vision Claire | Suivi Rigoureux",
@@ -563,6 +761,10 @@ const translations = {
     practice10Desc: "Consultation juridique qui vous aide à comprendre votre position et à identifier les options juridiques disponibles avant toute action.",
     practiceCta: "En Savoir Plus",
     practiceCtaConsult: "Demander une Consultation",
+    servicesViewAll: "Voir Tous les Services Juridiques <i class=\"fas fa-arrow-left\"></i>",
+    contactCtaDetail: "Contact & Localisation Détaillée <i class=\"fas fa-arrow-left\"></i>",
+    formNamePlaceholder: "Entrez votre nom",
+    formNotesPlaceholder: "Toute information supplémentaire...",
 
     heritageTitle: "Avocat en Successions au 6 Octobre",
     heritageDesc: "Vous faites face à un litige successoral ou un partage de succession ? Le Cabinet Al-Ghonemy vous aide à comprendre votre position juridique, étudier les documents et faits liés à la succession, et déterminer les procédures appropriées.",
@@ -575,6 +777,7 @@ const translations = {
     heritage7: "Consultations sur les Successions",
     heritageCta: "Besoin d'une Consultation sur une Affaire de Succession ?",
     heritageCtaBtn: "Parlez à Notre Équipe Maintenant",
+    heritageServicesTitle: "Services Liés aux Successions",
 
     realestateTitle: "Avocat en Affaires Immobilières au 6 Octobre",
     realestateDesc: "Les affaires immobilières peuvent impliquer des contrats, la propriété, l'enregistrement ou des litiges entre parties, nécessitant un examen attentif des documents et des faits. Le Cabinet Al-Ghonemy fournit des services juridiques liés aux litiges immobiliers, à la rédaction et révision de contrats.",
@@ -623,31 +826,55 @@ const translations = {
     article1Cat: "Droit Immobilier",
     article1Date: "2026/06/15",
     article1Desc: "Guide complet des contrats de développement immobilier au 6 Octobre. Registre foncier, protection des investissements et prévention des litiges.",
+    article1Slug: "real-estate-contracts-6th-october",
+    article1Tags: ["immobilier", "contrats", "développement", "registre foncier"],
+    article1Keywords: ["contrats immobiliers", "registre foncier", "développement immobilier", "droit immobilier"],
+    article1RelatedServices: ["realestate", "contracts"],
 
     article2Title: "Création d'Entreprise 2026: Documents et Procédures Officiels",
     article2Cat: "Droit des Sociétés",
     article2Date: "2026/07/02",
     article2Desc: "Guide étape par étape pour créer une société selon la Loi sur l'Investissement 2026. Documents requis, structure juridique et conseils pratiques.",
+    article2Slug: "company-formation-egypt-2026",
+    article2Tags: ["sociétés", "création", "investissement", "droit des affaires"],
+    article2Keywords: ["création d'entreprise", "droit des sociétés", "registre du commerce", "investissement"],
+    article2RelatedServices: ["corporate"],
 
     article3Title: "Pourvoi en Cassation: Conditions, Délais et Procédures",
     article3Cat: "Défense Pénale",
     article3Date: "2026/07/18",
     article3Desc: "Guide complet du pourvoi en cassation. Délais légaux, motifs de recours et procédures de litige complètes.",
+    article3Slug: "criminal-appeal-cassation",
+    article3Tags: ["pénal", "cassation", "appel", "tribunaux pénaux"],
+    article3Keywords: ["pourvoi en cassation", "affaires pénales", "Cour de Cassation"],
+    article3RelatedServices: ["criminal"],
 
     article4Title: "Droits du Salarié et de l'Employeur — Guide Complet",
     article4Cat: "Droit du Travail",
     article4Date: "2026/08/01",
     article4Desc: "Guide complet du droit du travail : contrat de travail, congés, rupture, indemnités et litiges.",
+    article4Slug: "labor-law-employee-rights",
+    article4Tags: ["travail", "contrat", "indemnités", "rupture"],
+    article4Keywords: ["droit du travail", "droits du salarié", "litiges du travail"],
+    article4RelatedServices: ["labor"],
 
     article5Title: "Pension, Garde d'Enfants et Droit de Visite",
     article5Cat: "Droit de la Famille",
     article5Date: "2026/08/10",
     article5Desc: "Guide complet des droits des époux en matière de pension, garde et visite selon le droit de la famille égyptien.",
+    article5Slug: "family-law-custody-alimony",
+    article5Tags: ["famille", "pension", "garde", "divorce"],
+    article5Keywords: ["pension alimentaire", "garde d'enfants", "droit de la famille"],
+    article5RelatedServices: ["family"],
 
     article6Title: "Rédaction de Contrats Commerciaux: 7 Erreurs Juridiques Qui Ruinent Votre Affaire",
     article6Cat: "Droit des Contrats",
-    article6Date: "2026/08/20",
+    article6Date: "2026/07/28",
     article6Desc: "Les pièges juridiques les plus courants dans la rédaction des contrats commerciaux et comment les éviter. Conseils d'experts en rédaction juridique.",
+    article6Slug: "commercial-contracts-drafting",
+    article6Tags: ["contrats", "commercial", "rédaction", "partenariat"],
+    article6Keywords: ["rédaction de contrats", "contrats commerciaux", "contrats de partenariat"],
+    article6RelatedServices: ["contracts", "corporate"],
 
     articleCTA: "Réservez Votre Consultation Juridique",
     btnReadMore: "Lire l'Article Complet",
@@ -699,9 +926,39 @@ const translations = {
     service4: "Affaires Immobilières",
     service5: "Droit des Sociétés",
     service6: "Consultations Juridiques",
+    service7: "Rédaction de Contrats",
+    service8: "Affaires du Travail",
+    service9: "Indemnisation & Accidents",
+    service10: "Consultations Juridiques",
 
     adminLoginTitle: "Connexion Administrateur",
     adminLoginSub: "Réservé aux administrateurs uniquement",
-    adminLoginBtn: "Connexion"
+    adminLoginBtn: "Connexion",
+
+    aboutStoryTitle: "À Propos du Cabinet et Notre Mission",
+    aboutStoryText: "Le Cabinet Al-Ghonemy accueille ses clients à son siège au Centre Al Hejaz près de la Place Al-Hosary au 6 Octobre, tout en offrant des services de consultation juridique à distance et un examen préliminaire des dossiers pour des clients de diverses régions.",
+
+    serviceDetailFull: "Détails Complets",
+    serviceDetailQuick: "Consultation Rapide",
+    serviceDetailBack: "Retour aux Services",
+
+    articlesExploreBtn: "Explorer Tous les Articles Juridiques <i class=\"fas fa-arrow-left\"></i>",
+    articlesSubtitle: "Guides pratiques et simplifiés pour vous aider à comprendre vos droits juridiques et vos procédures contractuelles et d'investissement.",
+    articlesSearchPlaceholder: "Rechercher des articles juridiques...",
+    searchDisclaimer: "Avis juridique : les résultats de recherche affichent des articles éducatifs généraux et ne constituent pas un avis juridique spécifique à votre cas.",
+    articlesEmptyTitle: "Aucun résultat correspondant trouvé",
+    articlesEmptyText: "Essayez d'autres mots-clés tels que : \"contrats\", \"cassation\", \"pension\", ou \"sociétés\".",
+
+    filterAll: "Tous",
+    filterRealEstate: "Droit Immobilier",
+    filterCorporate: "Droit des Sociétés",
+    filterCriminal: "Défense Pénale",
+    filterLabor: "Droit du Travail",
+    filterFamily: "Droit de la Famille",
+    filterContracts: "Droit des Contrats",
+
+    serviceAreaTitle: "Zone de Service",
+    serviceAreaDesc: "Notre siège est situé au Centre Al Hejaz au 6 Octobre, et nous fournissons des services juridiques aux clients de différentes régions :",
+    serviceAreaNote: "Le cabinet accueille les clients de tous les gouvernorats, en personne ou par des consultations juridiques à distance."
   }
 };
