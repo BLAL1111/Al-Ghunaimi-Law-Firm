@@ -144,9 +144,24 @@ html[dir="ltr"] .text-start { text-align: left; }
   outline-offset: 2px;
 }
 
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-primary); }
-::-webkit-scrollbar-thumb { background: var(--accent-gold); border-radius: 4px; }
+* { scrollbar-width: thin; scrollbar-color: var(--accent-gold) var(--bg-primary); }
+html { scrollbar-gutter: stable; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-primary); border-radius: 4px; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent-gold-bright), var(--accent-gold));
+  border-radius: 10px;
+  border: 1px solid var(--bg-primary);
+  transition: all 0.3s ease;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #FFEAA7, var(--accent-gold-bright));
+  box-shadow: 0 2px 12px rgba(212,175,55,0.45);
+  border-color: rgba(212,175,55,0.3);
+}
+::-webkit-scrollbar-thumb:active {
+  background: var(--accent-gold-bright);
+}
 
 .container {
   width: 92%;
@@ -879,7 +894,54 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
   background: rgba(255, 255, 255, 0.82);
 }
 
+/* ── Services Preview (Home) — law_books_desk background ── */
+.services-preview {
+  position: relative;
+  background-image: url('img/law_books_desk.jpg');
+  background-image: image-set(url('img/law_books_desk.webp') type("image/webp"), url('img/law_books_desk.jpg') type("image/jpeg"));
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+}
+.services-preview::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11,12,14,0.68) 0%, rgba(11,12,14,0.78) 40%, var(--bg-primary) 100%);
+  z-index: 1;
+}
+[data-theme="light"] .services-preview::before {
+  background: linear-gradient(180deg, rgba(249,248,245,0.60) 0%, rgba(249,248,245,0.75) 40%, var(--bg-primary) 100%);
+}
+.services-preview .container {
+  position: relative;
+  z-index: 2;
+}
+.services-preview .service-card {
+  background: rgba(23,26,31,0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+[data-theme="light"] .services-preview .service-card {
+  background: rgba(255,255,255,0.88);
+}
+
 /* ── Articles Preview (Home) — scoped root fix ── */
+.articles-preview {
+  padding: 60px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.articles-preview .container {
+  width: 92%;
+  max-width: 1320px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .articles-preview .articles-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
@@ -888,6 +950,7 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  justify-content: center;
 }
 .articles-preview .article-card {
   display: flex;
