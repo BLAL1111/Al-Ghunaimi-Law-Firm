@@ -1883,6 +1883,18 @@ html[dir="rtl"] .footer-contact { order: 1; }
   }
 
   .team-grid { grid-template-columns: 1fr; gap: 22px; max-width: 560px; margin: 0 auto; }
+  html[dir="rtl"] .team-grid .team-card:nth-child(1),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(1),
+  html[dir="ltr"] .team-grid .team-card:nth-child(1),
+  html[dir="ltr"] .team-grid .partner-card:nth-child(1) { order: 1 !important; }
+  html[dir="rtl"] .team-grid .team-card:nth-child(2),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(2),
+  html[dir="ltr"] .team-grid .team-card:nth-child(2),
+  html[dir="ltr"] .team-grid .partner-card:nth-child(2) { order: 2 !important; }
+  html[dir="rtl"] .team-grid .team-card:nth-child(3),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(3),
+  html[dir="ltr"] .team-grid .team-card:nth-child(3),
+  html[dir="ltr"] .team-grid .partner-card:nth-child(3) { order: 3 !important; }
   .team-avatar, .partner-img-wrapper { height: auto; min-height: 240px; }
   .contact-wrapper { grid-template-columns: 1fr; }
   .contact-info-side { padding: 28px 24px; }
@@ -1924,20 +1936,20 @@ html[dir="rtl"] .footer-contact { order: 1; }
     background-attachment: scroll;
   }
 
-  .team-grid { grid-template-columns: 1fr; gap: 22px; }
-  /* Mobile stack: Mahmoud first, Abdullah second, Eslam third */
-  .team-grid .team-card:nth-child(1),
-  .team-grid .partner-card:nth-child(1),
+  .team-grid { grid-template-columns: 1fr; gap: 22px; max-width: 560px; margin: 0 auto; }
+  /* Mobile stack: Mahmoud first, Abdullah second, Eslam third — high specificity to override desktop */
+  html[dir="rtl"] .team-grid .team-card:nth-child(1),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(1),
   html[dir="ltr"] .team-grid .team-card:nth-child(1),
-  html[dir="ltr"] .team-grid .partner-card:nth-child(1) { order: 1; }
-  .team-grid .team-card:nth-child(2),
-  .team-grid .partner-card:nth-child(2),
+  html[dir="ltr"] .team-grid .partner-card:nth-child(1) { order: 1 !important; }
+  html[dir="rtl"] .team-grid .team-card:nth-child(2),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(2),
   html[dir="ltr"] .team-grid .team-card:nth-child(2),
-  html[dir="ltr"] .team-grid .partner-card:nth-child(2) { order: 2; }
-  .team-grid .team-card:nth-child(3),
-  .team-grid .partner-card:nth-child(3),
+  html[dir="ltr"] .team-grid .partner-card:nth-child(2) { order: 2 !important; }
+  html[dir="rtl"] .team-grid .team-card:nth-child(3),
+  html[dir="rtl"] .team-grid .partner-card:nth-child(3),
   html[dir="ltr"] .team-grid .team-card:nth-child(3),
-  html[dir="ltr"] .team-grid .partner-card:nth-child(3) { order: 3; }
+  html[dir="ltr"] .team-grid .partner-card:nth-child(3) { order: 3 !important; }
   .practices-grid, .services-grid, .services-hub-grid { grid-template-columns: 1fr; }
   .why-grid { grid-template-columns: 1fr; }
   .how-grid { grid-template-columns: 1fr; }
