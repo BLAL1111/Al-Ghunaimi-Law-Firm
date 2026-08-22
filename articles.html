@@ -301,14 +301,22 @@
       let articlesData = [];
       let currentCategory = 'all';
 
-      // Try Supabase first, fallback to static
+      // Try Supabase + static merge (so new articles don't hide the original 6, and site works if Supabase is down)
       async function fetchArticles() {
+        const staticArticles = [
+          { id: 1, slug: 'real-estate-contracts-6th-october', title: 'دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات', category: 'real-estate', date: '2026/06/15', excerpt: 'دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.', tags: ['عقار', 'توثيق', 'عقود', '6 أكتوبر', 'استثمار'], keywords: ['توثيق عقود عقارية', 'الشهر العقاري', 'عقود التطوير العقاري', 'قانون عقاري 6 أكتوبر', 'استثمار عقاري'] },
+          { id: 2, slug: 'company-formation-egypt-2026', title: 'تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة', category: 'corporate', date: '2026/07/02', excerpt: 'خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.', tags: ['شركات', 'تأسيس', 'استثمار', 'قانون تجاري'], keywords: ['خطوات تأسيس الشركات في مصر', 'قانون الاستثمار 2026', 'الأوراق المطلوبة', 'الهيكلة القانونية'] },
+          { id: 3, slug: 'criminal-appeal-cassation', title: 'الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات', category: 'criminal', date: '2026/07/18', excerpt: 'شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.', tags: ['جنائي', 'نقض', 'طعن', 'محكمة النقض'], keywords: ['شروط الطعن بالنقض في القضايا الجنائية', 'محكمة النقض المصرية', 'الميعاد القانوني', 'أسباب الطعن'] },
+          { id: 4, slug: 'labor-law-employee-rights', title: 'منازعات قانون العمل المصري 2026: دليل شامل لحقوق العامل وصاحب العمل', category: 'labor', date: '2026/07/28', excerpt: 'دليل شامل لحقوق العامل وصاحب العمل في قانون العمل المصري. يشمل حالات الفصل التعسفي، المستحقات العمالية، وحل النزاعات الودية والقضائية.', tags: ['عمل', 'عمال', 'حقوق', 'الفصل التعسفي'], keywords: ['حقوق العامل', 'صاحب العمل', 'قانون العمل المصري', 'الفصل التعسفي', 'المستحقات العمالية', 'عقد العمل'] },
+          { id: 5, slug: 'family-law-custody-alimony', title: 'النفقة والحضانة والرؤية في قانون الأسرة المصري: أهم الأسئلة الشائعة', category: 'family', date: '2026/08/05', excerpt: 'شرح متكامل لأحكام النفقة والحضانة وحق الرؤية في محاكم الأسرة المصرية. شروط الاستحقاق، حساب النفقة، وتعديل المبالغ بقرارات المحكمة.', tags: ['أسرة', 'طلاق', 'نفقة', 'حضانة', 'رؤية'], keywords: ['النفقة', 'الحضانة', 'الرؤية', 'قانون الأسرة المصري', 'دعاوى محكمة الأسرة', 'إقامة الزوجة'] },
+          { id: 6, slug: 'commercial-contracts-drafting', title: 'صياغة العقود التجارية: 7 أخطاء قانونية قاتلة تجنب الوقوع فيها', category: 'contracts', date: '2026/08/11', excerpt: 'أهم الأخطاء الشائعة في صياغة العقود التجارية والمدنية. كيفية حماية حقوقك من الغموض التعاقدي، صياغة الشروط الجزائية، وبنود فض النزاعات.', tags: ['عقود', 'صياغة', 'تجاري', 'شروط جزائية'], keywords: ['صياغة العقود التجارية', 'أخطاء قانونية', 'شروط جزائية', 'الغموض التعاقدي', 'التحكيم'] }
+        ];
+        let supabaseArticles = [];
         if (supabaseClient) {
           try {
             const { data, error } = await supabaseClient.from('articles').select('id,slug,title,excerpt,category,published_at,tags,cover_image_url').eq('status','published').order('published_at', { ascending: false });
             if (!error && data && data.length) {
-              // map to expected shape
-              return data.map(a => ({
+              supabaseArticles = data.map(a => ({
                 id: a.id,
                 slug: a.slug,
                 title: a.title,
@@ -320,17 +328,37 @@
                 cover: a.cover_image_url
               }));
             }
-          } catch(e) { console.warn('Supabase fetch failed, fallback to static', e); }
+          } catch(e) { console.warn('Supabase fetch failed, using static only', e); }
         }
-        // Fallback static 6
-        return [
-          { id: 1, slug: 'real-estate-contracts-6th-october', title: 'دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات', category: 'real-estate', date: '2026/06/15', excerpt: 'دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.', tags: ['عقار', 'توثيق', 'عقود', '6 أكتوبر', 'استثمار'], keywords: ['توثيق عقود عقارية', 'الشهر العقاري', 'عقود التطوير العقاري', 'قانون عقاري 6 أكتوبر', 'استثمار عقاري'] },
-          { id: 2, slug: 'company-formation-egypt-2026', title: 'تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة', category: 'corporate', date: '2026/07/02', excerpt: 'خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.', tags: ['شركات', 'تأسيس', 'استثمار', 'قانون تجاري'], keywords: ['خطوات تأسيس الشركات في مصر', 'قانون الاستثمار 2026', 'الأوراق المطلوبة', 'الهيكلة القانونية'] },
-          { id: 3, slug: 'criminal-appeal-cassation', title: 'الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات', category: 'criminal', date: '2026/07/18', excerpt: 'شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.', tags: ['جنائي', 'نقض', 'طعن', 'محكمة النقض'], keywords: ['شروط الطعن بالنقض في القضايا الجنائية', 'محكمة النقض المصرية', 'الميعاد القانوني', 'أسباب الطعن'] },
-          { id: 4, slug: 'labor-law-employee-rights', title: 'منازعات قانون العمل المصري 2026: دليل شامل لحقوق العامل وصاحب العمل', category: 'labor', date: '2026/07/28', excerpt: 'دليل شامل لحقوق العامل وصاحب العمل في قانون العمل المصري. يشمل حالات الفصل التعسفي، المستحقات العمالية، وحل النزاعات الودية والقضائية.', tags: ['عمل', 'عمال', 'حقوق', 'الفصل التعسفي'], keywords: ['حقوق العامل', 'صاحب العمل', 'قانون العمل المصري', 'الفصل التعسفي', 'المستحقات العمالية', 'عقد العمل'] },
-          { id: 5, slug: 'family-law-custody-alimony', title: 'النفقة والحضانة والرؤية في قانون الأسرة المصري: أهم الأسئلة الشائعة', category: 'family', date: '2026/08/05', excerpt: 'شرح متكامل لأحكام النفقة والحضانة وحق الرؤية في محاكم الأسرة المصرية. شروط الاستحقاق، حساب النفقة، وتعديل المبالغ بقرارات المحكمة.', tags: ['أسرة', 'طلاق', 'نفقة', 'حضانة', 'رؤية'], keywords: ['النفقة', 'الحضانة', 'الرؤية', 'قانون الأسرة المصري', 'دعاوى محكمة الأسرة', 'إقامة الزوجة'] },
-          { id: 6, slug: 'commercial-contracts-drafting', title: 'صياغة العقود التجارية: 7 أخطاء قانونية قاتلة تجنب الوقوع فيها', category: 'contracts', date: '2026/08/11', excerpt: 'أهم الأخطاء الشائعة في صياغة العقود التجارية والمدنية. كيفية حماية حقوقك من الغموض التعاقدي، صياغة الشروط الجزائية، وبنود فض النزاعات.', tags: ['عقود', 'صياغة', 'تجاري', 'شروط جزائية'], keywords: ['صياغة العقود التجارية', 'أخطاء قانونية', 'شروط جزائية', 'الغموض التعاقدي', 'التحكيم'] }
-        ];
+        // Also fetch persisted GitHub data/articles.json (so articles remain even if Supabase is closed)
+        let fileArticles = [];
+        try {
+          const r = await fetch('data/articles.json', { cache: 'no-store' });
+          if (r.ok) {
+            const j = await r.json();
+            if (Array.isArray(j)) {
+              fileArticles = j.filter(a=>a.status==='published').map(a=> ({
+                id: a.id,
+                slug: a.slug,
+                title: a.title,
+                category: a.category || 'general',
+                date: a.published_at ? new Date(a.published_at).slice(0,10).replace(/-/g,'/') : '',
+                excerpt: a.excerpt || '',
+                tags: a.tags || [],
+                keywords: (a.tags||[]).concat(a.category||''),
+                cover: a.cover_image_url
+              }));
+            }
+          }
+        } catch(e) {}
+        // Merge: Supabase first, then file, then static (dedupe by slug)
+        const seen = new Set();
+        const merged = [];
+        for (const a of [...supabaseArticles, ...fileArticles, ...staticArticles]) {
+          if (!seen.has(a.slug)) { seen.add(a.slug); merged.push(a); }
+        }
+        merged.sort((a,b)=> new Date(b.date) - new Date(a.date));
+        return merged.length ? merged : staticArticles;
       }
 
       function renderGrid(data) {

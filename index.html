@@ -424,29 +424,56 @@
   <script src="components.js"></script>
   <script src="script.js"></script>
   <script>
-    // Home: load latest 3 published articles from Supabase (keeps static fallback if not configured)
+    // Home: load latest 3 — merge Supabase + static so original 3 never disappear
     document.addEventListener('DOMContentLoaded', async () => {
+      const grid = document.querySelector('.articles-preview .articles-grid');
+      if (!grid) return;
+      const staticArticles = [
+        { slug:'real-estate-contracts-6th-october', title:'دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات', excerpt:'دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.', category:'real-estate', published_at:'2026-06-15T00:00:00Z' },
+        { slug:'company-formation-egypt-2026', title:'تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة', excerpt:'خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.', category:'corporate', published_at:'2026-07-02T00:00:00Z' },
+        { slug:'criminal-appeal-cassation', title:'الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات', excerpt:'شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.', category:'criminal', published_at:'2026-07-18T00:00:00Z' },
+        { slug:'labor-law-employee-rights', title:'منازعات قانون العمل المصري 2026: دليل شامل لحقوق العامل وصاحب العمل', excerpt:'دليل شامل لحقوق العامل وصاحب العمل في قانون العمل المصري. يشمل حالات الفصل التعسفي، المستحقات العمالية، وحل النزاعات الودية والقضائية.', category:'labor', published_at:'2026-07-28T00:00:00Z' },
+        { slug:'family-law-custody-alimony', title:'النفقة والحضانة والرؤية في قانون الأسرة المصري: أهم الأسئلة الشائعة', excerpt:'شرح متكامل لأحكام النفقة والحضانة وحق الرؤية في محاكم الأسرة المصرية. شروط الاستحقاق، حساب النفقة، وتعديل المبالغ بقرارات المحكمة.', category:'family', published_at:'2026-08-05T00:00:00Z' },
+        { slug:'commercial-contracts-drafting', title:'صياغة العقود التجارية: 7 أخطاء قانونية قاتلة تجنب الوقوع فيها', excerpt:'أهم الأخطاء الشائعة في صياغة العقود التجارية والمدنية. كيفية حماية حقوقك من الغموض التعاقدي، صياغة الشروط الجزائية، وبنود فض النزاعات.', category:'contracts', published_at:'2026-08-11T00:00:00Z' }
+      ];
+      let supabaseArticles = [];
+      let fileArticles = [];
       const supabaseClient = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
-      if (!supabaseClient) return;
+      if (supabaseClient) {
+        try {
+          const { data, error } = await supabaseClient.from('articles').select('slug,title,excerpt,category,published_at').eq('status','published').order('published_at', {ascending:false}).limit(10);
+          if (!error && data && data.length) {
+            supabaseArticles = data.map(a=> ({ slug:a.slug, title:a.title, excerpt:a.excerpt||'', category:a.category||'general', published_at:a.published_at||new Date().toISOString() }));
+          }
+        } catch(e){ console.warn('Home Supabase failed', e); }
+      }
       try {
-        const { data, error } = await supabaseClient.from('articles').select('slug,title,excerpt,category,published_at').eq('status','published').order('published_at', {ascending:false}).limit(3);
-        if (error || !data || !data.length) return;
-        const grid = document.querySelector('.articles-preview .articles-grid');
-        if (!grid) return;
-        grid.innerHTML = '';
-        const catLabel = { 'real-estate':'القانون العقاري', 'corporate':'قانون الشركات', 'criminal':'الدفوع الجنائية', 'labor':'قانون العمل', 'family':'الأحوال الشخصية', 'contracts':'العقود التجارية' };
-        data.forEach(a => {
-          const date = a.published_at ? new Date(a.published_at).toISOString().slice(0,10).replace(/-/g,'/') : '';
-          const accent = a.category || 'real-estate';
-          const card = document.createElement('div');
-          card.className = 'article-card';
-          card.innerHTML = `<div class="article-card-accent" data-accent="${accent}"></div><div class="article-body"><div class="article-meta"><span class="article-cat" data-cat="${a.category}">${catLabel[a.category]||a.category}</span><span class="article-date">${date}</span></div><h3 class="article-title">${a.title}</h3><p class="article-excerpt">${a.excerpt||''}</p><div class="article-footer"><a href="articles/${a.slug}" class="btn-outline btn-sm">اقرأ المقال <i class="fas fa-chevron-left"></i></a></div></div>`;
-          const isLocal = location.protocol==='file:';
-          const link = card.querySelector('a');
-          link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
-          grid.appendChild(card);
-        });
-      } catch(e){ console.warn('Home articles dynamic failed', e); }
+        const r = await fetch('data/articles.json', { cache:'no-store' });
+        if (r.ok) {
+          const j = await r.json();
+          if (Array.isArray(j) && j.length) fileArticles = j.filter(a=>a.status==='published').map(a=> ({ slug:a.slug, title:a.title, excerpt:a.excerpt||'', category:a.category, published_at:a.published_at }));
+        }
+      } catch(e){}
+      const seen = new Set();
+      const merged = [];
+      for (const a of [...supabaseArticles, ...fileArticles, ...staticArticles]) {
+        if (!seen.has(a.slug)) { seen.add(a.slug); merged.push(a); }
+      }
+      merged.sort((a,b)=> new Date(b.published_at) - new Date(a.published_at));
+      const latest3 = merged.slice(0,3);
+      grid.innerHTML = '';
+      const catLabel = { 'real-estate':'القانون العقاري', 'corporate':'قانون الشركات', 'criminal':'الدفوع الجنائية', 'labor':'قانون العمل', 'family':'الأحوال الشخصية', 'contracts':'العقود التجارية' };
+      latest3.forEach(a => {
+        const date = a.published_at ? new Date(a.published_at).toISOString().slice(0,10).replace(/-/g,'/') : '';
+        const accent = a.category || 'real-estate';
+        const card = document.createElement('div');
+        card.className = 'article-card';
+        card.innerHTML = `<div class="article-card-accent" data-accent="${accent}"></div><div class="article-body"><div class="article-meta"><span class="article-cat" data-cat="${a.category}">${catLabel[a.category]||a.category}</span><span class="article-date">${date}</span></div><h3 class="article-title">${a.title}</h3><p class="article-excerpt">${a.excerpt||''}</p><div class="article-footer"><a href="articles/${a.slug}" class="btn-outline btn-sm">اقرأ المقال <i class="fas fa-chevron-left"></i></a></div></div>`;
+        const isLocal = location.protocol==='file:';
+        const link = card.querySelector('a');
+        link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
+        grid.appendChild(card);
+      });
     });
   </script>
 </body>
