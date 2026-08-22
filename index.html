@@ -416,9 +416,9 @@
   <!-- Shared JavaScript Components & Logic -->
     </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabaseClient.min.js"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase.js"></script>
+  <script src="js/supabaseClient.js"></script>
   <script src="translations.js"></script>
   <script src="search.js"></script>
   <script src="components.js"></script>
@@ -426,10 +426,10 @@
   <script>
     // Home: load latest 3 published articles from Supabase (keeps static fallback if not configured)
     document.addEventListener('DOMContentLoaded', async () => {
-      const supabase = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
-      if (!supabase) return;
+      const supabaseClient = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
+      if (!supabaseClient) return;
       try {
-        const { data, error } = await supabase.from('articles').select('slug,title,excerpt,category,published_at').eq('status','published').order('published_at', {ascending:false}).limit(3);
+        const { data, error } = await supabaseClient.from('articles').select('slug,title,excerpt,category,published_at').eq('status','published').order('published_at', {ascending:false}).limit(3);
         if (error || !data || !data.length) return;
         const grid = document.querySelector('.articles-preview .articles-grid');
         if (!grid) return;

@@ -46,11 +46,11 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/supabase.js"></script>
   <script>
-    const supabase = window.GhonemySupabase.createClient();
+    const supabaseClient = window.GhonemySupabase.createClient();
     const errorEl = document.getElementById('error');
     const successEl = document.getElementById('success');
     const configWarn = document.getElementById('config-warn');
-    if (!supabase) configWarn.style.display = 'block';
+    if (!supabaseClient) configWarn.style.display = 'block';
 
     function showError(msg) {
       errorEl.textContent = msg;
@@ -65,11 +65,11 @@
 
     // If already logged in and is admin, redirect
     (async () => {
-      if (!supabase) return;
-      const { data: { session } } = await supabase.auth.getSession();
+      if (!supabaseClient) return;
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (session) {
         // check admin
-        const { data: admin } = await supabase.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+        const { data: admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
         if (admin) location.href = 'articles.html';
       }
     })();
@@ -85,13 +85,13 @@
       btn.disabled = true;
       btn.textContent = 'جاري الدخول...';
       try {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) throw error;
         // verify admin
-        const { data: admin, error: adminErr } = await supabase.from('admin_users').select('role').eq('user_id', data.user.id).maybeSingle();
+        const { data: admin, error: adminErr } = await supabaseClient.from('admin_users').select('role').eq('user_id', data.user.id).maybeSingle();
         if (adminErr) throw adminErr;
         if (!admin) {
-          await supabase.auth.signOut();
+          await supabaseClient.auth.signOut();
           throw new Error('هذا الحساب ليس مسؤولاً. تواصل مع الإدارة.');
         }
         location.href = 'articles.html';
@@ -108,7 +108,7 @@
       const email = document.getElementById('email').value.trim();
       if (!email) return showError('أدخل بريدك أولاً لإرسال رابط الاستعادة');
       try {
-        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
           redirectTo: window.location.origin + window.location.pathname.replace('login.html','') + 'login.html'
         });
         if (error) throw error;
@@ -118,7 +118,7 @@
       }
     });
 
-    supabase && supabase.auth.onAuthStateChange((event, session) => {
+    supabase && supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         // stay on login
       }

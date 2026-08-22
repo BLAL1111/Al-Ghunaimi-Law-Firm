@@ -68,7 +68,7 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/supabase.js"></script>
   <script>
-    const supabase = window.GhonemySupabase.createClient();
+    const supabaseClient = window.GhonemySupabase.createClient();
     const loadingEl = document.getElementById('loading');
     const errorEl = document.getElementById('error');
     const articleEl = document.getElementById('article-detail');
@@ -97,12 +97,12 @@
       let article = null;
       if (supabase) {
         // First try direct slug
-        let { data, error } = await supabase.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
+        let { data, error } = await supabaseClient.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
         if (!data && !error) {
           // Try redirect table
-          const { data: redir } = await supabase.from('article_redirects').select('article_id').eq('old_slug', slug).maybeSingle();
+          const { data: redir } = await supabaseClient.from('article_redirects').select('article_id').eq('old_slug', slug).maybeSingle();
           if (redir) {
-            const { data: a2 } = await supabase.from('articles').select('*').eq('id', redir.article_id).eq('status','published').maybeSingle();
+            const { data: a2 } = await supabaseClient.from('articles').select('*').eq('id', redir.article_id).eq('status','published').maybeSingle();
             if (a2) {
               // redirect to new slug for SEO
               const newUrl = `https://al-ghunaimi-law-firm.vercel.app/articles/${a2.slug}`;
@@ -173,7 +173,7 @@
     async function loadRelated(current){
       if(!supabase) return;
       // simple: same category, limit 2
-      const { data } = await supabase.from('articles').select('slug,title').eq('status','published').eq('category', current.category).neq('id', current.id).limit(2);
+      const { data } = await supabaseClient.from('articles').select('slug,title').eq('status','published').eq('category', current.category).neq('id', current.id).limit(2);
       if(data && data.length){
         const ul = document.getElementById('related-articles');
         ul.innerHTML = data.map(x=> `<li><a href="./${x.slug}"><i class="fas fa-chevron-left"></i> ${x.title}</a></li>`).join('');

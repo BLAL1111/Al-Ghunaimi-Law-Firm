@@ -130,7 +130,7 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/supabase.js"></script>
   <script>
-    const supabase = window.GhonemySupabase.createClient();
+    const supabaseClient = window.GhonemySupabase.createClient();
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
     const isPreview = params.get('preview') === '1';
@@ -143,10 +143,10 @@
 
     async function requireAdmin(){
       if(!supabase){ showError('Supabase غير مهيأ'); return null; }
-      const { data:{session}} = await supabase.auth.getSession();
+      const { data:{session}} = await supabaseClient.auth.getSession();
       if(!session){ location.href='login.html'; return null; }
-      const { data:admin } = await supabase.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
-      if(!admin){ await supabase.auth.signOut(); location.href='login.html'; return null; }
+      const { data:admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+      if(!admin){ await supabaseClient.auth.signOut(); location.href='login.html'; return null; }
       return session;
     }
 
@@ -161,7 +161,7 @@
       }
       document.getElementById('form-title').textContent = 'تعديل مقال';
       document.getElementById('archive').style.display = 'inline-flex';
-      const { data, error } = await supabase.from('articles').select('*').eq('id', id).single();
+      const { data, error } = await supabaseClient.from('articles').select('*').eq('id', id).single();
       if(error) return showError(error.message);
       originalSlug = data.slug;
       currentStatus = data.status;
@@ -202,9 +202,9 @@
       try{
         const ext = file.name.split('.').pop().toLowerCase();
         const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
-        const { error } = await supabase.storage.from('article-images').upload(path, file, { cacheControl: '3600', upsert:false });
+        const { error } = await supabaseClient.storage.from('article-images').upload(path, file, { cacheControl: '3600', upsert:false });
         if(error) throw error;
-        const { data } = supabase.storage.from('article-images').getPublicUrl(path);
+        const { data } = supabaseClient.storage.from('article-images').getPublicUrl(path);
         document.getElementById('cover_url').value = data.publicUrl;
         document.getElementById('cover-img').src = data.publicUrl;
         document.getElementById('cover-preview').style.display='block';
@@ -258,16 +258,16 @@
           // handle slug change -> create redirect
           if(originalSlug && originalSlug !== payload.slug){
             // check if new slug exists
-            const { data: exists } = await supabase.from('articles').select('id').eq('slug', payload.slug).neq('id', id).maybeSingle();
+            const { data: exists } = await supabaseClient.from('articles').select('id').eq('slug', payload.slug).neq('id', id).maybeSingle();
             if(exists) throw new Error('Slug موجود لمقال آخر');
             // create redirect for old
-            await supabase.from('article_redirects').insert({ old_slug: originalSlug, article_id: id });
+            await supabaseClient.from('article_redirects').insert({ old_slug: originalSlug, article_id: id });
           }
-          const { error } = await supabase.from('articles').update(payload).eq('id', id);
+          const { error } = await supabaseClient.from('articles').update(payload).eq('id', id);
           if(error) throw error;
           result = id;
         } else {
-          const { data, error } = await supabase.from('articles').insert(payload).select('id').single();
+          const { data, error } = await supabaseClient.from('articles').insert(payload).select('id').single();
           if(error) throw error;
           result = data.id;
         }
@@ -296,7 +296,7 @@
     document.getElementById('archive').addEventListener('click', async ()=>{
       if(!id) return showError('احفظ المقال أولاً');
       if(!confirm('أرشفة المقال؟')) return;
-      const { error } = await supabase.from('articles').update({ status:'archived' }).eq('id', id);
+      const { error } = await supabaseClient.from('articles').update({ status:'archived' }).eq('id', id);
       if(error) return showError(error.message);
       showSuccess('تمت الأرشفة'); setTimeout(()=> location.href='articles.html', 800);
     });
@@ -309,7 +309,7 @@
       if(dirty){ e.preventDefault(); e.returnValue=''; }
     });
 
-    document.getElementById('logout').addEventListener('click', async ()=>{ await supabase.auth.signOut(); location.href='login.html'; });
+    document.getElementById('logout').addEventListener('click', async ()=>{ await supabaseClient.auth.signOut(); location.href='login.html'; });
 
     load();
   </script>

@@ -54,7 +54,7 @@
   <script src="../js/supabase-config.js"></script>
   <script src="../js/supabase.js"></script>
   <script>
-    const supabase = window.GhonemySupabase.createClient();
+    const supabaseClient = window.GhonemySupabase.createClient();
     const listEl = document.getElementById('list');
     const errorEl = document.getElementById('error');
     const emptyEl = document.getElementById('empty');
@@ -62,16 +62,16 @@
     const searchEl = document.getElementById('search');
     const statusEl = document.getElementById('status-filter');
 
-    if (!supabase) {
+    if (!supabaseClient) {
       errorEl.textContent = 'Supabase غير مهيأ. راجع SUPABASE_SETUP.md';
       errorEl.style.display = 'block';
     }
 
     async function requireAdmin() {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) { location.href = 'login.html'; return null; }
-      const { data: admin } = await supabase.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
-      if (!admin) { await supabase.auth.signOut(); location.href = 'login.html'; return null; }
+      const { data: admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+      if (!admin) { await supabaseClient.auth.signOut(); location.href = 'login.html'; return null; }
       return session;
     }
 
@@ -79,7 +79,7 @@
 
     async function load() {
       await requireAdmin();
-      const { data, error } = await supabase.from('articles').select('*').order('updated_at', { ascending: false });
+      const { data, error } = await supabaseClient.from('articles').select('*').order('updated_at', { ascending: false });
       if (error) { errorEl.textContent = error.message; errorEl.style.display='block'; return; }
       allArticles = data || [];
       render();
@@ -123,14 +123,14 @@
           btn.disabled = true;
           try {
             if (act === 'publish') {
-              const { error } = await supabase.from('articles').update({ status:'published', published_at: new Date().toISOString() }).eq('id', id);
+              const { error } = await supabaseClient.from('articles').update({ status:'published', published_at: new Date().toISOString() }).eq('id', id);
               if (error) throw error;
             } else if (act === 'unpublish') {
-              const { error } = await supabase.from('articles').update({ status:'draft' }).eq('id', id);
+              const { error } = await supabaseClient.from('articles').update({ status:'draft' }).eq('id', id);
               if (error) throw error;
             } else if (act === 'archive') {
               if (!confirm('أرشفة المقال؟ لن يظهر للعامة.')) return;
-              const { error } = await supabase.from('articles').update({ status:'archived' }).eq('id', id);
+              const { error } = await supabaseClient.from('articles').update({ status:'archived' }).eq('id', id);
               if (error) throw error;
             }
             await load();
@@ -148,9 +148,9 @@
 
     searchEl.addEventListener('input', render);
     statusEl.addEventListener('change', render);
-    document.getElementById('logout').addEventListener('click', async ()=>{ await supabase.auth.signOut(); location.href='login.html'; });
+    document.getElementById('logout').addEventListener('click', async ()=>{ await supabaseClient.auth.signOut(); location.href='login.html'; });
 
-    supabase && supabase.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
+    supabase && supabaseClient.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
 
     load();
   </script>

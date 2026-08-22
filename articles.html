@@ -281,16 +281,16 @@
   <!-- Scripts -->
     </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabaseClient.min.js"></script>
   <script src="js/supabase-config.js"></script>
-  <script src="js/supabase.js"></script>
+  <script src="js/supabaseClient.js"></script>
   <script src="translations.js"></script>
   <script src="search.js"></script>
   <script src="components.js"></script>
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const supabase = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
+      const supabaseClient = window.GhonemySupabase ? window.GhonemySupabase.createClient() : null;
       const grid = document.getElementById('articles-grid');
       const searchInput = document.getElementById('articles-search');
       const filterBtns = document.querySelectorAll('.filter-tag');
@@ -305,7 +305,7 @@
       async function fetchArticles() {
         if (supabase) {
           try {
-            const { data, error } = await supabase.from('articles').select('id,slug,title,excerpt,category,published_at,tags,cover_image_url').eq('status','published').order('published_at', { ascending: false });
+            const { data, error } = await supabaseClient.from('articles').select('id,slug,title,excerpt,category,published_at,tags,cover_image_url').eq('status','published').order('published_at', { ascending: false });
             if (!error && data && data.length) {
               // map to expected shape
               return data.map(a => ({
