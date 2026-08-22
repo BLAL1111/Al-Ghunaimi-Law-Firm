@@ -12,6 +12,8 @@
   ],
   "rewrites": [
     { "source": "/articles/:slug", "destination": "/articles/view.html" },
+    { "source": "/articles/:slug/", "destination": "/articles/view.html" },
+    { "source": "/articles/:slug.html", "destination": "/articles/view.html" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "headers": [

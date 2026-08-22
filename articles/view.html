@@ -74,56 +74,86 @@
     const articleEl = document.getElementById('article-detail');
 
     function getSlug() {
-      // supports /articles/view.html?slug=xxx , /articles/xxx , /articles/xxx.html
       const params = new URLSearchParams(location.search);
-      if (params.get('slug')) return params.get('slug');
-      const path = location.pathname.toLowerCase();
-      // try to extract slug from /articles/<slug>
-      const m = path.match(/\/articles\/([^\/\.]+)/);
-      if (m) return m[1];
-      // fallback: check ?id
+      if (params.get('slug')) {
+        const s = params.get('slug').toLowerCase().trim();
+        if (s && s !== 'view' && s !== 'view.html') return s;
+      }
+      const path = location.pathname.toLowerCase().replace(/\/$/, '');
+      // handle /articles/view.html?slug=xxx already handled, now path
+      if (path.endsWith('/view') || path.endsWith('/view.html')) return null;
+      const m = path.match(/\/articles\/([^\/\?#]+)/);
+      if (m) {
+        let slug = m[1].toLowerCase().replace(/\.html$/, '').trim();
+        if (slug === 'view' || slug === 'view.html' || !slug) return null;
+        return slug;
+      }
       return null;
     }
 
     async function load() {
       const slug = getSlug();
+      console.log('[view] slug extracted:', slug, 'from', location.pathname + location.search);
       if (!slug) {
         loadingEl.style.display='none';
-        errorEl.textContent = 'المقال غير موجود';
+        errorEl.textContent = 'المقال غير موجود (slug غير صحيح)';
         errorEl.style.display='block';
         return;
+      }
+      if (!supabaseClient) {
+        console.warn('[view] Supabase not configured, will try file fallback');
       }
       // Try to fetch via Supabase if configured, else fallback to static? For now try Supabase
       let article = null;
       if (supabaseClient) {
-        // First try direct slug
-        let { data, error } = await supabaseClient.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
-        if (!data && !error) {
-          // Try redirect table
-          const { data: redir } = await supabaseClient.from('article_redirects').select('article_id').eq('old_slug', slug).maybeSingle();
-          if (redir) {
-            const { data: a2 } = await supabaseClient.from('articles').select('*').eq('id', redir.article_id).eq('status','published').maybeSingle();
-            if (a2) {
-              // redirect to new slug for SEO
-              const newUrl = `https://al-ghunaimi-law-firm.vercel.app/articles/${a2.slug}`;
-              // soft redirect
-              history.replaceState(null, '', `/articles/${a2.slug}`);
-              article = a2;
+        try {
+          console.log('[view] querying Supabase for slug:', slug);
+          let { data, error } = await supabaseClient.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
+          if (error) {
+            console.warn('[view] Supabase error:', error);
+            errorEl.textContent = `خطأ في جلب المقال: ${error.message} (تحقق من RLS وحالة النشر)`;
+          } else if (!data) {
+            console.log('[view] not found as published, trying redirect');
+            const { data: redir, error: rErr } = await supabaseClient.from('article_redirects').select('article_id').eq('old_slug', slug).maybeSingle();
+            if (rErr) console.warn('[view] redirect lookup error', rErr);
+            if (redir) {
+              const { data: a2, error: a2Err } = await supabaseClient.from('articles').select('*').eq('id', redir.article_id).eq('status','published').maybeSingle();
+              if (a2Err) console.warn(a2Err);
+              if (a2) {
+                console.log('[view] redirect found to', a2.slug);
+                history.replaceState(null, '', `/articles/${a2.slug}`);
+                article = a2;
+              }
             }
+          } else {
+            console.log('[view] found article', data.slug);
+            article = data;
           }
-        } else {
-          article = data;
-        }
-        if (error) console.warn(error);
+          if (error) console.warn('[view] Supabase error final', error);
+        } catch(e) { console.error('[view] exception', e); }
+      } else {
+        console.warn('[view] supabaseClient is null, skipping DB');
+      }
+      // Fallback to data/articles.json (persisted via GitHub, works even if Supabase down) and static
+      if (!article) {
+        try {
+          const r = await fetch('../data/articles.json', { cache: 'no-store' });
+          if (r.ok) {
+            const arr = await r.json();
+            article = arr.find(a => a.slug.toLowerCase() === slug && a.status === 'published') || null;
+            if (article && !article.content_html && article.excerpt) article.content_html = `<p>${article.excerpt}</p>`;
+          }
+        } catch(e) { console.warn('file fallback failed', e); }
       }
       if (!article) {
+        // Also check static 6 as last resort (should be in data/articles.json already)
         loadingEl.style.display='none';
-        errorEl.textContent = 'المقال غير موجود أو غير منشور';
+        errorEl.textContent = 'المقال غير موجود أو غير منشور (تأكد أنه "منشور" وليس مسودة)';
         errorEl.style.display='block';
+        console.warn('Article not found for slug:', slug, ' — check Supabase status=published and RLS anon can read');
         return;
       }
       render(article);
-      // Load related
       loadRelated(article);
     }
 

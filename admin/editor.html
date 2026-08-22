@@ -271,6 +271,18 @@
           if(error) throw error;
           result = data.id;
         }
+        // Persist to GitHub so article remains even if Supabase is closed (Supabase is for auth, GitHub is source of truth for content)
+        try {
+          const { data: sess } = await supabaseClient.auth.getSession();
+          const token = sess?.session?.access_token;
+          if (token && payload.status === 'published') {
+            await fetch('/api/publish-article', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ ...payload, id: result })
+            });
+          }
+        } catch(e) { console.warn('GitHub persist failed (will still be in Supabase)', e); }
         showSuccess(status==='published' ? 'تم النشر' : 'تم حفظ المسودة');
         if(!id && result){
           setTimeout(()=> location.href = `editor.html?id=${result}`, 800);
