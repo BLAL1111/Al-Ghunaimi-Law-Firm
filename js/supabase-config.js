@@ -1,9 +1,7 @@
-// Fill with your Supabase project values (publishable key is safe for browser)
-// For Vercel: set SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY in Environment Variables
-// and this file will be overridden at build time if you use a build step, or just edit manually.
+// Supabase Production — Al-Ghunaimi Law Firm
 window.SUPABASE_CONFIG = {
-  url: 'https://YOUR_PROJECT.supabase.co',
-  publishableKey: 'YOUR_PUBLISHABLE_KEY'
+  url: 'https://kmjakwyabrgovorgbqed.supabase.co',
+  publishableKey: 'sb_publishable_Yv9SwndhUEyLChaF-AmqPw_Y1rves2F'
 };
 // Optional: allow override via localStorage for GitHub Pages preview (not recommended for production)
 // localStorage.setItem('supabase_url', '...')
