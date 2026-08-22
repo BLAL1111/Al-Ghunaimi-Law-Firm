@@ -150,7 +150,7 @@
     statusEl.addEventListener('change', render);
     document.getElementById('logout').addEventListener('click', async ()=>{ await supabaseClient.auth.signOut(); location.href='login.html'; });
 
-    supabase && supabaseClient.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
+    supabaseClient && supabaseClient.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
 
     load();
   </script>

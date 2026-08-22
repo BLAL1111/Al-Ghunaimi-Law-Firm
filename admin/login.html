@@ -118,7 +118,7 @@
       }
     });
 
-    supabase && supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (supabaseClient) supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         // stay on login
       }
