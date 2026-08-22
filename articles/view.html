@@ -95,7 +95,7 @@
       }
       // Try to fetch via Supabase if configured, else fallback to static? For now try Supabase
       let article = null;
-      if (supabase) {
+      if (supabaseClient) {
         // First try direct slug
         let { data, error } = await supabaseClient.from('articles').select('*').eq('slug', slug).eq('status','published').maybeSingle();
         if (!data && !error) {
@@ -171,7 +171,7 @@
     }
 
     async function loadRelated(current){
-      if(!supabase) return;
+      if(!supabaseClient) return;
       // simple: same category, limit 2
       const { data } = await supabaseClient.from('articles').select('slug,title').eq('status','published').eq('category', current.category).neq('id', current.id).limit(2);
       if(data && data.length){
