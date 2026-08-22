@@ -78,6 +78,7 @@
       e.preventDefault();
       errorEl.style.display = 'none';
       successEl.style.display = 'none';
+      if (!supabaseClient) return showError('Supabase غير مهيأ. تأكد من js/supabase-config.js أو امسح localStorage ثم أعد التحميل (F12 > Application > Clear storage)');
       const email = document.getElementById('email').value.trim();
       const password = document.getElementById('password').value;
       if (!email || !password) return showError('أدخل البريد وكلمة المرور');
@@ -105,6 +106,7 @@
 
     document.getElementById('forgot-link').addEventListener('click', async (e) => {
       e.preventDefault();
+      if (!supabaseClient) return showError('Supabase غير مهيأ');
       const email = document.getElementById('email').value.trim();
       if (!email) return showError('أدخل بريدك أولاً لإرسال رابط الاستعادة');
       try {
