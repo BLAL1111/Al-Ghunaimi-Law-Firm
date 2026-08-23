@@ -1,0 +1,10 @@
+{
+  "name": "al-ghunaimi-law-firm",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "@upstash/redis": "^1.34.0"
+  }
+}
