@@ -11,7 +11,10 @@
     { "source": "/articles/commercial-contracts-drafting.html", "destination": "/articles/commercial-contracts-drafting", "permanent": true }
   ],
   "rewrites": [
-    { "source": "/articles/:path*", "destination": "/articles/view.html" },
+    { "source": "/articles/:slug", "destination": "/articles/view.html" },
+    { "source": "/articles/:slug/", "destination": "/articles/view.html" },
+    { "source": "/articles/:slug.html", "destination": "/articles/view.html" },
+    { "source": "/articles/(.*)", "destination": "/articles/view.html" },
     { "source": "/sitemap.xml", "destination": "/api/sitemap" }
   ],
   "headers": [
