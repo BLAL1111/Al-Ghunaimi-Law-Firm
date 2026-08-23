@@ -53,7 +53,7 @@ export default async function handler(req, res) {
       current = JSON.parse(content);
     }
 
-    // Upsert by slug
+    // Upsert by slug — must persist full fields for offline fallback (see AGENTS.md §16)
     const idx = current.findIndex(a => a.slug === article.slug);
     const now = new Date().toISOString();
     const record = {
@@ -61,13 +61,22 @@ export default async function handler(req, res) {
       slug: article.slug,
       title: article.title,
       excerpt: article.excerpt || '',
+      content_html: article.content_html || '',
       category: article.category || 'general',
       tags: article.tags || [],
+      cover_image_url: article.cover_image_url || null,
+      cover_image_alt: article.cover_image_alt || null,
+      author_name: article.author_name || 'مؤسسة الغنيمي للمحاماة',
+      seo_title: article.seo_title || null,
+      seo_description: article.seo_description || null,
+      og_image_url: article.og_image_url || null,
+      canonical_path: article.canonical_path || `/articles/${article.slug}`,
+      related_service_slug: article.related_service_slug || null,
       published_at: article.published_at || now,
       updated_at: now,
+      created_at: article.created_at || now,
       status: article.status || 'published',
-      author_name: article.author_name || 'مؤسسة الغنيمي',
-      cover_image_url: article.cover_image_url || null,
+      featured: article.featured || false,
     };
     if (idx >= 0) current[idx] = { ...current[idx], ...record };
     else current.unshift(record);

@@ -40,6 +40,29 @@ export default async function handler(req, res) {
   } catch (e) {
     console.warn('sitemap supabase error', e);
   }
+  // Fallback: if Supabase gave 0, read GitHub snapshot (data/articles.json) — ensures sitemap works when DB is down
+  if (articleUrls.length === 0) {
+    try {
+      const fs = await import('fs');
+      const path = await import('path');
+      const filePath = path.join(process.cwd(), 'data', 'articles.json');
+      if (fs.existsSync(filePath)) {
+        const raw = fs.readFileSync(filePath, 'utf8');
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr)) {
+          const pub = arr.filter(a => a.status === 'published' && a.slug);
+          if (pub.length) {
+            articleUrls = pub.map(a => ({
+              loc: `${base}/articles/${a.slug}`,
+              lastmod: (a.updated_at || a.published_at || new Date().toISOString()).slice(0,10),
+              changefreq: 'yearly',
+              priority: '0.6'
+            }));
+          }
+        }
+      }
+    } catch (e) { console.warn('sitemap fallback file error', e); }
+  }
 
   const all = [...staticUrls, ...articleUrls];
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${all.map(u => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod><changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`).join('\n')}\n</urlset>`;

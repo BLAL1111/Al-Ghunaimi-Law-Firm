@@ -32,7 +32,7 @@
       <h1>إدارة المقالات</h1>
       <div style="display:flex; gap:8px;">
         <a href="editor.html" class="btn-gold">+ مقال جديد</a>
-        <button id="logout" class="btn-outline">خروج</button>
+        <button id="logout" type="button" class="btn-outline">خروج</button>
       </div>
     </div>
     <div class="admin-toolbar">
@@ -49,7 +49,7 @@
       <span id="health-supabase" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Supabase: ...</span>
       <span id="health-snapshot" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Snapshot: ...</span>
       <span id="health-lead" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Lead: ...</span>
-      <button id="sync-snapshot" class="btn-outline" style="padding:4px 10px; font-size:0.75rem; min-height:28px;">Sync Snapshot</button>
+      <button id="sync-snapshot" type="button" class="btn-outline" style="padding:4px 10px; font-size:0.75rem; min-height:28px;">Sync Snapshot</button>
       <a href="leads.html" class="btn-outline" style="padding:4px 10px; font-size:0.75rem; min-height:28px;">Leads</a>
     </div>
     <div id="error" style="display:none; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); color:#f87171; padding:10px; border-radius:8px; margin-bottom:12px;"></div>
@@ -75,21 +75,59 @@
     }
 
     async function requireAdmin() {
+      if (!supabaseClient) { location.href = 'login.html'; return null; }
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (!session) { location.href = 'login.html'; return null; }
       const { data: admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
-      if (!admin) { await supabaseClient.auth.signOut(); location.href = 'login.html'; return null; }
+      if (!admin) { try { await supabaseClient.auth.signOut(); } catch(e) {} location.href = 'login.html'; return null; }
       return session;
     }
 
     let allArticles = [];
 
+    async function checkHealth(){
+      const hs = document.getElementById('health-supabase');
+      const hb = document.getElementById('health-snapshot');
+      const hl = document.getElementById('health-lead');
+      if (!supabaseClient) {
+        hs.textContent = 'Supabase: NOT CONFIGURED';
+        hs.style.background = 'rgba(239,68,68,0.15)';
+      } else {
+        try {
+          const { error } = await supabaseClient.from('articles').select('id').limit(1);
+          hs.textContent = error ? 'Supabase: ERROR' : 'Supabase: CONNECTED';
+          hs.style.background = error ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.15)';
+        } catch(e){ hs.textContent='Supabase: UNAVAILABLE'; hs.style.background='rgba(239,68,68,0.15)'; }
+      }
+      try {
+        const r = await fetch('../data/snapshot-meta.json', {cache:'no-store'});
+        if(r.ok){ const j=await r.json(); hb.textContent=`Snapshot: SYNCED v${j.snapshot_version} (${j.article_count})`; hb.style.background='rgba(34,197,94,0.15)'; }
+        else { hb.textContent='Snapshot: OUTDATED'; hb.style.background='rgba(234,179,8,0.15)'; }
+      } catch(e){ hb.textContent='Snapshot: ERROR'; hb.style.background='rgba(239,68,68,0.15)'; }
+      try {
+        const r2 = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ping:1})});
+        // 400 is expected when missing fields => endpoint online
+        hl.textContent = r2.ok || r2.status===400 ? 'Lead: ONLINE' : 'Lead: DEGRADED';
+        hl.style.background = r2.ok || r2.status===400 ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+      } catch(e){ hl.textContent='Lead: DEGRADED'; hl.style.background='rgba(239,68,68,0.15)'; }
+    }
+
     async function load() {
-      await requireAdmin();
-      const { data, error } = await supabaseClient.from('articles').select('*').order('updated_at', { ascending: false });
-      if (error) { errorEl.textContent = error.message; errorEl.style.display='block'; return; }
-      allArticles = data || [];
-      render();
+      const session = await requireAdmin();
+      if (!session) return;
+      try {
+        const { data, error } = await supabaseClient.from('articles').select('*').order('updated_at', { ascending: false });
+        if (error) throw error;
+        allArticles = data || [];
+        render();
+      } catch(e) {
+        errorEl.textContent = e.message || 'فشل التحميل';
+        errorEl.style.display='block';
+        allArticles = [];
+        render();
+      } finally {
+        await checkHealth();
+      }
     }
 
     function render() {
@@ -146,60 +184,45 @@
               if (error) throw error;
             }
             await load();
-            // Update health after change
-            checkHealth();
           } catch(e) { errorEl.textContent = e.message; errorEl.style.display='block'; }
           finally { btn.disabled = false; }
         });
-      });
-      // Health check
-      async function checkHealth(){
-        const hs = document.getElementById('health-supabase');
-        const hb = document.getElementById('health-snapshot');
-        const hl = document.getElementById('health-lead');
-        try {
-          const { error } = await supabaseClient.from('articles').select('id').limit(1);
-          hs.textContent = error ? 'Supabase: ERROR' : 'Supabase: CONNECTED';
-          hs.style.background = error ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.15)';
-        } catch(e){ hs.textContent='Supabase: UNAVAILABLE'; hs.style.background='rgba(239,68,68,0.15)'; }
-        try {
-          const r = await fetch('../data/snapshot-meta.json', {cache:'no-store'});
-          if(r.ok){ const j=await r.json(); hb.textContent=`Snapshot: SYNCED v${j.snapshot_version} (${j.article_count})`; hb.style.background='rgba(34,197,94,0.15)'; }
-          else { hb.textContent='Snapshot: OUTDATED'; hb.style.background='rgba(234,179,8,0.15)'; }
-        } catch(e){ hb.textContent='Snapshot: ERROR'; hb.style.background='rgba(239,68,68,0.15)'; }
-        try {
-          const r2 = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ping:1})});
-          hl.textContent = r2.ok || r2.status===400 ? 'Lead: ONLINE' : 'Lead: DEGRADED';
-          hl.style.background = r2.ok || r2.status===400 ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
-        } catch(e){ hl.textContent='Lead: DEGRADED'; hl.style.background='rgba(239,68,68,0.15)'; }
-      }
-      checkHealth();
-      document.getElementById('sync-snapshot').addEventListener('click', async ()=>{
-        const btn=document.getElementById('sync-snapshot');
-        btn.disabled=true; btn.textContent='جاري...';
-        try{
-          const { data: { session } } = await supabaseClient.auth.getSession();
-          const res = await fetch('/api/sync-snapshot', { method:'POST', headers:{ Authorization:`Bearer ${session.access_token}` }});
-          const j=await res.json();
-          if(!res.ok) throw new Error(j.error||'Sync failed');
-          alert(`تمت المزامنة: ${j.synced} مقال`);
-          checkHealth();
-        }catch(e){ alert(e.message); }
-        finally{ btn.disabled=false; btn.textContent='Sync Snapshot'; }
       });
     }
 
     function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
     function getPreviewUrl(a){
-      // preview is admin-only, use editor preview param
       return `editor.html?id=${a.id}&preview=1`;
     }
 
     searchEl.addEventListener('input', render);
     statusEl.addEventListener('change', render);
-    document.getElementById('logout').addEventListener('click', async ()=>{ await supabaseClient.auth.signOut(); location.href='login.html'; });
 
-    supabaseClient && supabaseClient.auth.onAuthStateChange((e,s)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
+    // Sync Snapshot — registered ONCE outside render to avoid duplicate listeners and early-return bug
+    document.getElementById('sync-snapshot').addEventListener('click', async ()=>{
+      const btn=document.getElementById('sync-snapshot');
+      btn.disabled=true; const prev=btn.textContent; btn.textContent='جاري...';
+      try{
+        if (!supabaseClient) throw new Error('Supabase غير مهيأ');
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session || !session.access_token) { alert('انتهت الجلسة، سجل دخول مرة أخرى'); location.href='login.html'; return; }
+        const res = await fetch('/api/sync-snapshot', { method:'POST', headers:{ Authorization:`Bearer ${session.access_token}` }});
+        const j=await res.json().catch(()=>({}));
+        if(!res.ok) throw new Error(j.error||'Sync failed');
+        alert(`تمت المزامنة: ${j.synced ?? j.snapshot_version ?? 0} مقال`);
+        await load();
+      }catch(e){ alert(e.message || 'فشل المزامنة'); }
+      finally{ btn.disabled=false; btn.textContent='Sync Snapshot'; }
+    });
+
+    // Logout — always navigates even if Supabase fails
+    document.getElementById('logout').addEventListener('click', async ()=>{
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e) { console.warn('signOut failed', e); }
+      try { localStorage.clear(); sessionStorage.clear(); } catch(e) {}
+      location.href='login.html';
+    });
+
+    if (supabaseClient) supabaseClient.auth.onAuthStateChange((event)=>{ if(event==='SIGNED_OUT') location.href='login.html'; });
 
     load();
   </script>
