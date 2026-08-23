@@ -142,7 +142,7 @@
     function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9\u0600-\u06FF]+/g,'-').replace(/^-+|-+$/g,'').replace(/-+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/^[^a-z0-9]+/,'') || 'article-' + Date.now(); }
 
     async function requireAdmin(){
-      if(!supabase){ showError('Supabase غير مهيأ'); return null; }
+      if(!supabaseClient){ showError('Supabase غير مهيأ'); return null; }
       const { data:{session}} = await supabaseClient.auth.getSession();
       if(!session){ location.href='login.html'; return null; }
       const { data:admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
@@ -321,7 +321,12 @@
       if(dirty){ e.preventDefault(); e.returnValue=''; }
     });
 
-    document.getElementById('logout').addEventListener('click', async ()=>{ await supabaseClient.auth.signOut(); location.href='login.html'; });
+    document.getElementById('logout').addEventListener('click', async ()=>{
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e) { console.warn('signOut failed', e); }
+      try { localStorage.clear(); sessionStorage.clear(); } catch(e) {}
+      location.href='login.html';
+    });
+    if (supabaseClient) supabaseClient.auth.onAuthStateChange((e)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
 
     load();
   </script>

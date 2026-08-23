@@ -33,6 +33,14 @@
     } catch (e) {
       console.warn('Lead API failed, fallback', e);
       const id = generateFallbackId();
+      // Queue fallback for later retry (no PII beyond payload) — will retry on next online/visibility
+      try {
+        const pending = JSON.parse(localStorage.getItem('ghonemy_pending_leads') || '[]');
+        pending.push({ payload: { ...payload, lead_id: id, created_at: new Date().toISOString() }, ts: Date.now() });
+        // keep max 20 pending
+        if (pending.length > 20) pending.shift();
+        localStorage.setItem('ghonemy_pending_leads', JSON.stringify(pending));
+      } catch(err){}
       return { lead_id: id, stored: false, fallback: true, whatsapp_text: `مرحبًا، أرغب في التواصل مع مؤسسة الغنيمي بخصوص استشارة قانونية.\n\nرمز طلب الموقع: ${id}` };
     }
   }
@@ -72,6 +80,27 @@
     }
   });
 
+  // Retry pending leads when online — minimal queue, privacy-safe (only lead_id/meta)
+  async function retryPending(){
+    try {
+      const pending = JSON.parse(localStorage.getItem('ghonemy_pending_leads') || '[]');
+      if (!pending.length) return;
+      const remaining = [];
+      for (const item of pending) {
+        try {
+          const res = await fetch('/api/lead', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(item.payload) });
+          const j = await res.json().catch(()=>({}));
+          if (!res.ok || !j.lead_id) remaining.push(item);
+        } catch(e){ remaining.push(item); }
+      }
+      localStorage.setItem('ghonemy_pending_leads', JSON.stringify(remaining));
+    } catch(e){}
+  }
+  window.addEventListener('online', retryPending);
+  document.addEventListener('visibilitychange', ()=>{ if(document.visibilityState==='visible') retryPending(); });
+  // also try once on load after 5s if any pending
+  setTimeout(retryPending, 5000);
+
   // Expose for booking form
-  window.GhonemyLead = { createLead, openWhatsAppWithLead };
+  window.GhonemyLead = { createLead, openWhatsAppWithLead, retryPending };
 })();
