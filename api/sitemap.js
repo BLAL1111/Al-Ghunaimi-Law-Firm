@@ -40,25 +40,36 @@ export default async function handler(req, res) {
   } catch (e) {
     console.warn('sitemap supabase error', e);
   }
-  // Fallback: if Supabase gave 0, read GitHub snapshot (data/articles.json) — ensures sitemap works when DB is down
+  // Fallback: if Supabase gave 0, try snapshot via fetch (Vercel-safe, no fs) — ensures sitemap works when DB is down
   if (articleUrls.length === 0) {
     try {
-      const fs = await import('fs');
-      const path = await import('path');
-      const filePath = path.join(process.cwd(), 'data', 'articles.json');
-      if (fs.existsSync(filePath)) {
-        const raw = fs.readFileSync(filePath, 'utf8');
-        const arr = JSON.parse(raw);
-        if (Array.isArray(arr)) {
-          const pub = arr.filter(a => a.status === 'published' && a.slug);
-          if (pub.length) {
-            articleUrls = pub.map(a => ({
-              loc: `${base}/articles/${a.slug}`,
-              lastmod: (a.updated_at || a.published_at || new Date().toISOString()).slice(0,10),
-              changefreq: 'yearly',
-              priority: '0.6'
-            }));
+      let arr = null;
+      try {
+        const r = await fetch(`${base}/data/articles.json`, { cache: 'no-store' });
+        if (r.ok) arr = await r.json();
+      } catch (e) { /* ignore, try fs fallback */ }
+      if (!arr) {
+        try {
+          const fs = await import('fs');
+          const path = await import('path');
+          const pMod = path.default || path;
+          const fMod = fs.default || fs;
+          const filePath = pMod.join(process.cwd(), 'data', 'articles.json');
+          if (fMod.existsSync(filePath)) {
+            const raw = fMod.readFileSync(filePath, 'utf8');
+            arr = JSON.parse(raw);
           }
+        } catch (e) { /* fs not available */ }
+      }
+      if (Array.isArray(arr)) {
+        const pub = arr.filter(a => a.status === 'published' && a.slug);
+        if (pub.length) {
+          articleUrls = pub.map(a => ({
+            loc: `${base}/articles/${a.slug}`,
+            lastmod: (a.updated_at || a.published_at || new Date().toISOString()).slice(0,10),
+            changefreq: 'yearly',
+            priority: '0.6'
+          }));
         }
       }
     } catch (e) { console.warn('sitemap fallback file error', e); }
