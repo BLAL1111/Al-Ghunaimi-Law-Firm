@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://al-ghoneimy-law-team.vercel.app/sitemap.xml
+Sitemap: https://al-ghunaimi-law-firm.vercel.app/sitemap.xml
