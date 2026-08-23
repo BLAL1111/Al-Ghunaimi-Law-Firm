@@ -45,6 +45,13 @@
       </select>
       <span id="count" style="font-size:0.85rem; color:var(--text-muted);"></span>
     </div>
+    <div id="health" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; font-size:0.8rem; align-items:center;">
+      <span id="health-supabase" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Supabase: ...</span>
+      <span id="health-snapshot" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Snapshot: ...</span>
+      <span id="health-lead" style="padding:6px 10px; background:var(--bg-secondary); border:1px solid var(--border-color); border-radius:20px;">Lead: ...</span>
+      <button id="sync-snapshot" class="btn-outline" style="padding:4px 10px; font-size:0.75rem; min-height:28px;">Sync Snapshot</button>
+      <a href="leads.html" class="btn-outline" style="padding:4px 10px; font-size:0.75rem; min-height:28px;">Leads</a>
+    </div>
     <div id="error" style="display:none; background:rgba(220,38,38,0.08); border:1px solid rgba(220,38,38,0.2); color:#f87171; padding:10px; border-radius:8px; margin-bottom:12px;"></div>
     <div id="list" class="admin-list"></div>
     <p id="empty" style="display:none; text-align:center; color:var(--text-muted); margin-top:20px;">لا توجد مقالات</p>
@@ -111,6 +118,7 @@
             <a href="editor.html?id=${a.id}" class="btn-outline">تعديل</a>
             ${a.status !== 'published' ? `<button data-act="publish" data-id="${a.id}" class="btn-gold">نشر</button>` : `<button data-act="unpublish" data-id="${a.id}" class="btn-outline">إلغاء نشر</button>`}
             <button data-act="archive" data-id="${a.id}" class="btn-outline">أرشفة</button>
+            <button data-act="delete" data-id="${a.id}" class="btn-outline" style="border-color:#f87171; color:#f87171;">حذف</button>
             <a href="${getPreviewUrl(a)}" target="_blank" class="btn-outline">معاينة</a>
           </div>
         `;
@@ -132,11 +140,52 @@
               if (!confirm('أرشفة المقال؟ لن يظهر للعامة.')) return;
               const { error } = await supabaseClient.from('articles').update({ status:'archived' }).eq('id', id);
               if (error) throw error;
+            } else if (act === 'delete') {
+              if (!confirm('حذف نهائي؟ لا يمكن التراجع.')) return;
+              const { error } = await supabaseClient.from('articles').delete().eq('id', id);
+              if (error) throw error;
             }
             await load();
+            // Update health after change
+            checkHealth();
           } catch(e) { errorEl.textContent = e.message; errorEl.style.display='block'; }
           finally { btn.disabled = false; }
         });
+      });
+      // Health check
+      async function checkHealth(){
+        const hs = document.getElementById('health-supabase');
+        const hb = document.getElementById('health-snapshot');
+        const hl = document.getElementById('health-lead');
+        try {
+          const { error } = await supabaseClient.from('articles').select('id').limit(1);
+          hs.textContent = error ? 'Supabase: ERROR' : 'Supabase: CONNECTED';
+          hs.style.background = error ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.15)';
+        } catch(e){ hs.textContent='Supabase: UNAVAILABLE'; hs.style.background='rgba(239,68,68,0.15)'; }
+        try {
+          const r = await fetch('../data/snapshot-meta.json', {cache:'no-store'});
+          if(r.ok){ const j=await r.json(); hb.textContent=`Snapshot: SYNCED v${j.snapshot_version} (${j.article_count})`; hb.style.background='rgba(34,197,94,0.15)'; }
+          else { hb.textContent='Snapshot: OUTDATED'; hb.style.background='rgba(234,179,8,0.15)'; }
+        } catch(e){ hb.textContent='Snapshot: ERROR'; hb.style.background='rgba(239,68,68,0.15)'; }
+        try {
+          const r2 = await fetch('/api/lead', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({ping:1})});
+          hl.textContent = r2.ok || r2.status===400 ? 'Lead: ONLINE' : 'Lead: DEGRADED';
+          hl.style.background = r2.ok || r2.status===400 ? 'rgba(34,197,94,0.15)' : 'rgba(239,68,68,0.15)';
+        } catch(e){ hl.textContent='Lead: DEGRADED'; hl.style.background='rgba(239,68,68,0.15)'; }
+      }
+      checkHealth();
+      document.getElementById('sync-snapshot').addEventListener('click', async ()=>{
+        const btn=document.getElementById('sync-snapshot');
+        btn.disabled=true; btn.textContent='جاري...';
+        try{
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          const res = await fetch('/api/sync-snapshot', { method:'POST', headers:{ Authorization:`Bearer ${session.access_token}` }});
+          const j=await res.json();
+          if(!res.ok) throw new Error(j.error||'Sync failed');
+          alert(`تمت المزامنة: ${j.synced} مقال`);
+          checkHealth();
+        }catch(e){ alert(e.message); }
+        finally{ btn.disabled=false; btn.textContent='Sync Snapshot'; }
       });
     }
 

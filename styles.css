@@ -3291,6 +3291,10 @@ html[dir="ltr"] .search-input-wrapper .form-control {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 }
 
 .filter-tag i {
