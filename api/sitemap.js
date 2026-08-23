@@ -40,39 +40,17 @@ export default async function handler(req, res) {
   } catch (e) {
     console.warn('sitemap supabase error', e);
   }
-  // Fallback: if Supabase gave 0, try snapshot via fetch (Vercel-safe, no fs) — ensures sitemap works when DB is down
+  // Fallback: if Supabase gave 0 or env missing, use hardcoded snapshot — Vercel-safe (no fs, no self-fetch)
   if (articleUrls.length === 0) {
-    try {
-      let arr = null;
-      try {
-        const r = await fetch(`${base}/data/articles.json`, { cache: 'no-store' });
-        if (r.ok) arr = await r.json();
-      } catch (e) { /* ignore, try fs fallback */ }
-      if (!arr) {
-        try {
-          const fs = await import('fs');
-          const path = await import('path');
-          const pMod = path.default || path;
-          const fMod = fs.default || fs;
-          const filePath = pMod.join(process.cwd(), 'data', 'articles.json');
-          if (fMod.existsSync(filePath)) {
-            const raw = fMod.readFileSync(filePath, 'utf8');
-            arr = JSON.parse(raw);
-          }
-        } catch (e) { /* fs not available */ }
-      }
-      if (Array.isArray(arr)) {
-        const pub = arr.filter(a => a.status === 'published' && a.slug);
-        if (pub.length) {
-          articleUrls = pub.map(a => ({
-            loc: `${base}/articles/${a.slug}`,
-            lastmod: (a.updated_at || a.published_at || new Date().toISOString()).slice(0,10),
-            changefreq: 'yearly',
-            priority: '0.6'
-          }));
-        }
-      }
-    } catch (e) { console.warn('sitemap fallback file error', e); }
+    const fallbackSlugs = [
+      { slug: 'real-estate-contracts-6th-october', lastmod: '2026-06-15' },
+      { slug: 'company-formation-egypt-2026', lastmod: '2026-07-02' },
+      { slug: 'criminal-appeal-cassation', lastmod: '2026-07-18' },
+      { slug: 'labor-law-employee-rights', lastmod: '2026-07-28' },
+      { slug: 'family-law-custody-alimony', lastmod: '2026-08-05' },
+      { slug: 'commercial-contracts-drafting', lastmod: '2026-08-11' },
+    ];
+    articleUrls = fallbackSlugs.map(a => ({ loc: `${base}/articles/${a.slug}`, lastmod: a.lastmod, changefreq: 'yearly', priority: '0.6' }));
   }
 
   const all = [...staticUrls, ...articleUrls];
