@@ -21,8 +21,8 @@
     <section class="page-header">
       <div class="container">
         <div class="breadcrumbs">
-          <a href="../index.html">الرئيسية</a> <i class="fas fa-chevron-left"></i>
-          <a href="../articles.html">المقالات</a> <i class="fas fa-chevron-left"></i>
+          <a href="/">الرئيسية</a> <i class="fas fa-chevron-left"></i>
+          <a href="/articles">المقالات</a> <i class="fas fa-chevron-left"></i>
           <span id="bc-title">مقال</span>
         </div>
       </div>
@@ -42,7 +42,7 @@
           <div id="article-cta" class="article-detail-cta">
             <p>هل تحتاج استشارة قانونية بخصوص هذا الموضوع؟</p>
             <a href="https://wa.me/201126118276?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%2C%20%D8%A3%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A7%D8%B3%D8%AA%D8%B4%D8%A7%D8%B1%D8%A9%20%D9%82%D8%A7%D9%86%D9%88%D9%86%D9%8A%D8%A9" target="_blank" rel="noopener" class="btn-gold">تواصل عبر واتساب</a>
-            <a href="../booking.html" class="btn-outline">احجز استشارتك القانونية</a>
+            <a href="/booking" class="btn-outline">احجز استشارتك القانونية</a>
           </div>
         </article>
 
@@ -135,10 +135,10 @@
       } else {
         console.warn('[view] supabaseClient is null, skipping DB');
       }
-      // Fallback to data/articles.json (persisted via GitHub, works even if Supabase down) and static
+      // Fallback to data/articles.json (persisted via GitHub, works even if Supabase down) and static — absolute path for Vercel cleanUrls
       if (!article) {
         try {
-          const r = await fetch('../data/articles.json', { cache: 'no-store' });
+          const r = await fetch('/data/articles.json', { cache: 'no-store' });
           if (r.ok) {
             const arr = await r.json();
             article = arr.find(a => a.slug.toLowerCase() === slug && a.status === 'published') || null;
@@ -193,21 +193,21 @@
         "mainEntityOfPage": {"@type":"WebPage","@id": `https://al-ghunaimi-law-firm.vercel.app/articles/${a.slug}`}
       };
       document.getElementById('article-ldjson').textContent = JSON.stringify(ld);
-      // related service
+      // related service — absolute clean URL
       const rs = document.getElementById('related-service');
       if(a.related_service_slug){
-        rs.innerHTML = `<li><a href="../services/${a.related_service_slug}.html"><i class="fas fa-chevron-left"></i> ${a.related_service_slug}</a></li>`;
+        rs.innerHTML = `<li><a href="/services/${a.related_service_slug}"><i class="fas fa-chevron-left"></i> ${a.related_service_slug}</a></li>`;
         document.getElementById('related-wrap').style.display='grid';
       }
     }
 
     async function loadRelated(current){
       if(!supabaseClient) return;
-      // simple: same category, limit 2
+      // simple: same category, limit 2 — absolute clean URLs
       const { data } = await supabaseClient.from('articles').select('slug,title').eq('status','published').eq('category', current.category).neq('id', current.id).limit(2);
       if(data && data.length){
         const ul = document.getElementById('related-articles');
-        ul.innerHTML = data.map(x=> `<li><a href="./${x.slug}"><i class="fas fa-chevron-left"></i> ${x.title}</a></li>`).join('');
+        ul.innerHTML = data.map(x=> `<li><a href="/articles/${x.slug}"><i class="fas fa-chevron-left"></i> ${x.title}</a></li>`).join('');
         document.getElementById('related-wrap').style.display='grid';
       }
     }

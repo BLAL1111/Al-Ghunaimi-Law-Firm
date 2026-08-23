@@ -311,7 +311,7 @@
             <h3 class="article-title" data-i18n="article1Title">دليل توثيق عقود التطوير العقاري في 6 أكتوبر — احمِ استثمارك من الثغرات</h3>
             <p class="article-excerpt" data-i18n="article1Desc">دليل توثيق عقود التطوير العقاري. يشمل إجراءات الشهر العقاري وتسجيل العقارات وحماية الاستثمار من النزاعات العقارية.</p>
             <div class="article-footer">
-              <a href="articles/real-estate-contracts-6th-october.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
+              <a href="/articles/real-estate-contracts-6th-october" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
             </div>
           </div>
         </div>
@@ -325,7 +325,7 @@
             <h3 class="article-title" data-i18n="article2Title">تأسيس شركة في مصر 2026: الخطوات والأوراق الرسمية كاملة</h3>
             <p class="article-excerpt" data-i18n="article2Desc">خطوات تأسيس الشركات في مصر وفق قانون الاستثمار 2026. الأوراق المطلوبة، الهيكلة القانونية، ونصائح لتجنب أخطاء المؤسسين الشائعة.</p>
             <div class="article-footer">
-              <a href="articles/company-formation-egypt-2026.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
+              <a href="/articles/company-formation-egypt-2026" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
             </div>
           </div>
         </div>
@@ -339,7 +339,7 @@
             <h3 class="article-title" data-i18n="article3Title">الطعن بالنقض في القضايا الجنائية: الشروط والميعاد والإجراءات</h3>
             <p class="article-excerpt" data-i18n="article3Desc">شروط الطعن بالنقض في القضايا الجنائية أمام محكمة النقض المصرية. الميعاد القانوني، أسباب الطعن، وإجراءات التقاضي الكاملة.</p>
             <div class="article-footer">
-              <a href="articles/criminal-appeal-cassation.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
+              <a href="/articles/criminal-appeal-cassation" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-chevron-left"></i></a>
             </div>
           </div>
         </div>
@@ -449,7 +449,7 @@
         } catch(e){ console.warn('Home Supabase failed', e); }
       }
       try {
-        const r = await fetch('data/articles.json', { cache:'no-store' });
+        const r = await fetch('/data/articles.json', { cache:'no-store' });
         if (r.ok) {
           const j = await r.json();
           if (Array.isArray(j) && j.length) fileArticles = j.filter(a=>a.status==='published').map(a=> ({ slug:a.slug, title:a.title, excerpt:a.excerpt||'', category:a.category, published_at:a.published_at }));
@@ -469,10 +469,10 @@
         const accent = a.category || 'real-estate';
         const card = document.createElement('div');
         card.className = 'article-card';
-        card.innerHTML = `<div class="article-card-accent" data-accent="${accent}"></div><div class="article-body"><div class="article-meta"><span class="article-cat" data-cat="${a.category}">${catLabel[a.category]||a.category}</span><span class="article-date">${date}</span></div><h3 class="article-title">${a.title}</h3><p class="article-excerpt">${a.excerpt||''}</p><div class="article-footer"><a href="articles/${a.slug}" class="btn-outline btn-sm">اقرأ المقال <i class="fas fa-chevron-left"></i></a></div></div>`;
+        card.innerHTML = `<div class="article-card-accent" data-accent="${accent}"></div><div class="article-body"><div class="article-meta"><span class="article-cat" data-cat="${a.category}">${catLabel[a.category]||a.category}</span><span class="article-date">${date}</span></div><h3 class="article-title">${a.title}</h3><p class="article-excerpt">${a.excerpt||''}</p><div class="article-footer"><a href="/articles/${a.slug}" class="btn-outline btn-sm">اقرأ المقال <i class="fas fa-chevron-left"></i></a></div></div>`;
         const isLocal = location.protocol==='file:';
         const link = card.querySelector('a');
-        link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
+        link.href = isLocal ? `articles/${a.slug}.html` : `/articles/${a.slug}`;
         grid.appendChild(card);
       });
     });

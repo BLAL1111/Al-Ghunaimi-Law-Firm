@@ -127,7 +127,7 @@
                 <span class="article-tag-item">توثيق</span>
                 <span class="article-tag-item">استثمار</span>
               </div>
-              <a href="articles/real-estate-contracts-6th-october.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/real-estate-contracts-6th-october" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -151,7 +151,7 @@
                 <span class="article-tag-item">تأسيس</span>
                 <span class="article-tag-item">استثمار</span>
               </div>
-              <a href="articles/company-formation-egypt-2026.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/company-formation-egypt-2026" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -175,7 +175,7 @@
                 <span class="article-tag-item">طعن</span>
                 <span class="article-tag-item">محاكم</span>
               </div>
-              <a href="articles/criminal-appeal-cassation.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/criminal-appeal-cassation" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -199,7 +199,7 @@
                 <span class="article-tag-item">حقوق</span>
                 <span class="article-tag-item">فصل</span>
               </div>
-              <a href="articles/labor-law-employee-rights.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/labor-law-employee-rights" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -223,7 +223,7 @@
                 <span class="article-tag-item">حضانة</span>
                 <span class="article-tag-item">رؤية</span>
               </div>
-              <a href="articles/family-law-custody-alimony.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/family-law-custody-alimony" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -247,7 +247,7 @@
                 <span class="article-tag-item">صياغة</span>
                 <span class="article-tag-item">تجاري</span>
               </div>
-              <a href="articles/commercial-contracts-drafting.html" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+              <a href="/articles/commercial-contracts-drafting" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
             </div>
           </div>
         </div>
@@ -334,7 +334,7 @@
         // Also fetch persisted GitHub data/articles.json (so articles remain even if Supabase is closed)
         let fileArticles = [];
         try {
-          const r = await fetch('data/articles.json', { cache: 'no-store' });
+          const r = await fetch('/data/articles.json', { cache: 'no-store' });
           if (r.ok) {
             const j = await r.json();
             if (Array.isArray(j)) {
@@ -385,13 +385,13 @@
               <p class="article-desc">${a.excerpt}</p>
               <div class="article-footer">
                 <div class="article-tags">${(a.tags||[]).slice(0,3).map(t=>`<span class="article-tag-item">${t}</span>`).join('')}</div>
-                <a href="articles/${a.slug}" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
+                <a href="/articles/${a.slug}" class="btn-outline btn-sm" data-i18n="btnReadMore">اقرأ المقال <i class="fas fa-arrow-left"></i></a>
               </div>
             </div>`;
-          // fix href for clean URL vs html
+          // absolute clean URL — consistent with Vercel rewrite /articles/:slug (file:// fallback kept for local preview)
           const isLocal = location.protocol === 'file:';
           const link = card.querySelector('a');
-          link.href = isLocal ? `articles/${a.slug}.html` : `articles/${a.slug}`;
+          link.href = isLocal ? `articles/${a.slug}.html` : `/articles/${a.slug}`;
           grid.appendChild(card);
         });
       }
