@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>محرر المقال | مؤسسة الغنيمي</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="icon" type="image/png" href="../img/logo.png">
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    :root { --editor-max: 860px; }
+    .editor-wrap{max-width:var(--editor-max);margin:0 auto;padding:96px 16px 48px}
+    .editor-header{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;margin-bottom:18px;flex-wrap:wrap}
+    .editor-header h1{font-size:1.55rem;font-weight:900;margin:0 0 6px}
+    .editor-subtitle{color:var(--text-secondary);font-size:.92rem;margin:0;max-width:520px;line-height:1.6}
+    .editor-header-actions{display:flex;gap:8px;flex-wrap:wrap}
+    .error,.success{border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:.9rem;line-height:1.5}
+    .error{display:none;background:rgba(220,38,38,0.08);border:1px solid rgba(220,38,38,0.18);color:#f87171}
+    .success{display:none;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.18);color:#4ade80}
+    .editor-section{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:18px 16px;margin-bottom:16px;box-shadow:var(--shadow-card)}
+    .section-head{display:flex;gap:12px;align-items:center;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border-color)}
+    .section-num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.14);border:1px solid rgba(212,175,55,.35);color:var(--accent-gold);font-weight:900;font-size:.95rem;flex-shrink:0}
+    .section-head h2{margin:0;font-size:1.05rem;font-weight:900}
+    .section-head p{margin:2px 0 0;color:var(--text-muted);font-size:.82rem}
+    .section-body{display:flex;flex-direction:column;gap:14px}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+    @media(max-width:700px){.form-grid{grid-template-columns:1fr}.editor-header{flex-direction:column}}
+    .form-group{display:flex;flex-direction:column;gap:6px}
+    .form-group label{font-size:.9rem;font-weight:800}
+    .req{color:#f87171}
+    .field-hint{color:var(--text-muted);font-size:.8rem;margin:0;line-height:1.5}
+    .field-lg{font-size:1.05rem;padding:14px 12px;font-weight:700}
+    .field-meta{display:flex;justify-content:flex-end;font-size:.75rem;color:var(--text-muted)}
+    .form-control,.form-select{background:var(--bg-secondary);border:1px solid var(--border-color);color:var(--text-primary);padding:10px 12px;border-radius:10px;font-family:inherit;transition:.15s}
+    .form-control:focus,.form-select:focus{outline:none;border-color:var(--accent-gold);box-shadow:0 0 0 3px rgba(212,175,55,.12)}
+    .form-control::placeholder{color:var(--text-muted)}
+    /* slug */
+    .slug-field{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:10px;padding:6px}
+    .slug-prefix{font-size:.78rem;color:var(--text-muted);white-space:nowrap;direction:ltr}
+    .slug-field #slug{flex:1;min-width:140px;border:none;background:transparent;padding:6px 4px;font-family:monospace;direction:ltr}
+    .slug-field #slug:focus{box-shadow:none}
+    /* chips */
+    .chips{display:flex;flex-wrap:wrap;gap:6px;min-height:28px}
+    .chip{display:inline-flex;align-items:center;gap:6px;background:rgba(212,175,55,.12);border:1px solid rgba(212,175,55,.3);color:var(--text-primary);padding:6px 10px;border-radius:999px;font-size:.82rem;font-weight:700}
+    .chip button{border:none;background:transparent;color:var(--text-muted);cursor:pointer;width:18px;height:18px;display:grid;place-items:center;border-radius:50%}
+    .chip button:hover{background:rgba(239,68,68,.12);color:#f87171}
+    .chips-input{display:flex;gap:8px}
+    .chips-input input{flex:1}
+    /* excerpt counter */
+    .counter{font-size:.75rem;color:var(--text-muted);text-align:left}
+    .counter.warn{color:#f59e0b}
+    .counter.danger{color:#f87171}
+    /* editor */
+    .editor-toolbar{display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--bg-secondary);border:1px solid var(--border-color);border-bottom:none;border-radius:10px 10px 0 0}
+    .tool-btn{border:1px solid var(--border-color);background:var(--bg-card);color:var(--text-primary);padding:7px 10px;border-radius:8px;font-size:.82rem;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+    .tool-btn:hover{border-color:var(--accent-gold);color:var(--accent-gold)}
+    .tool-btn.active{background:rgba(212,175,55,.14);border-color:var(--accent-gold);color:var(--accent-gold)}
+    .tool-sep{width:1px;background:var(--border-color);margin:0 2px}
+    .editor-area{min-height:280px;padding:14px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:0 0 10px 10px;outline:none;line-height:1.85;font-size:.98rem}
+    .editor-area:focus{border-color:var(--accent-gold)}
+    .editor-area:empty:before{content:attr(data-placeholder);color:var(--text-muted)}
+    .editor-area h2{font-size:1.35rem;margin:14px 0 8px;font-weight:900;border-bottom:1px solid var(--border-color);padding-bottom:6px}
+    .editor-area h3{font-size:1.12rem;margin:12px 0 8px;font-weight:800}
+    .editor-area h4{font-size:1rem;margin:10px 0 6px;font-weight:700;color:var(--accent-gold)}
+    .editor-area blockquote{border-right:3px solid var(--accent-gold);margin:10px 0;padding:8px 12px;background:rgba(212,175,55,.06);border-radius:8px;color:var(--text-secondary)}
+    .editor-area ul,.editor-area ol{margin:8px 0;padding-right:20px}
+    .editor-area a{color:var(--accent-gold);text-decoration:underline}
+    .editor-area img{max-width:100%;border-radius:8px}
+    /* image upload */
+    .upload-zone{border:1.5px dashed var(--border-color);border-radius:12px;padding:16px;background:var(--bg-secondary);text-align:center;cursor:pointer;transition:.15s}
+    .upload-zone:hover{border-color:var(--accent-gold);background:rgba(212,175,55,.04)}
+    .upload-zone.drag{border-color:var(--accent-gold);background:rgba(212,175,55,.08)}
+    .upload-icon{width:44px;height:44px;margin:0 auto 8px;border-radius:50%;display:grid;place-items:center;background:rgba(212,175,55,.12);color:var(--accent-gold);font-size:1.1rem}
+    .cover-preview-wrap{margin-top:10px;display:none}
+    .cover-preview-wrap.show{display:block}
+    .cover-preview-wrap img{width:100%;max-height:240px;object-fit:cover;border-radius:12px;border:1px solid var(--border-color)}
+    .cover-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    /* google preview */
+    .google-preview{background:#fff;color:#202124;border-radius:10px;padding:14px;border:1px solid #dadce0;direction:ltr;text-align:left}
+    [data-theme="dark"] .google-preview{background:#0f172a;color:#e5e7eb;border-color:var(--border-color)}
+    .g-title{color:#1a0dab;font-size:18px;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    [data-theme="dark"] .g-title{color:#8ab4f8}
+    .g-url{color:#006621;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:ltr}
+    [data-theme="dark"] .g-url{color:#a8c7fa}
+    .g-desc{color:#4d5156;font-size:13px;line-height:1.5;margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+    [data-theme="dark"] .g-desc{color:#bdc1c6}
+    .g-note{font-size:.75rem;color:var(--text-muted);margin-top:6px}
+    /* actions */
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .actions .btn-gold{flex:1;min-width:160px;justify-content:center}
+    @media(max-width:480px){.actions{flex-direction:column}.actions .btn-gold{width:100%}}
+    .preview-box{margin-top:16px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:14px;padding:16px}
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;place-items:center;z-index:9999;padding:16px}
+    .confirm-overlay.show{display:grid}
+    .confirm-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:16px;padding:18px;max-width:420px;width:100%}
+    .confirm-card h3{margin:0 0 8px;font-size:1.05rem}
+    .confirm-card p{margin:0 0 14px;color:var(--text-secondary);font-size:.9rem;line-height:1.6}
+    .confirm-actions{display:flex;gap:8px;justify-content:flex-end}
+  </style>
+</head>
+<body>
+  <div class="editor-wrap">
+    <div class="editor-header">
+      <div class="editor-header-main">
+        <h1 id="form-title">إنشاء مقال جديد</h1>
+        <p class="editor-subtitle">اكتب المقال مرة واحدة، وسنقوم بتجهيز الرابط والبيانات المطلوبة للنشر تلقائياً.</p>
+      </div>
+      <div class="editor-header-actions">
+        <a href="articles.html" class="btn-outline">العودة إلى المقالات</a>
+        <button id="logout" type="button" class="btn-outline">خروج</button>
+      </div>
+    </div>
+
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+
+    <form id="editor-form" novalidate>
+      <!-- ١ معلومات المقال -->
+      <section class="editor-section">
+        <div class="section-head">
+          <span class="section-num">١</span>
+          <div>
+            <h2>معلومات المقال</h2>
+            <p>العنوان، الرابط، المجال والكلمات المفتاحية</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="title">عنوان المقال <span class="req">*</span></label>
+            <p class="field-hint">اكتب العنوان الرئيسي الذي سيظهر للزائر أعلى المقال.</p>
+            <input id="title" class="form-control field-lg" required placeholder="مثال: دليل تأسيس الشركات في مصر 2026 — خطوة بخطوة">
+            <div class="field-meta"><span id="title-count">٠ حرف</span></div>
+          </div>
+
+          <div class="form-group">
+            <label>رابط المقال <span class="req">*</span></label>
+            <p class="field-hint">تم إنشاء الرابط تلقائياً من عنوان المقال. يمكنك تعديله إذا أردت.</p>
+            <div class="slug-field">
+              <span class="slug-prefix">https://al-ghunaimi-law-firm.vercel.app/articles/</span>
+              <input id="slug" class="form-control" required placeholder="company-formation-egypt-2026" dir="ltr">
+              <button type="button" id="slug-edit" class="btn-outline btn-sm" style="min-height:32px;padding:4px 10px">تعديل</button>
+            </div>
+            <small id="slug-help" style="font-size:.78rem;color:var(--text-muted)"></small>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="category">مجال المقال</label>
+              <p class="field-hint">اختر المجال القانوني الأقرب لموضوع المقال.</p>
+              <select id="category" class="form-select">
+                <option value="">— اختر المجال —</option>
+                <option value="real-estate">القانون العقاري</option>
+                <option value="corporate">قانون الشركات</option>
+                <option value="criminal">الدفوع الجنائية</option>
+                <option value="labor">قانون العمل</option>
+                <option value="family">الأحوال الشخصية</option>
+                <option value="contracts">العقود التجارية</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="author">كاتب المقال</label>
+              <p class="field-hint">يظهر أسفل عنوان المقال.</p>
+              <input id="author" class="form-control" value="مؤسسة الغنيمي للمحاماة">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>الكلمات المفتاحية</label>
+            <p class="field-hint">أضف كلمات تساعد في وصف موضوع المقال. اكتب كلمة ثم اضغط إدخال لإضافتها.</p>
+            <div id="tags-chips" class="chips" aria-live="polite"></div>
+            <div class="chips-input">
+              <input id="tags-input" class="form-control" placeholder="اكتب كلمة واضغط إدخال — مثال: ميراث">
+              <button type="button" id="tags-add" class="btn-outline" style="min-height:42px">إضافة</button>
+            </div>
+            <input id="tags" type="hidden">
+          </div>
+        </div>
+      </section>
+
+      <!-- ٢ كتابة المقال -->
+      <section class="editor-section">
+        <div class="section-head">
+          <span class="section-num">٢</span>
+          <div>
+            <h2>كتابة المقال</h2>
+            <p>الملخص والمحتوى — بدون أكواد</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label for="excerpt">ملخص المقال</label>
+            <p class="field-hint">اكتب نبذة قصيرة تظهر للزائر قبل فتح المقال، وتساعده على معرفة محتوى المقال بسرعة.</p>
+            <textarea id="excerpt" class="form-control" rows="2" placeholder="مثال: تعرف على إجراءات تأسيس الشركات في مصر، والأوراق المطلوبة، وأهم الخطوات القانونية."></textarea>
+            <div class="field-meta"><span id="excerpt-count">٠ حرف</span></div>
+          </div>
+
+          <div class="form-group">
+            <label>محتوى المقال <span class="req">*</span></label>
+            <p class="field-hint">اكتب المقال كما في برنامج الكتابة — لا حاجة لأي كود. استخدم الأدوات أدناه للعناوين والقوائم.</p>
+            <div class="editor-toolbar" role="toolbar" aria-label="أدوات التنسيق">
+              <button type="button" class="tool-btn" data-cmd="formatBlock" data-val="h2" title="عنوان داخل المقال">عنوان</button>
+              <button type="button" class="tool-btn" data-cmd="formatBlock" data-val="h3" title="عنوان فرعي">عنوان فرعي</button>
+              <button type="button" class="tool-btn" data-cmd="formatBlock" data-val="h4" title="عنوان أصغر">عنوان صغير</button>
+              <button type="button" class="tool-btn" data-cmd="formatBlock" data-val="p" title="نص عادي">نص</button>
+              <span class="tool-sep"></span>
+              <button type="button" class="tool-btn" data-cmd="bold" title="عريض"><b>عريض</b></button>
+              <button type="button" class="tool-btn" data-cmd="italic" title="مائل"><i>مائل</i></button>
+              <span class="tool-sep"></span>
+              <button type="button" class="tool-btn" data-cmd="insertUnorderedList" title="قائمة نقطية">• قائمة</button>
+              <button type="button" class="tool-btn" data-cmd="insertOrderedList" title="قائمة مرقمة">١. مرقمة</button>
+              <button type="button" class="tool-btn" data-cmd="formatBlock" data-val="blockquote" title="اقتباس">اقتباس</button>
+              <span class="tool-sep"></span>
+              <button type="button" class="tool-btn" id="btn-link" title="إضافة رابط">رابط</button>
+              <button type="button" class="tool-btn" data-cmd="removeFormat" title="إزالة التنسيق">مسح التنسيق</button>
+              <button type="button" class="tool-btn" data-cmd="insertHorizontalRule" title="فاصل">— فاصل</button>
+            </div>
+            <div id="editor" class="editor-area" contenteditable="true" data-placeholder="ابدأ كتابة المقال هنا... اكتب فقرة، ثم استخدم العناوين والقوائم من الشريط أعلاه."></div>
+            <textarea id="content" style="display:none"></textarea>
+            <div class="field-meta"><span id="content-count">٠ كلمة</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ٣ صورة المقال -->
+      <section class="editor-section">
+        <div class="section-head">
+          <span class="section-num">٣</span>
+          <div>
+            <h2>صورة المقال</h2>
+            <p>اختياري — تظهر أعلى المقال</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-group">
+            <label>صورة المقال</label>
+            <p class="field-hint">يمكنك إضافة صورة واضحة مرتبطة بموضوع المقال. اسحب الصورة أو اضغط للاختيار (حتى 3 ميجا).</p>
+            <div id="upload-zone" class="upload-zone" tabindex="0" role="button" aria-label="رفع صورة">
+              <div class="upload-icon">🖼️</div>
+              <div style="font-weight:800">اسحب الصورة إلى هنا أو اضغط للاختيار</div>
+              <div style="font-size:.82rem;color:var(--text-muted)">PNG, JPG, WEBP</div>
+            </div>
+            <input id="cover" type="file" accept="image/*" style="display:none">
+            <input id="cover_url" type="hidden">
+            <small id="cover-help" style="font-size:.78rem;color:var(--text-muted)"></small>
+            <div id="cover-preview" class="cover-preview-wrap"><img id="cover-img" src="" alt=""><div class="cover-actions"><button type="button" id="btn-change-cover" class="btn-outline btn-sm">تغيير الصورة</button><button type="button" id="btn-remove-cover" class="btn-outline btn-sm" style="border-color:#f87171;color:#f87171">حذف الصورة</button></div></div>
+          </div>
+          <div class="form-group">
+            <label for="cover_alt">وصف الصورة</label>
+            <p class="field-hint">اكتب وصفًا مختصرًا للصورة يساعد Google على فهم محتواها.</p>
+            <input id="cover_alt" class="form-control" placeholder="مثال: مبنى إداري حديث يرمز إلى الاستثمار العقاري">
+          </div>
+        </div>
+      </section>
+
+      <!-- ٤ تحسين ظهور المقال في Google -->
+      <section class="editor-section">
+        <div class="section-head">
+          <span class="section-num">٤</span>
+          <div>
+            <h2>تحسين ظهور المقال في Google</h2>
+            <p>يمكنك تركها للنظام ليقترحها تلقائياً</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <p class="field-hint" style="margin:0">هذه البيانات تساعد محركات البحث على فهم المقال وعرضه بشكل أفضل. تُقترح تلقائياً من العنوان والملخص.</p>
+          <div class="form-group">
+            <label for="seo_title">عنوان ظهور المقال في Google</label>
+            <p class="field-hint">العنوان الذي قد يظهر في نتائج البحث.</p>
+            <input id="seo_title" class="form-control" placeholder="يُقترح تلقائياً من عنوان المقال">
+            <div class="field-meta"><span id="seo-title-count">٠ حرف</span></div>
+          </div>
+          <div class="form-group">
+            <label for="seo_desc">وصف ظهور المقال في Google</label>
+            <p class="field-hint">وصف مختصر قد يظهر أسفل العنوان في نتائج البحث.</p>
+            <textarea id="seo_desc" class="form-control" rows="2" placeholder="يُقترح تلقائياً من ملخص المقال"></textarea>
+            <div class="field-meta"><span id="seo-desc-count">٠ حرف</span></div>
+          </div>
+          <div class="form-group">
+            <label>معاينة تقريبية في Google</label>
+            <div class="google-preview">
+              <div class="g-title" id="g-title">عنوان المقال سيظهر هنا</div>
+              <div class="g-url">https://al-ghunaimi-law-firm.vercel.app/articles/<span id="g-slug">—</span></div>
+              <div class="g-desc" id="g-desc">وصف المقال سيظهر هنا بشكل تقريبي كما قد يراه الزائر في نتائج البحث.</div>
+            </div>
+            <div class="g-note">معاينة تقريبية — قد يختلف العرض الفعلي في Google.</div>
+          </div>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="related">الخدمة القانونية المرتبطة</label>
+              <p class="field-hint">اختر الخدمة ذات الصلة لربط المقال بها.</p>
+              <select id="related" class="form-select">
+                <option value="">— لا يوجد —</option>
+                <option value="real-estate">القضايا العقارية</option>
+                <option value="corporate">الشركات</option>
+                <option value="criminal">الجنائية</option>
+                <option value="family">الأسرة</option>
+                <option value="contracts">العقود</option>
+                <option value="inheritance">الميراث</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="published_at">تاريخ نشر المقال</label>
+              <p class="field-hint">اتركه كما هو للنشر الآن.</p>
+              <input id="published_at" type="datetime-local" class="form-control">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ٥ المراجعة والنشر -->
+      <section class="editor-section">
+        <div class="section-head">
+          <span class="section-num">٥</span>
+          <div>
+            <h2>المراجعة والنشر</h2>
+            <p>راجع المقال قبل الحفظ</p>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="actions">
+            <button type="button" id="save-draft" class="btn-outline">حفظ كمسودة</button>
+            <button type="button" id="preview" class="btn-outline">معاينة المقال</button>
+            <button type="button" id="publish" class="btn-gold">نشر المقال</button>
+            <button type="button" id="archive" class="btn-outline" style="display:none; border-color:#f87171; color:#f87171;">أرشفة</button>
+          </div>
+          <p class="field-hint">سيتم التحقق من العنوان والمحتوى والرابط قبل النشر.</p>
+        </div>
+      </section>
+    </form>
+
+    <div id="preview-box" class="preview-box" style="display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <h3 style="margin:0">معاينة المقال</h3>
+        <button type="button" id="close-preview" class="btn-outline btn-sm">إغلاق</button>
+      </div>
+      <div id="preview-content"></div>
+    </div>
+  </div>
+
+  <div id="confirm-publish" class="confirm-overlay" role="dialog" aria-modal="true">
+    <div class="confirm-card">
+      <h3>هل تريد نشر هذا المقال الآن؟</h3>
+      <p>سيصبح المقال ظاهراً للزوار في الموقع وصفحة المقالات.</p>
+      <div class="confirm-actions">
+        <button type="button" id="confirm-cancel" class="btn-outline">إلغاء</button>
+        <button type="button" id="confirm-ok" class="btn-gold">نشر المقال</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/supabase.js"></script>
+  <script>
+    const supabaseClient = window.GhonemySupabase.createClient();
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const isPreview = params.get('preview') === '1';
+    const errorEl = document.getElementById('error');
+    const successEl = document.getElementById('success');
+    function showError(m){ errorEl.textContent=m; errorEl.style.display='block'; successEl.style.display='none'; window.scrollTo({top:0,behavior:'smooth'}) }
+    function showSuccess(m){ successEl.textContent=m; successEl.style.display='block'; errorEl.style.display='none'; }
+    function slugify(s){ return s.toLowerCase().trim().replace(/[^a-z0-9\u0600-\u06FF]+/g,'-').replace(/^-+|-+$/g,'').replace(/-+/g,'-').replace(/[^a-z0-9-]/g,'').replace(/^[^a-z0-9]+/,'') || 'article-' + Date.now(); }
+    async function requireAdmin(){
+      if(!supabaseClient){ showError('Supabase غير مهيأ'); return null; }
+      const { data:{session}} = await supabaseClient.auth.getSession();
+      if(!session){ location.href='login.html'; return null; }
+      const { data:admin } = await supabaseClient.from('admin_users').select('role').eq('user_id', session.user.id).maybeSingle();
+      if(!admin){ await supabaseClient.auth.signOut(); location.href='login.html'; return null; }
+      return session;
+    }
+    let originalSlug = null;
+    let currentStatus = 'draft';
+
+    // helpers for new UI
+    function updateCounters(){
+      const t = document.getElementById('title').value || '';
+      document.getElementById('title-count').textContent = t.length + ' حرف';
+      const e = document.getElementById('excerpt').value || '';
+      const ec = document.getElementById('excerpt-count');
+      ec.textContent = e.length + ' حرف';
+      ec.className = e.length > 160 ? 'counter danger' : e.length > 120 ? 'counter warn' : 'counter';
+      const st = document.getElementById('seo_title').value || '';
+      document.getElementById('seo-title-count').textContent = st.length + ' حرف';
+      const sd = document.getElementById('seo_desc').value || '';
+      const sdc = document.getElementById('seo-desc-count');
+      sdc.textContent = sd.length + ' حرف';
+      sdc.className = sd.length > 160 ? 'counter danger' : sd.length > 120 ? 'counter warn' : 'counter';
+      const editorText = (document.getElementById('editor').innerText || '').trim();
+      const words = editorText ? editorText.split(/\s+/).filter(Boolean).length : 0;
+      document.getElementById('content-count').textContent = words + ' كلمة';
+      // google preview
+      const gTitle = st || t || 'عنوان المقال سيظهر هنا';
+      const gSlug = document.getElementById('slug').value || '—';
+      const gDesc = sd || e || 'وصف المقال سيظهر هنا بشكل تقريبي كما قد يراه الزائر في نتائج البحث.';
+      document.getElementById('g-title').textContent = gTitle;
+      document.getElementById('g-slug').textContent = gSlug;
+      document.getElementById('g-desc').textContent = gDesc;
+    }
+
+    // chips
+    const chipsEl = document.getElementById('tags-chips');
+    const tagsInput = document.getElementById('tags-input');
+    const hiddenTags = document.getElementById('tags');
+    let tagsArr = [];
+    function renderChips(){
+      chipsEl.innerHTML = '';
+      tagsArr.forEach((tag, idx)=>{
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.innerHTML = `${escapeHtml(tag)} <button type="button" aria-label="حذف" data-i="${idx}">×</button>`;
+        chipsEl.appendChild(chip);
+      });
+      hiddenTags.value = tagsArr.join(', ');
+      updateCounters();
+    }
+    function escapeHtml(s){ const d=document.createElement('div'); d.textContent=s; return d.innerHTML; }
+    chipsEl.addEventListener('click', (e)=>{
+      if(e.target.tagName==='BUTTON'){ const i = parseInt(e.target.dataset.i,10); tagsArr.splice(i,1); renderChips(); dirty=true; }
+    });
+    function addTagFromInput(){
+      const v = tagsInput.value.trim().replace(/^,+|,+$/g,'');
+      if(!v) return;
+      const parts = v.split(',').map(s=>s.trim()).filter(Boolean);
+      parts.forEach(p=>{ if(p && !tagsArr.includes(p)) tagsArr.push(p); });
+      tagsInput.value=''; renderChips(); dirty=true;
+    }
+    document.getElementById('tags-add').addEventListener('click', addTagFromInput);
+    tagsInput.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter'){ e.preventDefault(); addTagFromInput(); }
+      if(e.key===',' ){ e.preventDefault(); addTagFromInput(); }
+      if(e.key==='Backspace' && !tagsInput.value && tagsArr.length){ tagsArr.pop(); renderChips(); }
+    });
+
+    // slug
+    const titleEl = document.getElementById('title');
+    const slugEl = document.getElementById('slug');
+    const slugEditBtn = document.getElementById('slug-edit');
+    let slugLocked = true;
+    slugEl.readOnly = true;
+    slugEl.style.background = 'transparent';
+    slugEditBtn.addEventListener('click', ()=>{
+      slugLocked = !slugLocked;
+      slugEl.readOnly = slugLocked;
+      slugEl.style.background = slugLocked ? 'transparent' : 'var(--bg-card)';
+      slugEditBtn.textContent = slugLocked ? 'تعديل' : 'قفل';
+      if(!slugLocked) slugEl.focus();
+    });
+    titleEl.addEventListener('input', (e)=>{
+      if(slugLocked || !slugEl.value){
+        slugEl.value = slugify(e.target.value);
+        slugEl.dataset.auto='1';
+        updateCounters();
+      }
+      // auto suggest seo title/desc
+      const seoTitle = document.getElementById('seo_title');
+      if(!seoTitle.value) seoTitle.value = e.target.value;
+      updateCounters();
+    });
+    slugEl.addEventListener('input', e=>{ e.target.dataset.auto='0'; slugLocked=false; updateCounters(); });
+    document.getElementById('excerpt').addEventListener('input', ()=>{
+      const seoDesc = document.getElementById('seo_desc');
+      if(!seoDesc.value) seoDesc.value = document.getElementById('excerpt').value;
+      updateCounters();
+    });
+    ['title','excerpt','seo_title','seo_desc','slug'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.addEventListener('input', updateCounters);
+    });
+
+    // editor
+    const editor = document.getElementById('editor');
+    const hiddenContent = document.getElementById('content');
+    function syncEditorToHidden(){
+      hiddenContent.value = editor.innerHTML;
+      updateCounters();
+    }
+    editor.addEventListener('input', syncEditorToHidden);
+    editor.addEventListener('blur', syncEditorToHidden);
+    // toolbar
+    document.querySelectorAll('.tool-btn[data-cmd]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const cmd = btn.dataset.cmd;
+        const val = btn.dataset.val;
+        if(cmd==='formatBlock'){
+          document.execCommand(cmd, false, val);
+        } else {
+          document.execCommand(cmd, false, null);
+        }
+        editor.focus();
+        syncEditorToHidden();
+      });
+    });
+    document.getElementById('btn-link').addEventListener('click', ()=>{
+      const url = prompt('أدخل رابط URL (https://...)');
+      if(!url) return;
+      if(!/^https?:\/\//i.test(url)) return alert('الرابط يجب أن يبدأ بـ https://');
+      document.execCommand('createLink', false, url);
+      // ensure target blank
+      editor.querySelectorAll('a').forEach(a=>{ a.target='_blank'; a.rel='noopener'; });
+      syncEditorToHidden();
+    });
+
+    async function load(){
+      await requireAdmin();
+      if(!id) {
+        document.getElementById('form-title').textContent = 'إنشاء مقال جديد';
+        updateCounters();
+        return;
+      }
+      document.getElementById('form-title').textContent = 'تعديل المقال';
+      document.getElementById('archive').style.display = 'inline-flex';
+      const { data, error } = await supabaseClient.from('articles').select('*').eq('id', id).single();
+      if(error) return showError(error.message);
+      originalSlug = data.slug;
+      currentStatus = data.status;
+      document.getElementById('title').value = data.title || '';
+      document.getElementById('slug').value = data.slug || '';
+      document.getElementById('category').value = data.category || '';
+      tagsArr = (data.tags||[]).slice();
+      renderChips();
+      document.getElementById('author').value = data.author_name || 'مؤسسة الغنيمي للمحاماة';
+      document.getElementById('excerpt').value = data.excerpt || '';
+      // editor
+      hiddenContent.value = data.content_html || '';
+      editor.innerHTML = data.content_html || '';
+      document.getElementById('cover_alt').value = data.cover_image_alt || '';
+      document.getElementById('cover_url').value = data.cover_image_url || '';
+      if(data.cover_image_url){ document.getElementById('cover-img').src=data.cover_image_url; document.getElementById('cover-preview').classList.add('show'); }
+      document.getElementById('seo_title').value = data.seo_title || '';
+      document.getElementById('seo_desc').value = data.seo_description || '';
+      document.getElementById('related').value = data.related_service_slug || '';
+      if(data.published_at) document.getElementById('published_at').value = new Date(data.published_at).toISOString().slice(0,16);
+      updateCounters();
+      if(isPreview) doPreview();
+    }
+
+    // Image upload - keep original logic but add zone
+    const coverInput = document.getElementById('cover');
+    const uploadZone = document.getElementById('upload-zone');
+    uploadZone.addEventListener('click', ()=> coverInput.click());
+    uploadZone.addEventListener('keydown', (e)=>{ if(e.key==='Enter' || e.key===' ') { e.preventDefault(); coverInput.click(); }});
+    uploadZone.addEventListener('dragover', (e)=>{ e.preventDefault(); uploadZone.classList.add('drag'); });
+    uploadZone.addEventListener('dragleave', ()=> uploadZone.classList.remove('drag'));
+    uploadZone.addEventListener('drop', (e)=>{
+      e.preventDefault(); uploadZone.classList.remove('drag');
+      const file = e.dataTransfer.files[0];
+      if(file) handleFile(file);
+    });
+    coverInput.addEventListener('change', async (e)=>{
+      const file = e.target.files[0];
+      if(file) await handleFile(file);
+    });
+    async function handleFile(file){
+      if(file.size > 3*1024*1024) return showError('الصورة كبيرة جداً — الحد الأقصى 3 ميجا');
+      if(!file.type.startsWith('image/')) return showError('اختر ملف صورة فقط (PNG, JPG)');
+      const help = document.getElementById('cover-help');
+      help.textContent = 'جاري رفع الصورة...';
+      try{
+        const ext = file.name.split('.').pop().toLowerCase();
+        const path = `covers/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+        const { error } = await supabaseClient.storage.from('article-images').upload(path, file, { cacheControl: '3600', upsert:false });
+        if(error) throw error;
+        const { data } = supabaseClient.storage.from('article-images').getPublicUrl(path);
+        document.getElementById('cover_url').value = data.publicUrl;
+        document.getElementById('cover-img').src = data.publicUrl;
+        document.getElementById('cover-preview').classList.add('show');
+        help.textContent = 'تم رفع الصورة بنجاح';
+        showSuccess('تم رفع الصورة بنجاح');
+      }catch(err){ showError(err.message || 'حدثت مشكلة أثناء رفع الصورة. حاول مرة أخرى.'); help.textContent=''; }
+    }
+    document.getElementById('btn-change-cover').addEventListener('click', ()=> coverInput.click());
+    document.getElementById('btn-remove-cover').addEventListener('click', ()=>{
+      document.getElementById('cover_url').value='';
+      document.getElementById('cover-img').src='';
+      document.getElementById('cover-preview').classList.remove('show');
+      coverInput.value='';
+      document.getElementById('cover-help').textContent='';
+    });
+
+    function collectPayload(status){
+      const title = document.getElementById('title').value.trim();
+      const slug = document.getElementById('slug').value.trim().toLowerCase();
+      syncEditorToHidden();
+      const content = hiddenContent.value.trim();
+      if(!title) throw new Error('اكتب عنوان المقال أولاً');
+      if(!slug) throw new Error('رابط المقال مطلوب');
+      if(!content || editor.innerText.trim().length < 10) throw new Error('اكتب محتوى المقال (على الأقل فقرة قصيرة)');
+      if(!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) throw new Error('رابط المقال يجب أن يكون حروف إنجليزية وأرقام وشرطات فقط — مثال: my-article-2026');
+      const payload = {
+        slug,
+        title,
+        excerpt: document.getElementById('excerpt').value.trim() || null,
+        content_html: DOMPurify.sanitize(content, { ALLOWED_TAGS: ['p','h2','h3','h4','strong','em','a','ul','ol','li','blockquote','img','hr'], ALLOWED_ATTR: ['href','src','alt','title','target','rel'] }),
+        category: document.getElementById('category').value || null,
+        tags: tagsArr.slice(),
+        cover_image_url: document.getElementById('cover_url').value || null,
+        cover_image_alt: document.getElementById('cover_alt').value.trim() || null,
+        author_name: document.getElementById('author').value.trim() || 'مؤسسة الغنيمي للمحاماة',
+        seo_title: document.getElementById('seo_title').value.trim() || null,
+        seo_description: document.getElementById('seo_desc').value.trim() || null,
+        related_service_slug: document.getElementById('related').value || null,
+        status,
+      };
+      const pub = document.getElementById('published_at').value;
+      if(status==='published'){
+        payload.published_at = pub ? new Date(pub).toISOString() : new Date().toISOString();
+      } else if(pub){
+        payload.published_at = new Date(pub).toISOString();
+      }
+      return payload;
+    }
+
+    async function save(status){
+      showError(''); showSuccess('');
+      let payload;
+      try{ payload = collectPayload(status); }catch(e){ return showError(e.message); }
+      const btnId = status==='published' ? 'publish' : 'save-draft';
+      const btn = document.getElementById(btnId);
+      btn.disabled = true;
+      const origText = btn.textContent;
+      btn.textContent = 'جاري الحفظ...';
+      try{
+        let result;
+        if(id){
+          if(originalSlug && originalSlug !== payload.slug){
+            const { data: exists } = await supabaseClient.from('articles').select('id').eq('slug', payload.slug).neq('id', id).maybeSingle();
+            if(exists) throw new Error('هذا الرابط مستخدم بالفعل لمقال آخر. جرّب تعديل عنوان المقال أو غيّر الرابط قليلاً.');
+            await supabaseClient.from('article_redirects').insert({ old_slug: originalSlug, article_id: id });
+          }
+          const { error } = await supabaseClient.from('articles').update(payload).eq('id', id);
+          if(error) throw error;
+          result = id;
+        } else {
+          const { data, error } = await supabaseClient.from('articles').insert(payload).select('id').single();
+          if(error) throw error;
+          result = data.id;
+        }
+        try {
+          const { data: sess } = await supabaseClient.auth.getSession();
+          const token = sess?.session?.access_token;
+          if (token && payload.status === 'published') {
+            await fetch('/api/publish-article', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+              body: JSON.stringify({ ...payload, id: result })
+            });
+          }
+        } catch(e) { console.warn('GitHub persist failed (will still be in Supabase)', e); }
+        showSuccess(status==='published' ? 'تم نشر المقال بنجاح' : 'تم حفظ المقال كمسودة بنجاح');
+        dirty=false;
+        if(!id && result){
+          setTimeout(()=> location.href = `editor.html?id=${result}`, 800);
+        } else {
+          originalSlug = payload.slug;
+        }
+      }catch(e){
+        let msg = e.message || 'حدثت مشكلة أثناء الحفظ';
+        if(msg.includes('duplicate') || msg.includes('already exists')) msg='هذا الرابط مستخدم بالفعل. غيّر الرابط قليلاً.';
+        showError(msg);
+        console.error(e);
+      }
+      finally{ btn.disabled=false; btn.textContent=origText; }
+    }
+
+    function doPreview(){
+      syncEditorToHidden();
+      const title = document.getElementById('title').value || 'بدون عنوان';
+      const cat = document.getElementById('category').value || '';
+      const catLabel = { 'real-estate':'القانون العقاري','corporate':'قانون الشركات','criminal':'الدفوع الجنائية','labor':'قانون العمل','family':'الأحوال الشخصية','contracts':'العقود التجارية'}[cat] || cat;
+      const content = hiddenContent.value;
+      const cover = document.getElementById('cover_url').value;
+      const author = document.getElementById('author').value;
+      const date = document.getElementById('published_at').value ? new Date(document.getElementById('published_at').value).toLocaleDateString('ar-EG') : new Date().toLocaleDateString('ar-EG');
+      const box = document.getElementById('preview-box');
+      const inner = document.getElementById('preview-content');
+      const coverHtml = cover ? `<img src="${cover}" alt="" style="width:100%;max-height:320px;object-fit:cover;border-radius:12px;margin-bottom:14px">` : '';
+      inner.innerHTML = `<div style="color:var(--text-muted);font-size:.82rem;margin-bottom:6px">${catLabel?catLabel+' • ':''}${date} ${author? '• '+escapeHtml(author):''}</div><h2 style="margin:0 0 10px;font-size:1.35rem">${escapeHtml(title)}</h2>${coverHtml}<div>${DOMPurify.sanitize(content)}</div>`;
+      box.style.display='block';
+      box.scrollIntoView({ behavior:'smooth' });
+    }
+
+    // confirm publish
+    const confirmOverlay = document.getElementById('confirm-publish');
+    document.getElementById('publish').addEventListener('click', ()=>{
+      try{ collectPayload('published'); }catch(e){ return showError(e.message); }
+      confirmOverlay.classList.add('show');
+    });
+    document.getElementById('confirm-cancel').addEventListener('click', ()=> confirmOverlay.classList.remove('show'));
+    document.getElementById('confirm-ok').addEventListener('click', async ()=>{
+      confirmOverlay.classList.remove('show');
+      await save('published');
+    });
+    confirmOverlay.addEventListener('click', (e)=>{ if(e.target===confirmOverlay) confirmOverlay.classList.remove('show'); });
+
+    document.getElementById('save-draft').addEventListener('click', ()=>save('draft'));
+    document.getElementById('archive').addEventListener('click', async ()=>{
+      if(!id) return showError('احفظ المقال أولاً قبل الأرشفة');
+      if(!confirm('هل تريد أرشفة هذا المقال؟ لن يظهر للزوار بعد الأرشفة.')) return;
+      const { error } = await supabaseClient.from('articles').update({ status:'archived' }).eq('id', id);
+      if(error) return showError(error.message);
+      showSuccess('تمت أرشفة المقال'); setTimeout(()=> location.href='articles.html', 800);
+    });
+    document.getElementById('preview').addEventListener('click', doPreview);
+    document.getElementById('close-preview').addEventListener('click', ()=> document.getElementById('preview-box').style.display='none');
+
+    let dirty = false;
+    document.getElementById('editor-form').addEventListener('input', ()=> {dirty=true; updateCounters();});
+    editor.addEventListener('input', ()=> {dirty=true; updateCounters();});
+    window.addEventListener('beforeunload', (e)=>{
+      if(dirty){ e.preventDefault(); e.returnValue='لديك تغييرات لم يتم حفظها. هل تريد مغادرة الصفحة؟'; }
+    });
+
+    document.getElementById('logout').addEventListener('click', async ()=>{
+      if(dirty && !confirm('لديك تغييرات لم يتم حفظها. هل تريد الخروج؟')) return;
+      try { if (supabaseClient) await supabaseClient.auth.signOut(); } catch(e) { console.warn('signOut failed', e); }
+      try { localStorage.clear(); sessionStorage.clear(); } catch(e) {}
+      location.href='login.html';
+    });
+    if (supabaseClient) supabaseClient.auth.onAuthStateChange((e)=>{ if(e==='SIGNED_OUT') location.href='login.html'; });
+
+    load();
+  </script>
+</body>
+</html>
