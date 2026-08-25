@@ -12,7 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // State Management
-  let currentLang = localStorage.getItem('ghonemy_lang') || 'ar';
+  // Detect language from URL path (/en/ or /fr/) for SEO pages, fallback to localStorage
+  function detectLangFromPath() {
+    const path = window.location.pathname.toLowerCase();
+    if (path.startsWith('/en/') || path === '/en' || path.includes('/en/services/') || path.includes('/en/articles/')) return 'en';
+    if (path.startsWith('/fr/') || path === '/fr' || path.includes('/fr/services/') || path.includes('/fr/articles/')) return 'fr';
+    return null;
+  }
+  let pathLang = detectLangFromPath();
+  let currentLang = pathLang || localStorage.getItem('ghonemy_lang') || 'ar';
+  // If path indicates language, persist it
+  if (pathLang) localStorage.setItem('ghonemy_lang', pathLang);
   let currentTheme = localStorage.getItem('ghonemy_theme') || 'dark';
 
   // DOM helpers (fresh query to survive dynamic injection)
@@ -46,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBackToTop();
   initAdmin();
 
-  // Delegated: Multi-Language Pill Switcher (survives re-render)
+  // Delegated: Multi-Language Pill Switcher (survives re-render) - with SEO path navigation for location pages (http/https only)
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.lang-btn');
     if (!btn) return;
@@ -54,6 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selectedLang && selectedLang !== currentLang) {
       currentLang = selectedLang;
       localStorage.setItem('ghonemy_lang', currentLang);
+      // file:// preview: in-place translation only, no navigation (prevents ERR_FILE_NOT_FOUND)
+      const isFileProtocol = window.location.protocol === 'file:';
+      if (!isFileProtocol) {
+        const path = window.location.pathname;
+        const isLocationPage = /\/(6th-october|sheikh-zayed|giza|cairo)(\.html)?\/?$/.test(path) || path.includes('/services/6th-october') || path.includes('/services/sheikh-zayed') || path.includes('/services/giza') || path.includes('/services/cairo');
+        if (isLocationPage) {
+          let newPath = path;
+          newPath = newPath.replace(/^\/(en|fr)(?=\/)/, '');
+          if (selectedLang !== 'ar') {
+            newPath = '/' + selectedLang + newPath;
+          }
+          if (newPath !== path) {
+            window.location.href = newPath;
+            return;
+          }
+        }
+      }
       initLanguage(currentLang);
     }
   });

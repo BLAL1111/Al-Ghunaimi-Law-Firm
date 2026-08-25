@@ -10,9 +10,11 @@
 
   function getPathPrefix() {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes('/services/') || path.includes('/articles/')) {
-      return '../';
-    }
+    const isEnFr = path.includes('/en/') || path.includes('/fr/');
+    const isDeep = path.includes('/services/') || path.includes('/articles/');
+    if (isEnFr && isDeep) return '../../';
+    if (isDeep) return '../';
+    if (isEnFr) return '../';
     return '';
   }
 
@@ -40,6 +42,10 @@
   function getPageUrl(page) {
     const base = getBase();
     const prefix = getPathPrefix();
+    const path = window.location.pathname.toLowerCase();
+    const isEn = path.includes('/en/');
+    const isFr = path.includes('/fr/');
+    const langPrefix = isEn ? '/en' : isFr ? '/fr' : '';
     // file:// -> relative paths with prefix + .html
     if (isLocal) {
       if (page === 'home') return prefix + 'index.html';
@@ -54,16 +60,16 @@
       return prefix + page + '.html';
     }
     // http(s) -> base-aware absolute paths (Vercel root, GitHub Pages subfolder)
-    if (page === 'home') return (base || '') + '/';
+    if (page === 'home') return (base || '') + (langPrefix || '/');
     if (page.startsWith('services/')) {
       const slug = page.split('/')[1];
-      return base + '/services/' + slug;
+      return base + langPrefix + '/services/' + slug;
     }
     if (page.startsWith('articles/')) {
       const slug = page.split('/')[1];
-      return base + '/articles/' + slug;
+      return base + langPrefix + '/articles/' + slug;
     }
-    return base + '/' + page;
+    return base + langPrefix + '/' + page;
   }
 
   function getCurrentPage() {
