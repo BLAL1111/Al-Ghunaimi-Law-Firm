@@ -91,6 +91,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!btn) return;
     currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
     localStorage.setItem('ghonemy_theme', currentTheme);
+    // Add rotation animation
+    const icon = btn.querySelector('i');
+    if (icon) {
+      icon.style.animation = 'themeToggleRotate 0.4s ease';
+      setTimeout(() => { icon.style.animation = ''; }, 400);
+    }
     initTheme(currentTheme);
   });
 
