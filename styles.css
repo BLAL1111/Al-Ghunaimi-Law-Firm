@@ -3915,3 +3915,46 @@ html[dir="ltr"] .contact-desc-text {
     -webkit-backdrop-filter: none !important;
   }
 }
+
+/* LOCATION PAGES */
+.location-hero{background-image:url(''img/hejaz_mall.jpg'')}
+.location-badge{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:8px 16px;background:rgba(212,175,55,0.14);border:1px solid rgba(212,175,55,0.35);border-radius:30px;color:var(--accent-gold);font-size:0.84rem;font-weight:700}
+.location-intro{display:grid;grid-template-columns:1.15fr 0.85fr;gap:28px;align-items:center}
+.location-content h2{font-size:1.55rem;font-weight:900;color:var(--text-primary);margin-bottom:12px;line-height:1.35}
+.lead-text{font-size:0.98rem;color:var(--text-secondary);line-height:1.85;margin-bottom:16px}
+.location-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:14px}
+.location-stats .stat-item{display:flex;align-items:center;gap:8px;padding:10px 12px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:12px;font-size:0.82rem;font-weight:700;color:var(--text-secondary)}
+.location-stats .stat-item i{color:var(--accent-gold)}
+.location-image img{width:100%;height:auto;border-radius:var(--radius-lg);object-fit:cover;border:1px solid var(--border-color)}
+@media(max-width:992px){.location-intro{grid-template-columns:1fr}}
+.services-location-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.service-location-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:22px 18px;display:flex;flex-direction:column;transition:var(--transition-smooth);position:relative;overflow:hidden}
+.service-location-card::before{content:'''';position:absolute;top:0;right:0;width:4px;height:0%;background:var(--accent-gold-gradient);transition:var(--transition-smooth)}
+.service-location-card:hover::before{height:100%}
+.service-location-card:hover{border-color:var(--accent-gold);transform:translateY(-5px);box-shadow:var(--shadow-card)}
+.service-location-card h3{font-size:1.02rem;font-weight:800;color:var(--text-primary);margin-bottom:8px}
+.service-location-card p{font-size:0.86rem;color:var(--text-secondary);line-height:1.65;flex-grow:1;margin-bottom:14px}
+.service-location-card .service-link{color:var(--accent-gold);font-weight:800;font-size:0.82rem;text-decoration:none;display:inline-flex;align-items:center;gap:6px;margin-top:auto}
+.courts-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.court-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:18px 16px;text-align:center;transition:var(--transition-smooth)}
+.court-card:hover{border-color:var(--accent-gold);transform:translateY(-4px)}
+.court-icon{width:48px;height:48px;margin:0 auto 10px;display:grid;place-items:center;background:var(--accent-gold-subtle);border:1px solid var(--border-color);border-radius:12px;color:var(--accent-gold);font-size:1.1rem}
+.court-card h3{font-size:0.95rem;font-weight:800;color:var(--text-primary);margin-bottom:6px}
+.court-card p{font-size:0.82rem;color:var(--text-secondary);line-height:1.6}
+@media(max-width:992px){.courts-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.courts-grid{grid-template-columns:1fr}}
+.areas-served-section{margin-top:28px;padding:18px;background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg)}
+.areas-list{display:flex;flex-wrap:wrap;gap:8px}
+.area-tag{display:inline-flex;align-items:center;padding:6px 12px;background:var(--bg-secondary);border:1px solid var(--border-color);border-radius:20px;font-size:0.78rem;font-weight:700;color:var(--text-secondary)}
+.faq-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.faq-item{background:var(--bg-card);border:1px solid var(--border-color);border-radius:var(--radius-lg);padding:18px 16px;transition:var(--transition-smooth)}
+.faq-item:hover{border-color:var(--accent-gold)}
+.faq-question{font-size:0.98rem;font-weight:800;color:var(--text-primary);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.faq-question i{color:var(--accent-gold);font-size:0.8rem}
+.faq-answer{font-size:0.86rem;color:var(--text-secondary);line-height:1.7}
+.faq-answer a{color:var(--accent-gold);text-decoration:underline}
+.area-link{color:var(--accent-gold);font-weight:800;font-size:0.82rem;display:inline-flex;align-items:center;gap:6px;margin-top:10px}
+@media(max-width:992px){.faq-grid{grid-template-columns:1fr}}
+.contact-info{font-size:0.88rem;color:var(--text-secondary)}
+.contact-info a{color:var(--accent-gold);font-weight:700;text-decoration:none}
+.brand-logo img,.hero-logo-large,.footer-brand-link img{background:transparent !important;filter:drop-shadow(0 2px 8px rgba(0,0,0,0.25))}
