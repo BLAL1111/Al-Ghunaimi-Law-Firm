@@ -1,8 +1,6 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "buildCommand": "echo 'static site'",
-  "outputDirectory": "public",
   "redirects": [
     { "source": "/team", "destination": "/about", "permanent": true },
     { "source": "/articles/real-estate-contracts-6th-october.html", "destination": "/articles/real-estate-contracts-6th-october", "permanent": true },
