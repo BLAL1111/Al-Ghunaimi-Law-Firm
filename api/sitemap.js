@@ -15,6 +15,10 @@ export default async function handler(req, res) {
     { loc: `${base}/services/real-estate`, lastmod: '2026-08-11', changefreq: 'monthly', priority: '0.7' },
     { loc: `${base}/services/corporate`, lastmod: '2026-08-11', changefreq: 'monthly', priority: '0.7' },
     { loc: `${base}/services/contracts`, lastmod: '2026-08-11', changefreq: 'monthly', priority: '0.7' },
+    { loc: `${base}/services/6th-october`, lastmod: '2026-08-23', changefreq: 'monthly', priority: '0.8' },
+    { loc: `${base}/services/sheikh-zayed`, lastmod: '2026-08-23', changefreq: 'monthly', priority: '0.8' },
+    { loc: `${base}/services/giza`, lastmod: '2026-08-23', changefreq: 'monthly', priority: '0.8' },
+    { loc: `${base}/services/cairo`, lastmod: '2026-08-23', changefreq: 'monthly', priority: '0.8' },
   ];
 
   let articleUrls = [];
