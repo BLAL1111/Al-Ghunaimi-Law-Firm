@@ -912,7 +912,7 @@ html[dir="rtl"] .nav-link::after { left: auto; right: 0; }
 
   background-size: cover;
 
-  background-position: center center !important !important !important;
+  background-position: center center;
 
   background-repeat: no-repeat;
 
@@ -9895,14 +9895,14 @@ html[dir="ltr"] .contact-desc-text {
 .link-inline {
   color: var(--accent-gold) !important;
   text-decoration: none !important;
-  border-bottom: 1.5px solid var(--accent-gold) !important;
+  border-bottom: 1px solid var(--accent-gold) !important;
   padding-bottom: 2px !important;
   font-weight: 600 !important;
   transition: var(--transition-smooth) !important;
   position: relative !important;
 }
 .link-inline::after {
-  content: "\u2190" !important;
+  content: '←' !important;
   margin-right: 4px !important;
   font-size: 0.75em !important;
   opacity: 0 !important;
@@ -9912,7 +9912,7 @@ html[dir="ltr"] .contact-desc-text {
   margin-left: 2px !important;
 }
 html[dir="ltr"] .link-inline::after {
-  content: "\u2192" !important;
+  content: '→' !important;
   margin-left: 4px !important;
   margin-right: 0 !important;
 }
