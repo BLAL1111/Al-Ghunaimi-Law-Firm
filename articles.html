@@ -332,26 +332,29 @@
           } catch(e) { console.warn('Supabase fetch failed, using static only', e); }
         }
         // Also fetch persisted GitHub data/articles.json (so articles remain even if Supabase is closed)
+        // Skip on file:// protocol (CORS blocks local file access)
         let fileArticles = [];
-        try {
-          const r = await fetch('/data/articles.json', { cache: 'no-store' });
-          if (r.ok) {
-            const j = await r.json();
-            if (Array.isArray(j)) {
-              fileArticles = j.filter(a=>a.status==='published').map(a=> ({
-                id: a.id,
-                slug: a.slug,
-                title: a.title,
-                category: a.category || 'general',
-                date: a.published_at ? new Date(a.published_at).slice(0,10).replace(/-/g,'/') : '',
-                excerpt: a.excerpt || '',
-                tags: a.tags || [],
-                keywords: (a.tags||[]).concat(a.category||''),
-                cover: a.cover_image_url
-              }));
+        if (window.location.protocol !== 'file:') {
+          try {
+            const r = await fetch('/data/articles.json', { cache: 'no-store' });
+            if (r.ok) {
+              const j = await r.json();
+              if (Array.isArray(j)) {
+                fileArticles = j.filter(a=>a.status==='published').map(a=> ({
+                  id: a.id,
+                  slug: a.slug,
+                  title: a.title,
+                  category: a.category || 'general',
+                  date: a.published_at ? new Date(a.published_at).slice(0,10).replace(/-/g,'/') : '',
+                  excerpt: a.excerpt || '',
+                  tags: a.tags || [],
+                  keywords: (a.tags||[]).concat(a.category||''),
+                  cover: a.cover_image_url
+                }));
+              }
             }
-          }
-        } catch(e) {}
+          } catch(e) { console.warn('File articles fetch failed', e); }
+        }
         // Merge: Supabase first, then file, then static (dedupe by slug)
         const seen = new Set();
         const merged = [];

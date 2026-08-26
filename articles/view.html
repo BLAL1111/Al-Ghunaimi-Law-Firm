@@ -137,14 +137,17 @@
       }
       // Fallback to data/articles.json (persisted via GitHub, works even if Supabase down) and static — absolute path for Vercel cleanUrls
       if (!article) {
-        try {
-          const r = await fetch('/data/articles.json', { cache: 'no-store' });
-          if (r.ok) {
-            const arr = await r.json();
-            article = arr.find(a => a.slug.toLowerCase() === slug && a.status === 'published') || null;
-            if (article && !article.content_html && article.excerpt) article.content_html = `<p>${article.excerpt}</p>`;
-          }
-        } catch(e) { console.warn('file fallback failed', e); }
+        // Skip on file:// protocol (CORS blocks local file access)
+        if (window.location.protocol !== 'file:') {
+          try {
+            const r = await fetch('/data/articles.json', { cache: 'no-store' });
+            if (r.ok) {
+              const arr = await r.json();
+              article = arr.find(a => a.slug.toLowerCase() === slug && a.status === 'published') || null;
+              if (article && !article.content_html && article.excerpt) article.content_html = `<p>${article.excerpt}</p>`;
+            }
+          } catch(e) { console.warn('file fallback failed', e); }
+        }
       }
       if (!article) {
         // Also check static 6 as last resort (should be in data/articles.json already)

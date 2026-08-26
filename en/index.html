@@ -703,10 +703,12 @@
         } catch(e){ console.warn('Home Supabase failed', e); }
       }
       try {
-        const r = await fetch('/data/articles.json', { cache:'no-store' });
-        if (r.ok) {
-          const j = await r.json();
-          if (Array.isArray(j) && j.length) fileArticles = j.filter(a=>a.status==='published').map(a=> ({ slug:a.slug, title:a.title, excerpt:a.excerpt||'', category:a.category, published_at:a.published_at }));
+        if (window.location.protocol !== 'file:') {
+          const r = await fetch('/data/articles.json', { cache:'no-store' });
+          if (r.ok) {
+            const j = await r.json();
+            if (Array.isArray(j) && j.length) fileArticles = j.filter(a=>a.status==='published').map(a=> ({ slug:a.slug, title:a.title, excerpt:a.excerpt||'', category:a.category, published_at:a.published_at }));
+          }
         }
       } catch(e){}
       const seen = new Set();
