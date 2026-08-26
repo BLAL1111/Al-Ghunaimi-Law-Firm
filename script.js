@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollEffects();
   initScrollSpy();
   initRevealAnimations();
+  initFaqAccordion();
   initEscapeModal();
   initTypewriter();
   initStatsCounter();
@@ -364,6 +365,58 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!el.classList.contains('active')) el.classList.add('active');
       });
     }, 3000);
+  }
+
+
+  // FAQ Accordion - Simple, All Collapsed, Click to Toggle (no auto-open)
+  function initFaqAccordion() {
+    const items = document.querySelectorAll('.faq-item');
+    if (!items.length) return;
+    items.forEach(item => {
+      const q = item.querySelector('.faq-question');
+      const a = item.querySelector('.faq-answer');
+      if (!q || !a) return;
+      if (q.dataset.faqBound === '1') return;
+      q.dataset.faqBound = '1';
+      q.style.cursor = 'pointer';
+      q.setAttribute('role', 'button');
+      q.setAttribute('tabindex', '0');
+      q.setAttribute('aria-expanded', 'false');
+      // All collapsed initially
+      item.classList.add('collapsed');
+      item.classList.remove('open');
+      a.style.display = 'none';
+      const toggle = () => {
+        const isCollapsed = item.classList.contains('collapsed');
+        // Single open: close others
+        document.querySelectorAll('.faq-item').forEach(other => {
+          if (other === item) return;
+          const otherA = other.querySelector('.faq-answer');
+          const otherQ = other.querySelector('.faq-question');
+          if (otherA && otherQ) {
+            other.classList.add('collapsed');
+            other.classList.remove('open');
+            otherQ.setAttribute('aria-expanded', 'false');
+            otherA.style.display = 'none';
+          }
+        });
+        if (isCollapsed) {
+          item.classList.remove('collapsed');
+          item.classList.add('open');
+          q.setAttribute('aria-expanded', 'true');
+          a.style.display = 'block';
+        } else {
+          item.classList.add('collapsed');
+          item.classList.remove('open');
+          q.setAttribute('aria-expanded', 'false');
+          a.style.display = 'none';
+        }
+      };
+      q.addEventListener('click', toggle);
+      q.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+      });
+    });
   }
 
   // Close Modal on Escape Key
