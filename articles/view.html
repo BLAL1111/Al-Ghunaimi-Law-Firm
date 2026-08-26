@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <title>مقال | مؤسسة الغنيمي</title>
-  <link rel="canonical" href="https://al-ghunaimi-law-firm.vercel.app/articles/view">
+  <title id="article-title-meta">مقال | مؤسسة الغنيمي</title>
+  <link rel="canonical" id="canonical-link" href="https://al-ghunaimi-law-firm.vercel.app/articles/view">
   <meta name="description" content="">
   <meta name="robots" content="index, follow">
   <link rel="icon" type="image/png" href="../img/logo.png">
@@ -169,13 +169,47 @@
       document.getElementById('article-title').textContent = a.title;
       document.getElementById('bc-title').textContent = a.title;
       document.getElementById('article-author').textContent = a.author_name ? `بقلم: ${a.author_name}` : '';
-      document.title = (a.seo_title || a.title) + ' | مؤسسة الغنيمي';
-      document.querySelector('meta[name="description"]').content = a.seo_description || a.excerpt || '';
-      document.querySelector('link[rel="canonical"]').href = `https://al-ghunaimi-law-firm.vercel.app/articles/${a.slug}`;
-      // OG
+      const pageTitle = (a.seo_title || a.title) + ' | مؤسسة الغنيمي';
+      document.title = pageTitle;
+      document.getElementById('article-title-meta').textContent = pageTitle;
+      const pageDesc = a.seo_description || a.excerpt || '';
+      document.querySelector('meta[name="description"]').content = pageDesc;
+      const canonicalUrl = `https://al-ghunaimi-law-firm.vercel.app/articles/${a.slug}`;
+      document.querySelector('link[rel="canonical"]').href = canonicalUrl;
+      document.getElementById('canonical-link').href = canonicalUrl;
+      // Open Graph
+      let ogTitle = document.querySelector('meta[property="og:title"]');
+      if(!ogTitle){ ogTitle = document.createElement('meta'); ogTitle.setAttribute('property','og:title'); document.head.appendChild(ogTitle); }
+      ogTitle.content = pageTitle;
+      let ogDesc = document.querySelector('meta[property="og:description"]');
+      if(!ogDesc){ ogDesc = document.createElement('meta'); ogDesc.setAttribute('property','og:description'); document.head.appendChild(ogDesc); }
+      ogDesc.content = pageDesc;
+      let ogUrl = document.querySelector('meta[property="og:url"]');
+      if(!ogUrl){ ogUrl = document.createElement('meta'); ogUrl.setAttribute('property','og:url'); document.head.appendChild(ogUrl); }
+      ogUrl.content = canonicalUrl;
+      let ogType = document.querySelector('meta[property="og:type"]');
+      if(!ogType){ ogType = document.createElement('meta'); ogType.setAttribute('property','og:type'); document.head.appendChild(ogType); }
+      ogType.content = 'article';
+      let ogSiteName = document.querySelector('meta[property="og:site_name"]');
+      if(!ogSiteName){ ogSiteName = document.createElement('meta'); ogSiteName.setAttribute('property','og:site_name'); document.head.appendChild(ogSiteName); }
+      ogSiteName.content = 'مؤسسة الغنيمي للمحاماة والاستشارات القانونية';
+      // OG Image
       let ogImg = document.querySelector('meta[property="og:image"]');
       if(!ogImg){ ogImg = document.createElement('meta'); ogImg.setAttribute('property','og:image'); document.head.appendChild(ogImg); }
-      ogImg.content = a.og_image_url || a.cover_image_url || 'https://al-ghunaimi-law-firm.vercel.app/img/logo.png';
+      ogImg.content = a.og_image_url || a.cover_image_url || 'https://al-ghunaimi-law-firm.vercel.app/img/logo_small.png';
+      // Twitter Card
+      let twCard = document.querySelector('meta[name="twitter:card"]');
+      if(!twCard){ twCard = document.createElement('meta'); twCard.setAttribute('name','twitter:card'); document.head.appendChild(twCard); }
+      twCard.content = 'summary_large_image';
+      let twTitle = document.querySelector('meta[name="twitter:title"]');
+      if(!twTitle){ twTitle = document.createElement('meta'); twTitle.setAttribute('name','twitter:title'); document.head.appendChild(twTitle); }
+      twTitle.content = pageTitle;
+      let twDesc = document.querySelector('meta[name="twitter:description"]');
+      if(!twDesc){ twDesc = document.createElement('meta'); twDesc.setAttribute('name','twitter:description'); document.head.appendChild(twDesc); }
+      twDesc.content = pageDesc;
+      let twImg = document.querySelector('meta[name="twitter:image"]');
+      if(!twImg){ twImg = document.createElement('meta'); twImg.setAttribute('name','twitter:image'); document.head.appendChild(twImg); }
+      twImg.content = a.og_image_url || a.cover_image_url || 'https://al-ghunaimi-law-firm.vercel.app/img/logo_small.png';
       // cover
       const cover = document.getElementById('article-cover');
       if(a.cover_image_url){ cover.src = a.cover_image_url; cover.alt = a.cover_image_alt || a.title; cover.style.display='block'; }
