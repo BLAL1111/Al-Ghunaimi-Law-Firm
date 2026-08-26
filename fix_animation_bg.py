@@ -3,12 +3,9 @@ import pathlib, re
 p = pathlib.Path("styles.css")
 txt = p.read_bytes().decode("utf-8", errors="replace").replace("\ufffd", " ")
 
-# 1. Fix FAQ - prevent closing on hover, add smooth animations
-# Current: .faq-item:hover only changes border-color
-# Need: smooth transitions, no close on hover, smooth accordion animation
-
+# 1. Fix FAQ animation - smooth max-height transition on click (not hover)
 faq_css = """
-/* ===== PREMIUM FAQ - SMOOTH ANIMATIONS, NO CLOSE ON HOVER ===== */
+/* ===== FAQ SMOOTH ANIMATION ON CLICK (NOT HOVER) ===== */
 .faq-item {
   background: linear-gradient(145deg, rgba(23,26,31,0.95), rgba(18,21,26,0.98)) !important;
   border: 1px solid rgba(212,175,55,0.15) !important;
@@ -62,8 +59,7 @@ faq_css = """
   line-height: 1 !important;
   transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
 }
-.faq-item.open .faq-question i,
-.faq-item:hover .faq-question i {
+.faq-item.open .faq-question i {
   background: var(--accent-gold) !important;
   color: #0B0C0E !important;
   border-color: var(--accent-gold) !important;
@@ -86,6 +82,56 @@ faq_css = """
 .faq-item.open .faq-question::after {
   opacity: 1;
   transform: translateY(-50%) scale(1.2);
+}
+.faq-question::before {
+  content: '';
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(212,175,55,0.08);
+  border: 1px solid rgba(212,175,55,0.15);
+  display: grid;
+  place-items: center;
+  transition: all 0.3s ease;
+}
+.faq-question i {
+  position: relative;
+  z-index: 1;
+  width: 36px !important;
+  height: 36px !important;
+  display: grid !important;
+  place-items: center !important;
+  background: rgba(212,175,55,0.12) !important;
+  border: 1px solid rgba(212,175,55,0.22) !important;
+  border-radius: 10px !important;
+  font-size: 0.85rem !important;
+  color: var(--accent-gold) !important;
+  font-family: "Font Awesome 6 Free" !important;
+  font-weight: 900 !important;
+  -webkit-font-smoothing: antialiased !important;
+  flex-shrink: 0 !important;
+  line-height: 1 !important;
+  transition: all 0.3s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.faq-item.open .faq-question i {
+  background: var(--accent-gold) !important;
+  color: #0B0C0E !important;
+  border-color: var(--accent-gold) !important;
+  transform: rotate(90deg) !important;
+  box-shadow: 0 4px 12px rgba(212,175,55,0.35) !important;
+}
+.faq-item:hover .faq-question i {
+  border-color: var(--accent-gold) !important;
+}
+.faq-question {
+  padding-right: 14px !important;
+}
+html[dir="rtl"] .faq-question {
+  padding-right: 14px !important;
 }
 .faq-answer {
   max-height: 0 !important;
@@ -117,10 +163,10 @@ faq_css = """
 [data-theme="light"] .faq-item {
   background: #ffffff !important;
   border-color: rgba(212,175,55,0.18) !important;
-  box-shadow: 0 4px 18px rgba(0,0,0,0.06) !important;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.05) !important;
 }
-[data-theme="light"] .faq-item:hover,
-[data-theme="light"] .faq-item.open {
+[data-theme="light"] .faq-item.open,
+[data-theme="light"] .faq-item:hover {
   border-left-color: var(--accent-gold) !important;
   box-shadow: 0 12px 28px rgba(212,175,55,0.15) !important;
 }
@@ -137,9 +183,9 @@ faq_css = """
 }
 """
 
-# 2. Hero backgrounds - larger, better positioned, better cover
+# 2. Hero backgrounds - larger, better positioned, proper cover
 hero_css = """
-/* ===== PREMIUM HERO - LARGER, BETTER POSITIONED ===== */
+/* ===== PREMIUM HERO - LARGER, BETTER POSITIONED, PROPER COVER ===== */
 .page-header.services-hero,
 .page-header.articles-hero {
   position: relative !important;
@@ -210,6 +256,10 @@ hero_css = """
 [data-theme="light"] .page-header.articles-hero .page-subtitle {
   color: rgba(26,29,35,0.85) !important; text-shadow: none !important;
 }
+.page-header.services-hero .breadcrumbs,
+.page-header.articles-hero .breadcrumbs {
+  justify-content: center !important; margin-bottom: 18px !important;
+}
 @media (max-width: 768px) {
   .page-header.services-hero, .page-header.articles-hero { min-height: 52vh !important; padding: 90px 16px 70px !important; background-position: center 25% !important; }
   .page-header.services-hero .page-title, .page-header.articles-hero .page-title { font-size: 2.1rem !important; }
@@ -232,9 +282,9 @@ hero_css = """
 }
 """
 
-# 3. Area cards - better background positioning
+# 3. Area cards - better background positioning, no overlap with content below
 area_css = """
-/* ===== AREA CARDS - BETTER BACKGROUND & SPACING ===== */
+/* ===== AREA CARDS - BETTER BACKGROUND & SPACING, NO OVERLAP ===== */
 .area-card {
   background: linear-gradient(145deg, rgba(23,26,31,0.95), rgba(18,21,26,0.98)) !important;
   border: 1px solid rgba(212,175,55,0.15) !important;
@@ -277,8 +327,20 @@ area_css = """
 .area-card .area-services { gap: 8px !important; margin-bottom: 18px !important; }
 .area-card .area-services li { font-size: 0.82rem !important; padding: 6px 12px !important; background: rgba(212,175,55,0.06); border-radius: 20px; border: 1px solid transparent; transition: all 0.2s ease; }
 .area-card:hover .area-services li { background: rgba(212,175,55,0.1); border-color: rgba(212,175,55,0.15); }
-.area-card .area-link { color: var(--accent-gold) !important; font-weight: 800 !important; gap: 6px !important; font-size: 0.86rem !important; padding: 7px 14px !important; border: 1.5px solid rgba(212,175,55,0.18) !important; border-radius: 24px !important; background: rgba(212,175,55,0.07) !important; width: fit-content !important; align-self: flex-start !important; display: inline-flex !important; align-items: center !important; justify-content: center !important; transition: all 0.25s ease !important; text-decoration: none !important; }
-.area-card .area-link:hover { gap: 8px !important; color: #0B0C0E !important; background: var(--accent-gold) !important; border-color: var(--accent-gold) !important; transform: translateY(-1px) !important; box-shadow: 0 4px 14px rgba(212,175,55,0.3) !important; }
+.area-card .area-link {
+  color: var(--accent-gold) !important; font-weight: 800 !important; gap: 6px !important; font-size: 0.86rem !important;
+  padding: 7px 14px !important; border: 1.5px solid rgba(212,175,55,0.18) !important;
+  border-radius: 24px !important; background: rgba(212,175,55,0.07) !important;
+  width: fit-content !important; align-self: flex-start !important; display: inline-flex !important;
+  align-items: center !important; justify-content: center !important;
+  transition: all 0.25s ease !important; text-decoration: none !important;
+}
+.area-card .area-link:hover {
+  gap: 8px !important; color: #0B0C0E !important;
+  background: var(--accent-gold) !important; border-color: var(--accent-gold) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 14px rgba(212,175,55,0.3) !important;
+}
 .area-card .area-link:focus-visible { outline: 2px solid var(--accent-gold) !important; outline-offset: 2px !important; }
 """
 
@@ -286,8 +348,51 @@ area_css = """
 p = pathlib.Path("styles.css")
 txt = p.read_bytes().decode("utf-8", errors="replace").replace("\ufffd", " ")
 
-# Add all CSS - append at end
-txt = txt + "\n\n" + faq_css + "\n\n" + hero_css + "\n\n" + area_css + "\n"
+# 1. Fix FAQ - ensure smooth animation on click
+# Check if FAQ CSS already has the new animation
+if "cubic-bezier(0.4,0,0.2,1)" not in txt or "FAQ SMOOTH" not in txt:
+    txt = txt + "\n\n" + faq_css
+    print("FAQ animation CSS added")
+
+# 2. Fix Hero backgrounds - larger, better positioned
+if "min-height: 72vh" not in txt or "sarh_qanony" not in txt:
+    txt = txt + "\n\n" + hero_css
+    print("Hero backgrounds fixed")
+else:
+    # Ensure the existing hero CSS has the new values
+    txt = txt.replace("min-height: 56vh", "min-height: 72vh !important")
+    txt = txt.replace("min-height: 52vh", "min-height: 66vh !important")
+    txt = txt.replace("background-position: center 28%", "background-position: center 22% !important")
+    txt = txt.replace("background-position: center center", "background-position: center center !important")
+    print("Hero backgrounds fixed")
+
+# 3. Ensure overlay is lighter for better image visibility
+if "rgba(11,12,14,0.35)" in txt:
+    txt = txt.replace("rgba(11,12,14,0.35)", "rgba(11,12,14,0.22)")
+    txt = txt.replace("rgba(11,12,14,0.55)", "rgba(11,12,14,0.38)")
+    print("Overlay lightened")
+
+# 4. Ensure large screen fixes
+if "@media (min-width: 1400px)" not in txt or "72vh" not in txt.split("@media (min-width: 1400px)")[-1][:500]:
+    txt = txt + "\n\n" + """
+@media (min-width: 1400px) {
+  .page-header.services-hero { min-height: 78vh !important; background-position: center 18% !important; }
+  .page-header.articles-hero { min-height: 70vh !important; background-position: center center !important; }
+}
+@media (min-width: 1920px) {
+  .page-header.services-hero, .page-header.articles-hero { background-size: cover !important; background-position: center 16% !important; }
+}
+@media (max-width: 768px) {
+  .page-header.services-hero, .page-header.articles-hero { min-height: 52vh !important; padding: 90px 16px 70px !important; background-position: center 25% !important; }
+  .page-header.services-hero .page-title, .page-header.articles-hero .page-title { font-size: 2.1rem !important; }
+  .page-header.services-hero .page-subtitle, .page-header.articles-hero .page-subtitle { font-size: 0.95rem !important; }
+}
+@media (max-width: 480px) {
+  .page-header.services-hero, .page-header.articles-hero { min-height: 48vh !important; padding: 80px 14px 60px !important; }
+  .page-header.services-hero .page-title, .page-header.articles-hero .page-title { font-size: 1.75rem !important; }
+}
+"""
+    print("Large screen fix added")
 
 p.write_text(txt, encoding="utf-8")
 print("All premium fixes applied")
