@@ -54,7 +54,7 @@ const translations = {
     teamDesc: "يقوم العمل داخل مؤسسة الغنيمي على فريق إداري وقانوني تتكامل أدواره في دراسة الملفات، والصياغة، والمتابعة، والاستشارات، بما يضمن تنظيم عملية التعامل مع كل ملف.",
     directorBadge: "المدير العام للمؤسسة",
 
-    partner1Name: "دكتور محمود عبد الصبور",
+    partner1Name: "د / محمود عبد الصبور",
     partner1Role: "المدير العام والمرجع القانوني الأول",
     partner1Bio: "باحث دكتوراه في القانون المدني، يتولى المراجعة الفقهية النهائية للمذكرات، تقديم الاستشارات المدنية والتجارية المتقدمة، وإشرافه العام على جودة الأداء المهني بالمؤسسة.",
 
@@ -1066,7 +1066,7 @@ const translations = {
     teamDesc: "Al-Ghonemy's work is carried out by an administrative and legal team with integrated roles in case study, drafting, follow-up, and consultations, ensuring organized handling of every case.",
     directorBadge: "General Director",
 
-    partner1Name: "Prof. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "General Director",
     partner1Bio: "Oversees general firm operations, participates in legal case analysis, and handles specialized cases and litigation areas according to each case's nature.",
 
@@ -1993,7 +1993,7 @@ const translations = {
     teamTitle: "Our Team",
     teamDesc: "Al-Ghonemy's work is carried out by an administrative and legal team with integrated roles in case study, drafting, follow-up, and consultations, ensuring organized handling of every case.",
     directorBadge: "General Director",
-    partner1Name: "Prof. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "General Director",
     partner1Bio: "Oversees general firm operations, participates in legal case analysis, and handles specialized cases and litigation areas according to each case's nature.",
     partner2Name: "Abdullah Gamal",
@@ -2869,7 +2869,7 @@ const translations = {
     teamTitle: "Our Team",
     teamDesc: "Al-Ghonemy's work is carried out by an administrative and legal team with integrated roles in case study, drafting, follow-up, and consultations, ensuring organized handling of every case.",
     directorBadge: "General Director",
-    partner1Name: "Prof. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "General Director",
     partner1Bio: "Oversees general firm operations, participates in legal case analysis, and handles specialized cases and litigation areas according to each case's nature.",
     partner2Name: "Abdullah Gamal",
@@ -3775,7 +3775,7 @@ const translations = {
     teamDesc: "Le travail au sein du Cabinet Al-Ghonemy repose sur une équipe administrative et juridique aux rôles intégrés dans l'étude des dossiers, la rédaction, le suivi et les consultations.",
     directorBadge: "Directeur Général",
 
-    partner1Name: "Pr. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "Directeur Général",
     partner1Bio: "Supervise les opérations générales du cabinet, participe à l'analyse des dossiers juridiques et traite les affaires spécialisées selon la nature de chaque dossier.",
 
@@ -4703,7 +4703,7 @@ const translations = {
     teamTitle: "Notre Équipe",
     teamDesc: "Le travail au sein du Cabinet Al-Ghonemy repose sur une équipe administrative et juridique aux rôles intégrés dans l'étude des dossiers, la rédaction, le suivi et les consultations.",
     directorBadge: "Directeur Général",
-    partner1Name: "Pr. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "Directeur Général",
     partner1Bio: "Supervise les opérations générales du cabinet, participe à l'analyse des dossiers juridiques et traite les affaires spécialisées selon la nature de chaque dossier.",
     partner2Name: "Abdullah Gamal",
@@ -5579,7 +5579,7 @@ const translations = {
     teamTitle: "Notre Équipe",
     teamDesc: "Le travail au sein du Cabinet Al-Ghonemy repose sur une équipe administrative et juridique aux rôles intégrés dans l'étude des dossiers, la rédaction, le suivi et les consultations.",
     directorBadge: "Directeur Général",
-    partner1Name: "Pr. Dr. Mahmoud Abdel Sabour",
+    partner1Name: "Dr. Mahmoud Abdel Sabour",
     partner1Role: "Directeur Général",
     partner1Bio: "Supervise les opérations générales du cabinet, participe à l'analyse des dossiers juridiques et traite les affaires spécialisées selon la nature de chaque dossier.",
     partner2Name: "Abdullah Gamal",
