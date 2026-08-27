@@ -4904,19 +4904,9 @@ html[dir="rtl"] .footer-contact { order: 1; }
 
 .about-hero {
 
-  background-image: url('img/all-Lawyers-optimized.webp');
+  background-image: url('img/all-Lawyers-optimized.jpg');
 
-  background-size: contain;
-
-  background-position: center top;
-
-  background-repeat: no-repeat;
-
-  background-color: var(--bg-primary);
-
-  background-attachment: scroll !important;
-
-  min-height: 460px;
+  background-image: image-set(url('img/all-Lawyers-optimized.webp') type("image/webp"), url('img/all-Lawyers-optimized.jpg') type("image/jpeg"));
 
 }
 
