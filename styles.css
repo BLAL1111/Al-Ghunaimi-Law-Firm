@@ -1900,23 +1900,27 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
 
 }
 
-.about-preview,
+@media (max-width: 768px) {
 
-.about-hero,
+  .about-preview,
 
-.page-header-hero {
+  .about-hero,
 
-  background-size: contain;
+  .page-header-hero {
 
-  background-position: center top;
+    background-size: contain;
 
-  background-repeat: no-repeat;
+    background-position: center top;
 
-  background-color: var(--bg-primary);
+    background-repeat: no-repeat;
 
-  background-attachment: scroll !important;
+    background-color: var(--bg-primary);
 
-  min-height: 460px;
+    background-attachment: scroll !important;
+
+    min-height: 460px;
+
+  }
 
 }
 
@@ -4898,19 +4902,59 @@ html[dir="rtl"] .footer-contact { order: 1; }
 
 /* About Hero Background */
 
+
+
+
+
+
 .about-hero {
+
+
+
+
+
 
   background-image: url('img/all-Lawyers-optimized.jpg');
 
+
+
+
+
+
   background-image: image-set(url('img/all-Lawyers-optimized.webp') type("image/webp"), url('img/all-Lawyers-optimized.jpg') type("image/jpeg"));
+
+
+
+
+
 
 }
 
+
+
+
+
+
 .about-hero .hero-logo-large {
+
+
+
+
+
 
   visibility: hidden;
 
+
+
+
+
+
   pointer-events: none;
+
+
+
+
+
 
 }
 
