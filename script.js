@@ -368,55 +368,69 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // FAQ Accordion - Simple, All Collapsed, Click to Toggle (no auto-open)
+  // FAQ Accordion - Matches reference site: first item open, single-open, ARIA, keyboard support
   function initFaqAccordion() {
     const items = document.querySelectorAll('.faq-item');
     if (!items.length) return;
-    items.forEach(item => {
-      const q = item.querySelector('.faq-question');
-      const a = item.querySelector('.faq-answer');
-      if (!q || !a) return;
-      if (q.dataset.faqBound === '1') return;
-      q.dataset.faqBound = '1';
-      q.style.cursor = 'pointer';
-      q.setAttribute('role', 'button');
-      q.setAttribute('tabindex', '0');
-      q.setAttribute('aria-expanded', 'false');
-      // All collapsed initially
-      item.classList.add('collapsed');
-      item.classList.remove('open');
-      a.style.display = 'none';
-      const toggle = () => {
-        const isCollapsed = item.classList.contains('collapsed');
-        // Single open: close others
-        document.querySelectorAll('.faq-item').forEach(other => {
-          if (other === item) return;
-          const otherA = other.querySelector('.faq-answer');
-          const otherQ = other.querySelector('.faq-question');
-          if (otherA && otherQ) {
-            other.classList.add('collapsed');
-            other.classList.remove('open');
-            otherQ.setAttribute('aria-expanded', 'false');
-            otherA.style.display = 'none';
+    const setup = () => {
+      items.forEach((item, idx) => {
+        const q = item.querySelector('.faq-question');
+        const a = item.querySelector('.faq-answer');
+        if (!q || !a) return;
+        if (q.dataset.faqBound === '1') return;
+        q.dataset.faqBound = '1';
+        q.style.cursor = 'pointer';
+        q.setAttribute('role', 'button');
+        q.setAttribute('tabindex', '0');
+        // Ensure answer is not hidden by inline styles from previous version
+        a.style.removeProperty('max-height');
+        a.style.removeProperty('opacity');
+        a.style.removeProperty('padding-top');
+        a.style.removeProperty('padding-bottom');
+        a.style.removeProperty('overflow');
+        const isFirst = idx === 0;
+        if (!item.classList.contains('active') && !item.classList.contains('collapsed')) {
+          if (isFirst) {
+            item.classList.add('active');
+            item.classList.remove('collapsed');
+            q.setAttribute('aria-expanded', 'true');
+          } else {
+            item.classList.add('collapsed');
+            item.classList.remove('active');
+            q.setAttribute('aria-expanded', 'false');
           }
-        });
-        if (isCollapsed) {
-          item.classList.remove('collapsed');
-          item.classList.add('open');
-          q.setAttribute('aria-expanded', 'true');
-          a.style.display = 'block';
-        } else {
-          item.classList.add('collapsed');
-          item.classList.remove('open');
-          q.setAttribute('aria-expanded', 'false');
-          a.style.display = 'none';
         }
-      };
-      q.addEventListener('click', toggle);
-      q.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        const toggle = () => {
+          const wasActive = item.classList.contains('active');
+          // Close all
+          items.forEach(other => {
+            const otherA = other.querySelector('.faq-answer');
+            const otherQ = other.querySelector('.faq-question');
+            if (!otherA || !otherQ) return;
+            other.classList.add('collapsed');
+            other.classList.remove('active');
+            otherQ.setAttribute('aria-expanded', 'false');
+          });
+          // If clicked was not active, open it; if was active, keep all closed (allow empty) but ensure grid still shows questions
+          if (!wasActive) {
+            item.classList.remove('collapsed');
+            item.classList.add('active');
+            q.setAttribute('aria-expanded', 'true');
+          } else {
+            item.classList.add('collapsed');
+            item.classList.remove('active');
+            q.setAttribute('aria-expanded', 'false');
+          }
+        };
+        q.addEventListener('click', toggle);
+        q.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+        });
       });
-    });
+    };
+    // Run immediately, and again after translations (in case DOM re-renders)
+    setup();
+    document.addEventListener('languagechanged', setup);
   }
 
   // Close Modal on Escape Key
