@@ -1902,35 +1902,110 @@ html[dir="ltr"] .stat-item, html[dir="ltr"] .stat-card { border-right: 1px solid
 
 @media (max-width: 768px) {
 
+
+
+
+
+
   .about-preview,
+
+
+
+
+
 
   .about-hero,
 
+
+
+
+
+
   .page-header-hero {
+
+
+
+
+
 
     background-size: contain;
 
+
+
+
+
+
     background-position: center top;
+
+
+
+
+
 
     background-repeat: no-repeat;
 
+
+
+
+
+
     background-color: var(--bg-primary);
+
+
+
+
+
 
     background-attachment: scroll !important;
 
+
+
+
+
+
     min-height: 460px;
 
+
+
+
+
+
   }
+
+
+
+
+
 
 }
 
 @media (max-width: 480px) {
 
+
+
+
+
+
   .about-preview,
+
+
+
+
+
 
   .about-hero,
 
+
+
+
+
+
   .page-header-hero { min-height: 400px; }
+
+
+
+
+
 
 }
 
