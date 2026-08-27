@@ -388,38 +388,30 @@ document.addEventListener('DOMContentLoaded', () => {
         a.style.removeProperty('padding-top');
         a.style.removeProperty('padding-bottom');
         a.style.removeProperty('overflow');
-        const isFirst = idx === 0;
-        if (!item.classList.contains('active') && !item.classList.contains('collapsed')) {
-          if (isFirst) {
-            item.classList.add('active');
-            item.classList.remove('collapsed');
-            q.setAttribute('aria-expanded', 'true');
-          } else {
-            item.classList.add('collapsed');
-            item.classList.remove('active');
-            q.setAttribute('aria-expanded', 'false');
-          }
+        // Initialize first item as open
+        if (idx === 0) {
+          item.open = true;
+          item.querySelector('.faq-question').setAttribute('aria-expanded', 'true');
+        } else {
+          item.removeAttribute('open');
+          item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
         }
         const toggle = () => {
-          const wasActive = item.classList.contains('active');
-          // Close all
-          items.forEach(other => {
-            const otherA = other.querySelector('.faq-answer');
-            const otherQ = other.querySelector('.faq-question');
-            if (!otherA || !otherQ) return;
-            other.classList.add('collapsed');
-            other.classList.remove('active');
-            otherQ.setAttribute('aria-expanded', 'false');
+          const isOpen = item.open;
+          // Close all other items
+          document.querySelectorAll('.faq-item').forEach(other => {
+            if (other !== item) {
+              other.removeAttribute('open');
+              other.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
+            }
           });
-          // If clicked was not active, open it; if was active, keep all closed (allow empty) but ensure grid still shows questions
-          if (!wasActive) {
-            item.classList.remove('collapsed');
-            item.classList.add('active');
-            q.setAttribute('aria-expanded', 'true');
-          } else {
-            item.classList.add('collapsed');
-            item.classList.remove('active');
+          // Toggle current item
+          if (isOpen) {
+            item.removeAttribute('open');
             q.setAttribute('aria-expanded', 'false');
+          } else {
+            item.open = true;
+            q.setAttribute('aria-expanded', 'true');
           }
         };
         q.addEventListener('click', toggle);
