@@ -342,7 +342,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Scroll Reveal Animations for Sections & Cards
   function initRevealAnimations() {
-    const els = document.querySelectorAll('.section-badge, .section-title, .partner-card, .practice-card, .article-card, .stat-item, .contact-item, .why-card, .how-card, .faq-item, .heritage-text, .realestate-text, .online-cta-box, .cta-section .text-center');
+    const els = document.querySelectorAll('.section-badge, .section-title, .partner-card, .practice-card, .article-card, .stat-item, .contact-item, .why-card, .how-card, .faq-grid, .heritage-text, .realestate-text, .online-cta-box, .cta-section .text-center');
     if (!els.length) return;
 
     const observer = new IntersectionObserver((entries) => {
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // FAQ Accordion - Clean, stable accordion with all items closed by default on load
+  // FAQ Accordion - Independent, robust single-open accordion (closed by default)
   function initFaqAccordion() {
     const items = document.querySelectorAll('.faq-item');
     if (!items.length) return;
@@ -383,9 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
         q.setAttribute('role', 'button');
         q.setAttribute('tabindex', '0');
 
-        // Initial state: ALL items closed by default
-        item.classList.remove('active');
-        item.classList.add('collapsed');
+        // Initial state: ensure all items are CLOSED
+        item.classList.remove('faq-open', 'active');
         if (item.tagName.toLowerCase() === 'details') item.removeAttribute('open');
         q.setAttribute('aria-expanded', 'false');
 
@@ -394,20 +393,18 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             e.stopPropagation();
           }
-          const isCurrentlyActive = item.classList.contains('active') || (item.tagName.toLowerCase() === 'details' && item.open);
+          const isCurrentlyOpen = item.classList.contains('faq-open');
 
-          // Close all items
+          // Close all FAQ items
           document.querySelectorAll('.faq-item').forEach(other => {
-            other.classList.remove('active');
-            other.classList.add('collapsed');
+            other.classList.remove('faq-open', 'active');
             if (other.tagName.toLowerCase() === 'details') other.removeAttribute('open');
             other.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
           });
 
-          // If this item was not active, open it now
-          if (!isCurrentlyActive) {
-            item.classList.add('active');
-            item.classList.remove('collapsed');
+          // If clicked item was NOT open, open it now (if it was open, it stays closed)
+          if (!isCurrentlyOpen) {
+            item.classList.add('faq-open');
             if (item.tagName.toLowerCase() === 'details') item.open = true;
             q.setAttribute('aria-expanded', 'true');
           }
