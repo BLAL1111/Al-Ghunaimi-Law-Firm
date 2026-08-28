@@ -19734,6 +19734,11 @@ html[dir="rtl"] .footer-contact { order: 1; }
   filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
 }
 
+.about-hero .hero-logo-large {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 
 
 
