@@ -36781,26 +36781,25 @@ html[dir="ltr"] .faq-item.active {
 
 /* Answer — hidden by default, revealed when active */
 .faq-answer {
-  max-height: 0 !important;
-  overflow: hidden !important;
+  display: none !important;
   opacity: 0 !important;
-  padding: 0 24px !important;
-  border-top: 0px solid transparent !important;
-  transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1),
-              opacity 0.3s ease 0.05s,
-              padding 0.3s ease,
-              border-top 0.2s ease !important;
-}
-
-.faq-item.active .faq-answer {
-  max-height: 600px !important;
-  opacity: 1 !important;
-  padding: 4px 24px 22px 24px !important;
+  padding: 0 24px 18px 24px !important;
   border-top: 1px solid rgba(212,175,55,0.1) !important;
 }
 
+.faq-item.active .faq-answer {
+  display: block !important;
+  opacity: 1 !important;
+  animation: faqFadeIn 0.3s ease-out !important;
+}
+
+@keyframes faqFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .faq-answer p {
-  margin: 8px 0 0 0 !important;
+  margin: 12px 0 0 0 !important;
   font-size: 0.95rem !important;
   line-height: 1.9 !important;
   color: var(--text-secondary) !important;
