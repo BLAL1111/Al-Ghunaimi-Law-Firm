@@ -36693,11 +36693,12 @@ a.link-inline:focus,
   height: auto !important;
   max-height: none !important;
   overflow: visible !important;
+  transform: none !important;
   background: linear-gradient(145deg, rgba(23,26,31,0.92), rgba(18,21,26,0.92)) !important;
   border: 1px solid rgba(212,175,55,0.12) !important;
   border-right: 4px solid transparent !important;
   border-radius: 14px !important;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease !important;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease !important;
 }
 
 html[dir="ltr"] .faq-item {
@@ -36706,14 +36707,18 @@ html[dir="ltr"] .faq-item {
 }
 
 .faq-item:hover {
-  border-right-color: rgba(212,175,55,0.35) !important;
+  transform: none !important;
+  border-right-color: rgba(212,175,55,0.5) !important;
+  background: linear-gradient(145deg, rgba(28,32,38,0.95), rgba(22,25,30,0.95)) !important;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
 }
 html[dir="ltr"] .faq-item:hover {
   border-right-color: rgba(212,175,55,0.12) !important;
-  border-left-color: rgba(212,175,55,0.35) !important;
+  border-left-color: rgba(212,175,55,0.5) !important;
 }
 
 .faq-item.active {
+  transform: none !important;
   border-right-color: var(--accent-gold) !important;
   box-shadow: 0 6px 28px rgba(0,0,0,0.25), 0 0 0 1px rgba(212,175,55,0.12) !important;
 }

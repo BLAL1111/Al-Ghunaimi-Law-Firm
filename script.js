@@ -368,12 +368,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // FAQ Accordion - Robust single-open accordion supporting both <article class="faq-item"> and <details class="faq-item">
+  // FAQ Accordion - Clean, stable accordion with all items closed by default on load
   function initFaqAccordion() {
     const items = document.querySelectorAll('.faq-item');
     if (!items.length) return;
     const setup = () => {
-      items.forEach((item, idx) => {
+      items.forEach((item) => {
         const q = item.querySelector('.faq-question');
         const a = item.querySelector('.faq-answer');
         if (!q || !a) return;
@@ -383,18 +383,11 @@ document.addEventListener('DOMContentLoaded', () => {
         q.setAttribute('role', 'button');
         q.setAttribute('tabindex', '0');
 
-        // Initial state: first item open, others closed
-        if (idx === 0) {
-          item.classList.add('active');
-          item.classList.remove('collapsed');
-          if (item.tagName.toLowerCase() === 'details') item.open = true;
-          q.setAttribute('aria-expanded', 'true');
-        } else {
-          item.classList.remove('active');
-          item.classList.add('collapsed');
-          if (item.tagName.toLowerCase() === 'details') item.removeAttribute('open');
-          q.setAttribute('aria-expanded', 'false');
-        }
+        // Initial state: ALL items closed by default
+        item.classList.remove('active');
+        item.classList.add('collapsed');
+        if (item.tagName.toLowerCase() === 'details') item.removeAttribute('open');
+        q.setAttribute('aria-expanded', 'false');
 
         const toggle = (e) => {
           if (e) {
@@ -403,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
           }
           const isCurrentlyActive = item.classList.contains('active') || (item.tagName.toLowerCase() === 'details' && item.open);
 
-          // Close all items first
+          // Close all items
           document.querySelectorAll('.faq-item').forEach(other => {
             other.classList.remove('active');
             other.classList.add('collapsed');
@@ -411,7 +404,7 @@ document.addEventListener('DOMContentLoaded', () => {
             other.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
           });
 
-          // If was not active, open this item
+          // If this item was not active, open it now
           if (!isCurrentlyActive) {
             item.classList.add('active');
             item.classList.remove('collapsed');
