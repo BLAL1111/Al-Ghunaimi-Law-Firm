@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // FAQ Accordion - Matches reference site: first item open, single-open, ARIA, keyboard support
+  // FAQ Accordion - Robust single-open accordion supporting both <article class="faq-item"> and <details class="faq-item">
   function initFaqAccordion() {
     const items = document.querySelectorAll('.faq-item');
     if (!items.length) return;
@@ -382,45 +382,52 @@ document.addEventListener('DOMContentLoaded', () => {
         q.style.cursor = 'pointer';
         q.setAttribute('role', 'button');
         q.setAttribute('tabindex', '0');
-        // Ensure answer is not hidden by inline styles from previous version
-        a.style.removeProperty('max-height');
-        a.style.removeProperty('opacity');
-        a.style.removeProperty('padding-top');
-        a.style.removeProperty('padding-bottom');
-        a.style.removeProperty('overflow');
-        // Initialize first item as open
+
+        // Initial state: first item open, others closed
         if (idx === 0) {
-          item.open = true;
-          item.querySelector('.faq-question').setAttribute('aria-expanded', 'true');
+          item.classList.add('active');
+          item.classList.remove('collapsed');
+          if (item.tagName.toLowerCase() === 'details') item.open = true;
+          q.setAttribute('aria-expanded', 'true');
         } else {
-          item.removeAttribute('open');
-          item.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+          item.classList.remove('active');
+          item.classList.add('collapsed');
+          if (item.tagName.toLowerCase() === 'details') item.removeAttribute('open');
+          q.setAttribute('aria-expanded', 'false');
         }
-        const toggle = () => {
-          const isOpen = item.open;
-          // Close all other items
+
+        const toggle = (e) => {
+          if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+          }
+          const isCurrentlyActive = item.classList.contains('active') || (item.tagName.toLowerCase() === 'details' && item.open);
+
+          // Close all items first
           document.querySelectorAll('.faq-item').forEach(other => {
-            if (other !== item) {
-              other.removeAttribute('open');
-              other.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
-            }
+            other.classList.remove('active');
+            other.classList.add('collapsed');
+            if (other.tagName.toLowerCase() === 'details') other.removeAttribute('open');
+            other.querySelector('.faq-question')?.setAttribute('aria-expanded', 'false');
           });
-          // Toggle current item
-          if (isOpen) {
-            item.removeAttribute('open');
-            q.setAttribute('aria-expanded', 'false');
-          } else {
-            item.open = true;
+
+          // If was not active, open this item
+          if (!isCurrentlyActive) {
+            item.classList.add('active');
+            item.classList.remove('collapsed');
+            if (item.tagName.toLowerCase() === 'details') item.open = true;
             q.setAttribute('aria-expanded', 'true');
           }
         };
+
         q.addEventListener('click', toggle);
         q.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); }
+          if (e.key === 'Enter' || e.key === ' ') {
+            toggle(e);
+          }
         });
       });
     };
-    // Run immediately, and again after translations (in case DOM re-renders)
     setup();
     document.addEventListener('languagechanged', setup);
   }

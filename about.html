@@ -453,32 +453,44 @@
   </section>
 
   <!-- FIRM FAQS ACCORDION -->
-  <section class="section">
+  <section aria-labelledby="faq-heading" class="section faq-section">
     <div class="container">
       <div class="section-header text-center">
-        <h2 class="section-title" data-i18n="faqTitle">الأسئلة الشائعة</h2>
+        <span class="section-badge"><i class="fas fa-question-circle"></i> الأسئلة المتكررة</span>
+        <h2 class="section-title" data-i18n="faqTitle" id="faq-heading">الأسئلة الشائعة</h2>
+        <p class="section-desc">إجابات وافية ومباشرة على أكثر الأسئلة القانونية شيوعاً لدى موكلينا</p>
       </div>
-      <div class="faq-accordion">
-        <details class="faq-item">
-          <summary class="faq-question" data-i18n="faq1Q">هل يمكن الحصول على استشارة قانونية أونلاين؟</summary>
-          <div class="faq-answer" data-i18n="faq1A">نعم، يمكن بدء الاستشارة عن بُعد والتواصل مع المؤسسة وإرسال تفاصيل الموضوع والمستندات المتاحة لدراستها.</div>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-question" data-i18n="faq2Q">هل المؤسسة متخصصة في مجال قانوني واحد؟</summary>
-          <div class="faq-answer" data-i18n="faq2A">لا، تقدم المؤسسة خدمات قانونية في مختلف مجالات القانون، ويتم التعامل مع كل ملف وفقًا لطبيعة حالته.</div>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-question" data-i18n="faq3Q">هل يمكن حجز موعد في مقر المؤسسة؟</summary>
-          <div class="faq-answer" data-i18n="faq3A">نعم، يمكن التواصل مع المؤسسة لتحديد موعد مناسب للحضور إلى المقر بمول الحجاز بمدينة 6 أكتوبر.</div>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-question" data-i18n="faq4Q">هل يمكن إرسال المستندات قبل الحضور؟</summary>
-          <div class="faq-answer" data-i18n="faq4A">بحسب طبيعة الاستشارة والملف، يمكن إرسال المستندات إلكترونيًا لبدء دراسة الموضوع وتوفير الوقت.</div>
-        </details>
-        <details class="faq-item">
-          <summary class="faq-question" data-i18n="faq5Q">كيف أبدأ إذا كانت لدي مشكلة قانونية؟</summary>
-          <div class="faq-answer" data-i18n="faq5A">ابدأ بالتواصل مع المؤسسة وشرح المشكلة بصورة مختصرة، مع توفير المستندات الأساسية إن وجدت، حتى يمكن تحديد الخطوة المناسبة.</div>
-        </details>
+      <div class="faq-grid" itemscope="" itemtype="https://schema.org/FAQPage">
+        <article class="faq-item glass-panel" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+          <h3 class="faq-question" itemprop="name"><i class="fas fa-chevron-left"></i> <span data-i18n="faq1Q">هل يمكن الحصول على استشارة قانونية أونلاين؟</span></h3>
+          <div class="faq-answer" itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+            <p data-i18n="faq1A" itemprop="text">نعم، يمكن بدء الاستشارة عن بُعد والتواصل مع المؤسسة وإرسال تفاصيل الموضوع والمستندات المتاحة لدراستها وتحديد المسار القانوني المناسب بأعلى درجات السرية.</p>
+          </div>
+        </article>
+        <article class="faq-item glass-panel" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+          <h3 class="faq-question" itemprop="name"><i class="fas fa-chevron-left"></i> <span data-i18n="faq2Q">هل المؤسسة متخصصة في مجال قانوني واحد؟</span></h3>
+          <div class="faq-answer" itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+            <p data-i18n="faq2A" itemprop="text">لا، تقدم المؤسسة خدمات قانونية متكاملة في مختلف فروع القانون (الجنائي والطعن بالنقض، قضايا الأسرة، الميراث والتركات، القضايا العقارية، الشركات، وصياغة العقود) عبر فريق قانوني متخصص لكل مجال.</p>
+          </div>
+        </article>
+        <article class="faq-item glass-panel" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+          <h3 class="faq-question" itemprop="name"><i class="fas fa-chevron-left"></i> <span data-i18n="faq3Q">هل يمكن حجز موعد في مقر المؤسسة؟</span></h3>
+          <div class="faq-answer" itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+            <p data-i18n="faq3A" itemprop="text">نعم، نرحب بزيارتكم في مقرنا الرسمي بمول الحجاز بالقرب من ميدان الحصري في 6 أكتوبر. يُرجى حجز موعد مسبقاً لضمان تفرغ المستشار المختص لدراسة ملفك فور حضورك.</p>
+          </div>
+        </article>
+        <article class="faq-item glass-panel" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+          <h3 class="faq-question" itemprop="name"><i class="fas fa-chevron-left"></i> <span data-i18n="faq4Q">هل يمكن إرسال المستندات قبل الحضور؟</span></h3>
+          <div class="faq-answer" itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+            <p data-i18n="faq4A" itemprop="text">بالتأكيد، يمكنك إرسال صور المستندات والعقود عبر واتساب أو البريد الإلكتروني المشفر قبل الجلسة لبدء المراجعة والبحث وتوفير الوقت أثناء الاستشارة المباشرة.</p>
+          </div>
+        </article>
+        <article class="faq-item glass-panel" itemprop="mainEntity" itemscope="" itemtype="https://schema.org/Question">
+          <h3 class="faq-question" itemprop="name"><i class="fas fa-chevron-left"></i> <span data-i18n="faq5Q">كيف أبدأ إذا كانت لدي مشكلة قانونية؟</span></h3>
+          <div class="faq-answer" itemprop="acceptedAnswer" itemscope="" itemtype="https://schema.org/Answer">
+            <p data-i18n="faq5A" itemprop="text">ابدأ بالتواصل الفوري معنا عبر الواتساب أو الهاتف وشرح موجز للموضوع. يقوم الفريق المساعد بتوجيهك للمستشار المتخصص وطلب المستندات اللازمة وتحديد جلسة استشارة فورية.</p>
+          </div>
+        </article>
       </div>
     </div>
   </section>

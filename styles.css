@@ -19703,34 +19703,22 @@ html[dir="rtl"] .footer-contact { order: 1; }
 
 
 
-/* About Hero Background */
-
-
-
-
-
-
+/* Inner Pages Hero Backgrounds */
 .about-hero {
-
-
-
-
-
-
   background-image: url('img/all-Lawyers-optimized.jpg');
-
-
-
-
-
-
   background-image: image-set(url('img/all-Lawyers-optimized.webp') type("image/webp"), url('img/all-Lawyers-optimized.jpg') type("image/jpeg"));
+}
 
+.services-hero {
+  background-image: url('img/sarh_qanony.jpg');
+  background-image: image-set(url('img/sarh_qanony.jpg') type("image/jpeg"));
+  background-position: center 35% !important;
+}
 
-
-
-
-
+.articles-hero {
+  background-image: url('img/law_books_desk.jpg');
+  background-image: image-set(url('img/law_books_desk.webp') type("image/webp"), url('img/law_books_desk.jpg') type("image/jpeg"));
+  background-position: center center !important;
 }
 
 
@@ -19738,27 +19726,12 @@ html[dir="rtl"] .footer-contact { order: 1; }
 
 
 
-.about-hero .hero-logo-large {
-
-
-
-
-
-
-  visibility: hidden;
-
-
-
-
-
-
-  pointer-events: none;
-
-
-
-
-
-
+.page-header-hero .hero-logo-large {
+  display: block;
+  margin: 0 auto 16px auto;
+  max-width: 100px;
+  height: auto;
+  filter: drop-shadow(0 4px 16px rgba(0,0,0,0.4));
 }
 
 
