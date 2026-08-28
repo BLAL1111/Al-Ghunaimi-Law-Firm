@@ -7,8 +7,6 @@
   <link rel="canonical" href="https://al-ghunaimi-law-firm.vercel.app/booking">
   <link rel="alternate" hreflang="ar" href="https://al-ghunaimi-law-firm.vercel.app/booking" />
   <link rel="alternate" hreflang="x-default" href="https://al-ghunaimi-law-firm.vercel.app/booking" />
-  <link rel="alternate" hreflang="en" href="https://al-ghunaimi-law-firm.vercel.app/booking" />
-  <link rel="alternate" hreflang="fr" href="https://al-ghunaimi-law-firm.vercel.app/booking" />
 
   <meta name="description" content="احجز موعد استشارة قانونية مع مؤسسة الغنيمي للمحاماة — بالمقر في مول الحجاز 6 أكتوبر أو استشارة أونلاين عن بُعد. يتم إرسال الطلب مباشرة عبر واتساب.">
 
@@ -59,7 +57,7 @@
   <section class="page-header">
     <div class="container">
       <div class="breadcrumbs">
-        <a href="index.html">الرئيسية</a> <i class="fas fa-chevron-left"></i> <span>حجز استشارة قانونية</span>
+        <a href="/">الرئيسية</a> <i class="fas fa-chevron-left"></i> <span>حجز استشارة قانونية</span>
       </div>
       <h1 class="page-title" data-i18n="bookingTitle">حجز موعد استشارة قانونية</h1>
       <p class="page-subtitle" data-i18n="bookingSubtitle">اختر حجز موعد بالمقر أو طلب استشارة أونلاين وسيتم التواصل معك مباشرة عبر واتساب</p>
@@ -162,15 +160,6 @@
   <script src="script.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      if (window.GhonemyComponents) {
-        window.GhonemyComponents.renderHeader();
-        window.GhonemyComponents.renderFooter();
-        window.GhonemyComponents.renderBackToTop();
-        window.GhonemyComponents.renderWhatsAppFloat();
-        window.GhonemyComponents.renderModals();
-        window.GhonemyComponents.initNavDataI18n();
-      }
-
       // Booking Page Form Submission -> WhatsApp
       const bookingPageForm = document.getElementById('booking-page-form');
       if (bookingPageForm) {
